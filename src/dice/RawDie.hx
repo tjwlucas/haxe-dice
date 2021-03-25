@@ -1,5 +1,6 @@
 package dice;
 
+import dice.errors.InvalidConstructor;
 using Math;
 
 class RawDie {
@@ -7,6 +8,9 @@ class RawDie {
     var generator : RandomGenerator;
 
     public function new(sides:Int, generator : RandomGenerator) {
+        if(sides <= 0) {
+            throw new InvalidConstructor("Must have positive integer number of sides");
+        }
         this.sides = sides;
         this.generator = generator;
     }
