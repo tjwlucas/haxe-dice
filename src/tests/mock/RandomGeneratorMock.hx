@@ -1,4 +1,5 @@
 package tests.mock;
+import utest.Assert;
 import haxe.Exception;
 import dice.RandomGenerator;
 
@@ -17,4 +18,21 @@ class RandomGeneratorMock extends RandomGenerator {
 			throw new NoMockResult("No mock results provided");
 		}
     }
+
+	public function shouldBeDoneAll(fail : Bool = true, ?pos:haxe.PosInfos) {
+		for(key => value in mock_results) {
+			shouldBeDone(key, fail, pos);
+		}	
+	}
+
+	public function shouldBeDone(n:Int, fail : Bool = true, ?pos:haxe.PosInfos) {
+		var value = mock_results[n];
+		if(value.length > 0) {
+			if(fail) {
+				Assert.fail('(Failure) There are unused mock results for ${n}: ${value}', pos);
+			} else {
+				Assert.warn('line: ${pos.lineNumber}, (Warning) There are unused mock results for ${n}: ${value}');
+			}
+		}
+	}
 }
