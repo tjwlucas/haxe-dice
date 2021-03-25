@@ -1,0 +1,10 @@
+-cp src
+-D analyzer-optimize
+-dce full
+
+--each
+-main tests.Tests
+-lib utest
+
+-D js-es=6
+--js bin/tests.js
