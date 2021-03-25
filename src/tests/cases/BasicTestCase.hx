@@ -6,6 +6,8 @@ import utest.Test;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidConstructor;
 
+using Math;
+
 class BasicTestCase extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
@@ -16,23 +18,33 @@ class BasicTestCase extends Test {
         manager = new dice.RollManager(generator);
     }
 
-    function specBasicDieRandomTests() {
-        var realManager = new dice.RollManager();
+    /**
+        Deterministically check output of basic roll function, that it covers all expected results, only expected results, and fairly distributed.
+        (Assumes the even distribution of the raw random function of a float between 0 and 1)
+    **/
+    function specDeterministicDistribution() {
+        generator.use_raw = true;
+
         for(sides in [2,3,4,6,8,10,12,20,100]) {
-            var die = realManager.getRawDie(sides);
+            generator.mock_raw_results = [for (i in 1...sample_size) i / sample_size];
+            var die = manager.getRawDie(sides);
             var rolls = [for (i in 1...sample_size) die.roll()];
             var count : Int = 0;
             var other_rolls = rolls;
+            var expected_n = sample_size / sides;
             for(i in 0...sides) {
                 var n = i+1;
-                Assert.contains(n, rolls);
+                Assert.contains(n, rolls, '$n not rolled at all on d$sides');
                 other_rolls = other_rolls.filter(val -> val != n);
-            }
-            Assert.equals(0, other_rolls.length, "Unexpected rolls returned");
-        }
 
-        Assert.raises(() -> realManager.getRawDie(0), InvalidConstructor);
-        Assert.raises(() -> realManager.getRawDie(-56), InvalidConstructor);
+                var count = rolls.filter(val -> val == n).length;
+                Assert.isTrue(count <= expected_n + 1, '$n is being rolled too much on d$sides (${(count*100/expected_n).round()}% of expected)');
+                Assert.isTrue(count >= expected_n - 1, '$n is not being rolled enough on d$sides (${(count*100/expected_n).round()}% of expected)');
+            }
+            Assert.equals(0, other_rolls.length, 'Unexpected rolls returned on d$sides: $other_rolls');
+            generator.shouldBeDoneRaw();
+        }
+        generator.use_raw = false;
     }
 
     function specBasicDieMocking() {
