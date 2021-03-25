@@ -32,16 +32,24 @@ class BasicTestCase extends Test {
             var count : Int = 0;
             var other_rolls = rolls;
             var expected_n = sample_size / sides;
+
+            var counts : Map<Int, Int> = [];
+
+            rolls.map(value -> counts.exists(value) ? counts[value]++ : counts[value] = 1 );
+
             for(i in 0...sides) {
                 var n = i+1;
-                Assert.contains(n, rolls, '$n not rolled at all on d$sides');
-                other_rolls = other_rolls.filter(val -> val != n);
-
-                var count = rolls.filter(val -> val == n).length;
-                Assert.isTrue(count <= expected_n + 1, '$n is being rolled too much on d$sides (${(count*100/expected_n).round()}% of expected)');
-                Assert.isTrue(count >= expected_n - 1, '$n is not being rolled enough on d$sides (${(count*100/expected_n).round()}% of expected)');
+                Assert.isTrue(counts.exists(n), '$n not rolled at all on d$sides');
+                if(counts.exists(n)) {
+                    Assert.isTrue(counts[n] <= expected_n + 1, '$n is being rolled too much on d$sides (${(count*100/expected_n).round()}% of expected)');
+                    Assert.isTrue(counts[n] >= expected_n - 1, '$n is not being rolled enough on d$sides (${(count*100/expected_n).round()}% of expected)');
+                }
             }
-            Assert.equals(0, other_rolls.length, 'Unexpected rolls returned on d$sides: $other_rolls');
+            for(key => value in counts) {
+                if(![for (i in 0...sides) i + 1].contains(key)) {
+                    Assert.fail('Unexpected roll returned on d$sides: $key (${value * 100 / sample_size}%)');
+                }
+            }
             generator.shouldBeDoneRaw();
         }
         generator.use_raw = false;
