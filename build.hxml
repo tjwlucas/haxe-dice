@@ -15,3 +15,6 @@
 
 --next
 -neko ./bin/tests.n
+
+--next
+-python ./bin/tests.py

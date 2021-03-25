@@ -25,3 +25,9 @@ steps:
       - neko ./bin/tests.n
     depends_on:
       - Build
+  - name: Tests in Python
+    image: python:alpine
+    commands:
+      - python ./bin/tests.py
+    depends_on:
+      - Build
