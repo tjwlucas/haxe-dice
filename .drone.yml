@@ -1,0 +1,27 @@
+kind: pipeline
+type: docker
+
+steps:
+  - name: Build
+    image: haxe:4.2.1
+    commands:
+      - haxelib install --always build.hxml
+      - haxe build.hxml
+  - name: Tests in NodeJS
+    image: node:alpine
+    commands:
+      - node bin/tests.js
+    depends_on:
+      - Build
+  - name: Tests in PHP
+    image: php:cli-alpine
+    commands:
+      - php ./bin/php-tests/index.php
+    depends_on:
+      - Build
+  - name: Tests in Neko
+    image: haxe:4.2.1
+    commands:
+      - neko ./bin/tests.n
+    depends_on:
+      - Build

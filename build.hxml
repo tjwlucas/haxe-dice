@@ -2,9 +2,16 @@
 -D analyzer-optimize
 -dce full
 
---each
 -main tests.Tests
 -lib utest
 
+
+--each
 -D js-es=6
 --js bin/tests.js
+
+--next
+-php ./bin/php-tests
+
+--next
+-neko ./bin/tests.n
