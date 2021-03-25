@@ -26,9 +26,11 @@ class BasicTestCase extends Test {
         generator.use_raw = true;
 
         for(sides in [2,3,4,6,8,10,12,20,100]) {
-            generator.mock_raw_results = [for (i in 1...sample_size) i / sample_size];
+            // The random number generator being used return 0 <= n < 1
+            generator.mock_raw_results = [for (i in 0...sample_size) i / sample_size];
+            generator.mock_raw_results.length == sample_size;
             var die = manager.getRawDie(sides);
-            var rolls = [for (i in 1...sample_size) die.roll()];
+            var rolls = [for (i in 0...sample_size) die.roll()];
             var count : Int = 0;
             var other_rolls = rolls;
             var expected_n = sample_size / sides;

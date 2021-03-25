@@ -9,6 +9,6 @@ class RandomGenerator {
     }
 
     public function rollPositiveInt(n:Int) : Int {
-        return (random() * n).ceil();
+        return (random() * n).floor() + 1;
     }
 }
