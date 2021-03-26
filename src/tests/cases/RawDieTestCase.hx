@@ -8,7 +8,7 @@ import dice.errors.InvalidConstructor;
 
 using Math;
 
-class BasicTestCase extends Test {
+class RawDieTestCase extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
 
@@ -55,6 +55,20 @@ class BasicTestCase extends Test {
             generator.shouldBeDoneRaw();
         }
         generator.use_raw = false;
+    }
+
+    function specValidConstruction() {
+        var die = manager.getRawDie(6);
+        @:privateAccess die.sides == 6;
+
+        Assert.raises(()-> var die = manager.getRawDie(0), InvalidConstructor);
+        Assert.raises(()-> var die = manager.getRawDie(-4), InvalidConstructor);
+        //Test against invalid values provided dynamically (at runtime)
+        Assert.raises(()-> var die = manager.getRawDie((2.3:Dynamic)), InvalidConstructor);
+        Assert.raises(()-> var die = manager.getRawDie((-0.3:Dynamic)), InvalidConstructor);
+        
+        var die = manager.getRawDie( (3.0:Dynamic) );
+        @:privateAccess die.sides == 3;
     }
 
     function specBasicDieMocking() {

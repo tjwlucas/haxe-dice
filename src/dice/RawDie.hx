@@ -8,10 +8,12 @@ class RawDie {
     var generator : RandomGenerator;
 
     public function new(sides:Int, generator : RandomGenerator) {
-        if(sides <= 0) {
+        try {
+            if(sides <= 0) throw "Negative number given";
+            this.sides = cast(sides, Int);
+        } catch (e) {
             throw new InvalidConstructor("Must have positive integer number of sides");
         }
-        this.sides = sides;
         this.generator = generator;
     }
 
