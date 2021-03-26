@@ -8,7 +8,7 @@ import dice.errors.InvalidConstructor;
 
 using Math;
 
-class RawDieTestCase extends Test {
+class RawDieTest extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
 

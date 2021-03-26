@@ -4,6 +4,7 @@ using Math;
 class RandomGenerator {
     public function new() {}
 
+    @:ignoreCoverage
     function random() : Float {
         return Math.random();
     }
