@@ -33,31 +33,19 @@ class RandomGeneratorMock extends RandomGenerator {
 		return next_result;
 	}
 
-	public function shouldBeDoneAll(fail : Bool = true, ?pos:haxe.PosInfos) {
+	public function shouldBeDoneAll(?pos:haxe.PosInfos) {
 		for(key => value in mock_results) {
-			shouldBeDone(key, fail, pos);
+			shouldBeDone(key, pos);
 		}	
-		shouldBeDoneRaw(fail, pos);
+		shouldBeDoneRaw(pos);
 	}
 
-	public function shouldBeDoneRaw(fail : Bool = true, ?pos:haxe.PosInfos) {
-		if(mock_raw_results.length > 0) {
-			if(fail) {
-				Assert.fail('(Failure) There are unused mock raw results: ${mock_raw_results}', pos);
-			} else {
-				Assert.warn('line: ${pos.lineNumber}, (Warning) There are unused mock raw results: ${mock_raw_results}');
-			}
-		}
+	public inline function shouldBeDoneRaw(?pos:haxe.PosInfos) {
+		Assert.equals(0, mock_raw_results.length, '(Failure) There are unused mock raw results: ${mock_raw_results}', pos);
 	}
 
-	public function shouldBeDone(n:Int, fail : Bool = true, ?pos:haxe.PosInfos) {
+	public inline function shouldBeDone(n:Int, ?pos:haxe.PosInfos) {
 		var value = mock_results[n];
-		if(value.length > 0) {
-			if(fail) {
-				Assert.fail('(Failure) There are unused mock results for ${n}: ${value}', pos);
-			} else {
-				Assert.warn('line: ${pos.lineNumber}, (Warning) There are unused mock results for ${n}: ${value}');
-			}
-		}
+		Assert.equals(0, value.length, '(Failure) There are unused mock results for ${n}: ${value}', pos);
 	}
 }
