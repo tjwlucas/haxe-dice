@@ -10,7 +10,10 @@ class RawDie {
     public function new(sides:Int, generator : RandomGenerator) {
         try {
             if(sides <= 0) throw "Negative number given";
-            if(sides.floor() != sides.ceil()) throw "Non-integer given";
+            #if php
+                // On other targets, the cast will fail anyway
+                if(sides.floor() != sides.ceil()) throw "Non-integer given";
+            #end
             this.sides = cast(sides, Int);
         } catch (e) {
             throw new InvalidConstructor("Must have positive integer number of sides");
