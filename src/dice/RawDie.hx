@@ -8,29 +8,32 @@ class RawDie {
     var generator : RandomGenerator;
 
     public function new(sides:Int, generator : RandomGenerator) {
+        var sides_int : Int;
         try {
             if(sides <= 0) throw "Negative number given";
             #if php
                 // On other targets, the cast will fail anyway
                 if(sides.floor() != sides.ceil()) throw "Non-integer given";
             #end
-            this.sides = cast(sides, Int);
+            sides_int = cast(sides, Int);
         } catch (e) {
             throw new InvalidConstructor("Must have positive integer number of sides");
         }
+        this.sides = sides_int;
         this.generator = generator;
     }
 
-    var stored_result : Int;
+    var stored_result : Null<Int>;
 
-    public var result(get, null) : Int;
+    public var result(get, never) : Int;
     public function get_result() : Int {
         if(stored_result != null) return stored_result;
         else return roll();
     };
 
     public function roll() {
-        stored_result = generator.rollPositiveInt(sides);
-        return stored_result;
+        var ans = generator.rollPositiveInt(sides);
+        stored_result = ans;
+        return ans;
     }
 }
