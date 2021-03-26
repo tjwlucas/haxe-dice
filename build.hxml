@@ -6,6 +6,12 @@
 -main tests.Tests
 -lib utest
 
+-lib instrument
+--macro instrument.Instrumentation.coverage([], ['src'], ['tests'])
+-D coverage-console-file-summary-reporter
+-D coverage-console-package-summary-reporter
+-D coverage-console-missing-reporter
+
 
 --each
 -D js-es=6

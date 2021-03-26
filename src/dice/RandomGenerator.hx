@@ -4,7 +4,7 @@ using Math;
 class RandomGenerator {
     public function new() {}
 
-    function random() {
+    function random() : Float {
         return Math.random();
     }
 

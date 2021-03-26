@@ -21,6 +21,9 @@ class NoExitReport extends utest.ui.text.PrintReport {
 		Sys.println(this.getResults());
 		#end
 		
+		#if instrument
+			instrument.coverage.Coverage.endCoverage();
+		#end
 		if (!result.stats.isOk) {
 			#if sys
 			Sys.exit(1);
