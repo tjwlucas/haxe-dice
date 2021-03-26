@@ -10,10 +10,14 @@ class RawDie {
     public function new(sides:Int, generator : RandomGenerator) {
         var sides_int : Int;
         try {
-            if(sides <= 0) throw "Negative number given";
+            if(sides <= 0) {
+                throw "Non-positive number given";
+            }
             #if php
                 // On other targets, the cast will fail anyway
-                if(sides.floor() != sides.ceil()) throw "Non-integer given";
+                if(sides.floor() != sides.ceil()) {
+                    throw "Non-integer given";
+                }
             #end
             sides_int = cast(sides, Int);
         } catch (e) {
