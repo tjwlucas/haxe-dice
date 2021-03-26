@@ -5,7 +5,7 @@ steps:
   - name: Build
     image: haxe:4.2.1
     commands:
-      - haxelib install --always build.hxml
+      - haxelib install --always all.hxml
       - haxe build.hxml
   - name: Tests in NodeJS
     image: node:alpine
