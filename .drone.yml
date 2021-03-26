@@ -13,12 +13,18 @@ steps:
       - node bin/tests.js
     depends_on:
       - Build
-  - name: Tests in PHP
-    image: php:cli-alpine
+  - name: Tests in PHP7
+    image: php:7.0-cli-alpine
     commands:
       - php ./bin/php-tests/index.php
     depends_on:
       - Build
+  - name: Tests in PHP8
+    image: php:8.0-cli-alpine
+    commands:
+      - php ./bin/php-tests/index.php
+    depends_on:
+      - Build  
   - name: Tests in Neko
     image: haxe:4.2.1
     commands:
