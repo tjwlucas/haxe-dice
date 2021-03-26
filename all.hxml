@@ -1,0 +1,10 @@
+build.hxml
+
+--next
+-php ./bin/php-tests
+
+--next
+-neko ./bin/tests.n
+
+--next
+-python ./bin/tests.py
