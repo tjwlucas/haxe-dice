@@ -10,7 +10,7 @@ class RawDie {
     public function new(sides:Int, generator : RandomGenerator) {
         try {
             if(sides <= 0) throw "Negative number given";
-            if(sides - sides.round() != 0) throw "Non-integer given";
+            if(sides.floor() != sides.ceil()) throw "Non-integer given";
             this.sides = cast(sides, Int);
         } catch (e) {
             throw new InvalidConstructor("Must have positive integer number of sides");
