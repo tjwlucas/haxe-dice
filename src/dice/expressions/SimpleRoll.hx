@@ -20,7 +20,10 @@ package dice.expressions;
     **/
     static function parseCoreExpression(expression : String) {
         var core_matcher = ~/^(\d*)d(\d+)/i;
-        core_matcher.match(expression);
+        var is_matched = core_matcher.match(expression);
+        if(!is_matched) {
+            throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
+        }
         var number = Std.parseInt(core_matcher.matched(1));
         var sides = Std.parseInt(core_matcher.matched(2));
         return {
