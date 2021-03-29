@@ -37,3 +37,28 @@ steps:
       - python ./bin/tests.py
     depends_on:
       - Build
+  - name: Build Documentation
+    image: haxe:4.2.1
+    commands:
+      - haxelib install --always documentation.hxml
+      - haxe documentation.hxml
+    depends_on:
+      - Tests in NodeJS
+      - Tests in PHP7
+      - Tests in PHP8
+      - Tests in Neko
+      - Tests in Python
+  - name: Publish Documentation
+    image: plugins/s3
+    settings:
+      bucket: dice-man
+      access_key: 
+        from_secret: minio_access_key
+      secret_key: 
+        from_secret: minio_secret_key
+      source: docs/pages/**/*
+      target: /
+      path_style: true
+      endpoint: https://minio.thomaslucas.co.uk
+    depends_on:
+      - Build Documentation

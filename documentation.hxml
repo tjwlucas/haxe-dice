@@ -1,0 +1,8 @@
+-cp src
+-D analyzer-optimize
+dice
+-lib dox
+
+-xml docs/doc.xml
+
+-cmd haxelib run dox -i docs -o docs/pages -in dice
