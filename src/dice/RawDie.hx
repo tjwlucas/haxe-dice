@@ -4,19 +4,19 @@ import dice.errors.InvalidConstructor;
 using Math;
 
 class RawDie {
-    var sides : Int;
+    public var sides : Int;
     var generator : RandomGenerator;
 
     public function new(sides:Int, generator : RandomGenerator) {
         var sides_int : Int;
         try {
             if(sides <= 0) {
-                throw "Non-positive number given";
+                throw new InvalidConstructor("Non-positive number given");
             }
             #if php
                 // On other targets, the cast will fail anyway
                 if(sides.floor() != sides.ceil()) {
-                    throw "Non-integer given";
+                    throw new InvalidConstructor("Non-integer given");
                 }
             #end
             sides_int = cast(sides, Int);
@@ -35,7 +35,7 @@ class RawDie {
         else return roll();
     };
 
-    public function roll() {
+    public function roll() : Int {
         var ans = generator.rollPositiveInt(sides);
         stored_result = ans;
         return ans;

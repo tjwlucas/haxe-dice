@@ -20,7 +20,7 @@ class RawDieTest extends Test {
 
     function specValidConstruction() {
         var die = manager.getRawDie(6);
-        @:privateAccess die.sides == 6;
+        die.sides == 6;
 
         Assert.raises(()-> var die = manager.getRawDie(0), InvalidConstructor);
         Assert.raises(()-> var die = manager.getRawDie(-4), InvalidConstructor);
@@ -29,7 +29,7 @@ class RawDieTest extends Test {
         Assert.raises(()-> var die = manager.getRawDie((-0.3:Dynamic)), InvalidConstructor);
         
         var die = manager.getRawDie( (3.0:Dynamic) );
-        @:privateAccess die.sides == 3;
+        die.sides == 3;
     }
 
     function specBasicDieMocking() {

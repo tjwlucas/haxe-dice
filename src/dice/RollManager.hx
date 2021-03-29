@@ -7,7 +7,7 @@ class RollManager {
         this.generator = (generator != null) ? generator : new RandomGenerator();
     }
 
-    public function getRawDie(n:Int) {
+    public function getRawDie(n:Int) : RawDie {
         return new RawDie(n, generator);
     }
 }
