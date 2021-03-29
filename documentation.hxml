@@ -5,4 +5,4 @@ dice
 
 -xml docs/doc.xml
 
--cmd haxelib run dox -i docs -o docs/pages -in dice
+-cmd haxelib run dox -i docs -o docs/pages -in dice -ex "(^|.*\.)errors($|\..*)"

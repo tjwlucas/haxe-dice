@@ -7,11 +7,15 @@ package dice;
 class RollManager {
     public var generator : RandomGenerator;
 
+    /**
+        @param generator Optionally pass in custom `RandomGenerator` (For overriding the RNG). 
+        In almost all cases, you won't need/want to do this.
+    **/
     public function new(?generator : RandomGenerator) {
         this.generator = (generator != null) ? generator : new RandomGenerator();
     }
 
-    public function getRawDie(n:Int) : RawDie {
-        return new RawDie(n, generator);
+    public function getRawDie(sides:Int) : RawDie {
+        return new RawDie(sides, generator);
     }
 }

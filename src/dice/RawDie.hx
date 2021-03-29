@@ -6,6 +6,10 @@ using Math;
 /**
     Represent the most basic unit of a die roll
     (i.e. One physical die)
+
+    Will not generally be instantiated directly, instead use `RollManager.getRawDie()`
+
+    @see `RollManager.getRawDie()`
 **/
 class RawDie {
     /**
@@ -14,6 +18,7 @@ class RawDie {
     public var sides : Int;
     var generator : RandomGenerator;
 
+    @:dox(hide)
     public function new(sides:Int, generator : RandomGenerator) {
         var sides_int : Int;
         try {
@@ -37,9 +42,9 @@ class RawDie {
     var stored_result : Null<Int>;
 
     /**
-        Gets the stored result of the die.
+        Gets the stored result of the die roll.
 
-        If it has not yet been rolled, it will roll a new result.
+        If it has not yet been rolled, it will call `RawDie.roll()`, then return it.
     **/
     public var result(get, never) : Int;
     function get_result() : Int {
