@@ -3,7 +3,14 @@ package dice;
 import dice.errors.InvalidConstructor;
 using Math;
 
+/**
+    Represent the most basic unit of a die roll
+    (i.e. One physical die)
+**/
 class RawDie {
+    /**
+        The number of sides on the die
+    **/
     public var sides : Int;
     var generator : RandomGenerator;
 
@@ -29,12 +36,20 @@ class RawDie {
 
     var stored_result : Null<Int>;
 
+    /**
+        Gets the stored result of the die.
+
+        If it has not yet been rolled, it will roll a new result.
+    **/
     public var result(get, never) : Int;
-    public function get_result() : Int {
+    function get_result() : Int {
         if(stored_result != null) return stored_result;
         else return roll();
     };
 
+    /**
+        Rolls the die, storing the result on the die object, as well as returning it
+    **/
     public function roll() : Int {
         var ans = generator.rollPositiveInt(sides);
         stored_result = ans;
