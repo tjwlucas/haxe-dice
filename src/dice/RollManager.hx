@@ -1,7 +1,7 @@
 package dice;
 
 /**
-    `RollManager` manages all the libary functionality, proividing access to an expression parser and evaluator, 
+    `RollManager` manages all the libary functionality, providing access to an expression parser and evaluator, 
     as well as general die rolling functionality
 **/
 class RollManager {
