@@ -49,7 +49,7 @@ steps:
       - Tests in Neko
       - Tests in Python
   - name: Publish Documentation
-    image: plugins/s3
+    image: plugins/s3-sync:1
     settings:
       bucket: roll-man
       access_key: 
@@ -60,5 +60,6 @@ steps:
       target: /
       path_style: true
       endpoint: https://minio.thomaslucas.co.uk
+      delete: true
     depends_on:
       - Build Documentation
