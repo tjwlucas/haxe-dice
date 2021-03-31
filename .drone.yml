@@ -56,7 +56,7 @@ steps:
         from_secret: minio_access_key
       secret_key: 
         from_secret: minio_secret_key
-      source: docs/pages/**/*
+      source: docs/pages
       target: /
       path_style: true
       endpoint: https://minio.thomaslucas.co.uk
