@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: docker
 
@@ -63,3 +64,8 @@ steps:
       delete: true
     depends_on:
       - Build Documentation
+---
+kind: signature
+hmac: a26fa0cd811639d55d4664bd17238fc804f13d50164d902b2dd949872d74397c
+
+...
