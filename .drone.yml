@@ -50,18 +50,17 @@ steps:
       - Tests in Neko
       - Tests in Python
   - name: Publish Documentation
-    image: plugins/s3-sync:1
+    image: plugins/s3
     settings:
       bucket: roll-man
       access_key: 
         from_secret: minio_access_key
       secret_key: 
         from_secret: minio_secret_key
-      source: docs/pages
-      target: /docs
+      source: docs/pages/**/*
+      target: /
       path_style: true
       endpoint: https://minio.thomaslucas.co.uk
-      delete: true
     depends_on:
       - Build Documentation
 ---
