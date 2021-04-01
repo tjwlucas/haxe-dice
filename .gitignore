@@ -1,3 +1,4 @@
 bin
 lcov.info
 docs
+.haxelib
