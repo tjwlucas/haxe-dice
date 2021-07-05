@@ -13,6 +13,6 @@ class RollManagerTest extends Test {
         var generator = new RandomGenerator();
         var manager = new RollManager(generator);
         Assert.isOfType(manager.generator, RandomGenerator);
-        manager.generator = generator;
+        manager.generator == generator;
     }
 }
