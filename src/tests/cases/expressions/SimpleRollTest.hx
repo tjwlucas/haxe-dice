@@ -52,6 +52,11 @@ class SimpleRollTest extends Test {
     }
 
     function specBuildDice() {
+        generator.mock_results = [
+            6 => [1,2,3],
+            20 => [1,2,3,4],
+            4 => [2]
+        ];
         var testDiceBuild1 = manager.getSimpleRoll('3d6');
         testDiceBuild1.dice.length == 3;
         for (die in testDiceBuild1.dice) {
