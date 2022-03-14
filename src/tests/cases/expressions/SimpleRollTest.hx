@@ -45,4 +45,8 @@ class SimpleRollTest extends Test {
             simpleRoll.parse('45q');
         }, InvalidExpression);
     }
+
+    function specBasicRoll() {
+        
+    }
 }
