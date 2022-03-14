@@ -2,6 +2,10 @@
 kind: pipeline
 type: docker
 
+platform:
+  os: linux
+  arch: arm
+
 steps:
   - name: Build
     image: haxe:4.2.3
