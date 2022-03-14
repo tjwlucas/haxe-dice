@@ -17,11 +17,17 @@ class RollManager {
         this.generator = (generator != null) ? generator : new RandomGenerator();
     }
 
+    /**
+        Fetches a basic die with the specified number of sides, passing in the randomness generator from the `RollManager`
+    **/
     public function getRawDie(sides:Int) : RawDie {
         return new RawDie(sides, generator);
     }
 
-    public function getSimpleRoll() {
-        return new SimpleRoll(this);
+    /**
+        @param expression Optionally pass a simple expression to be parsed by `SimpleRoll.parse()`
+    **/
+    public function getSimpleRoll(?expression: String) {
+        return new SimpleRoll(this, expression);
     }
 }

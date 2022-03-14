@@ -6,8 +6,13 @@ class SimpleRoll {
 
     var manager : Null<RollManager>;
 
-    public function new(manager: RollManager) {
+    public var dice : Array<RawDie>;
+
+    public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
+        if(expression != null) {
+            this.parse(expression);
+        }
     }
 
     /**
@@ -19,6 +24,7 @@ class SimpleRoll {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
+            dice = [for (i in 0...number) manager.getRawDie(sides)];
             return this;
         } catch(e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
@@ -40,5 +46,15 @@ class SimpleRoll {
             number: number,
             sides: sides
         }
+    }
+
+    /**
+        Will (re-)roll all dice attached to this 'roll' object
+    **/
+    public function roll() : SimpleRoll {
+        for (die in dice) {
+            die.roll();
+        }
+        return this;
     }
 }
