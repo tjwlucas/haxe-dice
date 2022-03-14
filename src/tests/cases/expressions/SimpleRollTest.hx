@@ -20,6 +20,7 @@ class SimpleRollTest extends Test {
         var roll_expression = simpleRoll.parse('d6');
         roll_expression.sides == 6;
         roll_expression.number == 1;
+        @:privateAccess roll_expression.expression = 'd6';
 
         // Set expression in initial getSimpleRoll
         var roll_expression = manager.getSimpleRoll('d6');
@@ -41,6 +42,7 @@ class SimpleRollTest extends Test {
         var roll_expression = simpleRoll.parse('d45q');
         roll_expression.sides == 45;
         roll_expression.number == 1;
+        @:privateAccess roll_expression.expression = 'd45q';
 
         Assert.raises(() -> {
             simpleRoll.parse('asdd45q');

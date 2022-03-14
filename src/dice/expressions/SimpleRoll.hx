@@ -4,6 +4,8 @@ class SimpleRoll {
     public var sides : Int;
     public var number : Int;
 
+    private var expression : String;
+
     var manager : Null<RollManager>;
 
     var stored_dice : Null<Array<RawDie>>;
@@ -20,6 +22,7 @@ class SimpleRoll {
         @throws dice.errors.InvalidExpression When passed an invalid expression
     **/
     public function parse(expression : String) : SimpleRoll {
+        this.expression = expression;
         try {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
