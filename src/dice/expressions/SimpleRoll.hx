@@ -1,20 +1,25 @@
 package dice.expressions;
 
-@:structInit class SimpleRoll {
+class SimpleRoll {
     public var sides : Int;
-    public var number : Int = 1;
+    public var number : Int;
+
+    var manager : Null<RollManager>;
+
+    public function new(manager: RollManager) {
+        this.manager = manager;
+    }
 
     /**
         @param expression A 'simple' die-notation style expression (a single roll). Such as `2d6`, `3d4`, `d20`
         @throws dice.errors.InvalidExpression When passed an invalid expression
     **/
-    public static function parse(expression : String) : SimpleRoll {
+    public function parse(expression : String) : SimpleRoll {
         try {
             var basic = parseCoreExpression(expression);
-            return {
-                number: basic.number,
-                sides: basic.sides
-            }
+            number = basic.number != null ? basic.number : 1;
+            sides = basic.sides;
+            return this;
         } catch(e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
         }
