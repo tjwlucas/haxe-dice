@@ -1,5 +1,6 @@
 package tests.cases.expressions;
 
+import dice.errors.InvalidModifier;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidExpression;
 import utest.Assert;
@@ -92,5 +93,40 @@ class SimpleRollTest extends Test {
         testSimpleRoll.roll();
         testSimpleRoll.dice[0].result == 3;
         testSimpleRoll.dice[1].result == 2;
+    }
+
+    function specGetModifier() {
+        var roll_expression = manager.getSimpleRoll('d45q1');
+        @:privateAccess roll_expression.getModifier('q') == 1;
+
+        var roll_expression = manager.getSimpleRoll('d45q3f2k');
+        @:privateAccess roll_expression.getModifier('q') == 3;
+        @:privateAccess roll_expression.getModifier('f') == 2;
+        @:privateAccess roll_expression.getModifier('k') == 1;
+
+        var roll_expression = manager.getSimpleRoll('d45q3f2q2');
+        Assert.raises(() -> {
+            @:privateAccess roll_expression.getModifier('q');
+        }, InvalidExpression);
+
+
+        var roll_expression = manager.getSimpleRoll('3d20k!l');
+        @:privateAccess roll_expression.getModifier('k') == 1;
+        @:privateAccess roll_expression.getModifier('l') == 1;
+        Assert.equals(
+            @:privateAccess roll_expression.getModifier('f'),
+            null
+        );
+        Assert.raises(() -> {
+            @:privateAccess roll_expression.getModifier('!');
+        }, InvalidModifier);
+
+        Assert.raises(() -> {
+            @:privateAccess roll_expression.getModifier('long');
+        }, InvalidModifier);
+
+        Assert.raises(() -> {
+            @:privateAccess roll_expression.getModifier('');
+        }, InvalidModifier);
     }
 }

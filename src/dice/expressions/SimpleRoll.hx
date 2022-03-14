@@ -51,6 +51,35 @@ class SimpleRoll {
     }
 
     /**
+        Get modifier value for given modifier. If requested modifier is present, but with no number, defaults to 1.
+        Returns null if modifier not present.
+        @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
+    
+    **/
+    function getModifier(mod: String) : Null<Int> {
+        // Allow a single character alphabetic modifier
+        var allowed_modifier = ~/^[a-z]$/;
+        if(!allowed_modifier.match(mod)) {
+            throw new dice.errors.InvalidModifier('$mod Is not a valid modifier');
+        }
+        var core_matcher = new EReg("\\d*d[a-z0-9!]*(" + mod + ")(\\d*)", "i");
+        var is_matched = core_matcher.match(expression);
+        if(!is_matched) {
+            return null;
+        }
+        var multimatcher =  new EReg("\\d*d[a-z0-9!]*" + mod + "\\d*[a-z0-9!]*" + mod + "\\d*", "i");
+        var multiple_matches = multimatcher.match(expression);
+        if (multiple_matches) {
+            throw new dice.errors.InvalidExpression('$expression contains the $mod modifier more than once');
+        }
+        var number = Std.parseInt(core_matcher.matched(2));
+        if (number == null) {
+            number = 1;
+        }
+        return number;
+    }
+
+    /**
         Will (re-)roll all dice attached to this 'roll' object
     **/
     public function roll() : SimpleRoll {
