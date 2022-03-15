@@ -10,6 +10,7 @@ class SimpleRoll {
 
     var stored_dice : Null<Array<Die>>;
     var explode : Null<Int>;
+    var keep_highest_number : Null<Int>;
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -29,6 +30,19 @@ class SimpleRoll {
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
             explode = getModifier('!');
+            keep_highest_number = getModifier('h');
+            if (keep_highest_number != null) {
+                if (getModifier('k') != null) {
+                    throw new dice.errors.InvalidExpression('$expression invalid, must specify only one of `k` or `h`');
+                }
+            } else {
+                keep_highest_number = getModifier('k');
+            }
+            if(keep_highest_number != null) {
+                if(keep_highest_number <= 0 || keep_highest_number > number) {
+                    throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
+                }
+            }
             return this;
         } catch(e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
@@ -92,6 +106,9 @@ class SimpleRoll {
         stored_dice = [for (i in 0...number) manager.getDie(sides, explode)];
         for (die in stored_dice) {
             die.roll();
+        }
+        if(keep_highest_number != null) {
+            keep_highest(keep_highest_number);
         }
         return this;
     }

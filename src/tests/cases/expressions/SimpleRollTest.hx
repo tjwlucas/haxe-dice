@@ -174,4 +174,34 @@ class SimpleRollTest extends Test {
         @:privateAccess roll1.keep_highest(3);
         roll1.total == 18;  // 10 (i.e. 6 + 4) + 5 + 3
     }
+
+    function specKeepHighestExpression() {
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6k3');
+        roll.total == 15;  // 6 + 5 + 4
+        
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6h3');
+        roll.total == 15;  // 6 + 5 + 4
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('5d6h3k');
+        }, InvalidExpression);
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('5d6h0');
+        }, InvalidExpression);
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('3d6k4');
+        }, InvalidExpression);
+        
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6k');
+        roll.total == 6;
+        
+        generator.mock_results[6] = [2,6,4,3,5,3];
+        var roll = manager.getSimpleRoll('5d6!k');
+        roll.total == 10;
+    }
 }
