@@ -2,3 +2,4 @@ bin
 lcov.info
 docs
 .haxelib
+badge.svg
