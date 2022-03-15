@@ -62,7 +62,7 @@ steps:
       secret_key: 
         from_secret: minio_secret_key
       source: badge.svg
-      target: /
+      target: /coverage.svg
       path_style: true
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
