@@ -25,6 +25,13 @@ class RollManager {
     }
 
     /**
+        Fetches a die with the specified number of sides, passing in the randomness generator from the `RollManager`
+    **/
+    public function getDie(sides:Int, ?explode:Int) : Die {
+        return new Die(sides, generator, explode);
+    }
+
+    /**
         @param expression Optionally pass a simple expression to be parsed by `SimpleRoll.parse()`
     **/
     public function getSimpleRoll(?expression: String) {
