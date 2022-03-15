@@ -116,9 +116,9 @@ class SimpleRollTest extends Test {
         }, InvalidExpression);
 
 
-        var roll_expression = manager.getSimpleRoll('3d20k!l');
+        var roll_expression = manager.getSimpleRoll('3d20k!b');
         @:privateAccess roll_expression.getModifier('k') == 1;
-        @:privateAccess roll_expression.getModifier('l') == 1;
+        @:privateAccess roll_expression.getModifier('b') == 1;
 
         @:privateAccess roll_expression.getModifier('!') == 20;
         Assert.equals(
@@ -203,5 +203,48 @@ class SimpleRollTest extends Test {
         generator.mock_results[6] = [2,6,4,3,5,3];
         var roll = manager.getSimpleRoll('5d6!k');
         roll.total == 10;
+    }
+
+    function specKeepLowest() {        
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6');
+        @:privateAccess roll.keep_lowest(3);
+        roll.total == 9;  // 2 + 3 + 4
+        
+        generator.mock_results[6] = [2,6,4,3,5,2];
+        var roll = manager.getSimpleRoll('5d6!');
+        @:privateAccess roll.keep_lowest(3);
+        roll.total == 7;  // 2 + 2 + 3
+        
+        generator.mock_results[6] = [6,3,6,4,6,6,1,2,5];
+        var roll = manager.getSimpleRoll('5d6!');
+        @:privateAccess roll.keep_lowest(3);
+        roll.total == 16;  // 2 + 5 + 9
+    }
+
+    function specKeepLowestExpression() {
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6l3');
+        roll.total == 9;
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('5d6h3l');
+        }, InvalidExpression);
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('5d6l0');
+        }, InvalidExpression);
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('3d6l4');
+        }, InvalidExpression);
+        
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll = manager.getSimpleRoll('5d6l');
+        roll.total == 2;
+        
+        generator.mock_results[6] = [2,6,4,3,5,3];
+        var roll = manager.getSimpleRoll('5d6!l');
+        roll.total == 2;
     }
 }

@@ -11,6 +11,7 @@ class SimpleRoll {
     var stored_dice : Null<Array<Die>>;
     var explode : Null<Int>;
     var keep_highest_number : Null<Int>;
+    var keep_lowest_number : Null<Int>;
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -38,9 +39,19 @@ class SimpleRoll {
             } else {
                 keep_highest_number = getModifier('k');
             }
+            keep_lowest_number = getModifier('l');
             if(keep_highest_number != null) {
                 if(keep_highest_number <= 0 || keep_highest_number > number) {
                     throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
+                }
+                if(keep_lowest_number != null) {
+                    throw new dice.errors.InvalidExpression('$expression invalid, must specify only one of `k`/`h` and `l`');
+                }
+            }
+            
+            if(keep_lowest_number != null) {
+                if(keep_lowest_number <= 0 || keep_lowest_number > number) {
+                    throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_lowest_number given)');
                 }
             }
             return this;
@@ -110,6 +121,9 @@ class SimpleRoll {
         if(keep_highest_number != null) {
             keep_highest(keep_highest_number);
         }
+        if(keep_lowest_number != null) {
+            keep_lowest(keep_lowest_number);
+        }
         return this;
     }
 
@@ -137,6 +151,14 @@ class SimpleRoll {
         // Sort highest result to lowest
         dice.sort((a,b) -> {
             b.result - a.result;
+        });
+        stored_dice = dice.slice(0, n);
+    }
+
+    function keep_lowest(n:Int) : SimpleRoll {
+        // Sort highest result to lowest
+        dice.sort((a,b) -> {
+            a.result - b.result;
         });
         stored_dice = dice.slice(0, n);
     }
