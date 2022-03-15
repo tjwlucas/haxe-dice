@@ -24,7 +24,7 @@ class DieTest extends Test {
     }
 
     function specExplodingDie() {
-        generator.mock_results[6] = [4,6,3];
+        generator.mock_results[6] = [2,4,6,3];
         // With exploding 6
         var die1 = manager.getDie(6, 6);
         die1.result == 2;
