@@ -115,4 +115,12 @@ class SimpleRoll {
         }
         return total;
     };
+
+    function keep_highest(n:Int) : SimpleRoll {
+        // Sort highest result to lowest
+        dice.sort((a,b) -> {
+            b.result - a.result;
+        });
+        stored_dice = dice.slice(0, n);
+    }
 }

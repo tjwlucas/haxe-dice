@@ -161,4 +161,17 @@ class SimpleRollTest extends Test {
         roll4.dice[1].result == 8;
         roll4.total == 13;
     }
+
+    function specKeepHighest() {        
+        generator.mock_results[6] = [2,6,4,3,5];
+        var roll1 = manager.getSimpleRoll('5d6');
+        @:privateAccess roll1.keep_highest(3);
+        roll1.total == 15;  // 6 + 5 + 4
+    
+        
+        generator.mock_results[6] = [2,6,4,3,5,2];
+        var roll1 = manager.getSimpleRoll('5d6!');
+        @:privateAccess roll1.keep_highest(3);
+        roll1.total == 18;  // 10 (i.e. 6 + 4) + 5 + 3
+    }
 }
