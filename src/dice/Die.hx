@@ -2,7 +2,13 @@ package dice;
 
 import dice.errors.InvalidConstructor;
 
+/**
+    Class to represent one 'die', after factoring in modifiers such as exploding dice, so it may still ultimately represent multiple physical dice 
+**/
 class Die {
+    /**
+        Number of sides on the Die object
+    **/
     public var sides : Int;
     var generator : RandomGenerator;
 
@@ -21,6 +27,9 @@ class Die {
         this.explode = explode;
     }
 
+    /**
+        The total result of the individual die roll (including exploded result)
+    **/
     public var result(get, never) : Int;
     function get_result() : Int {
         if(dice.length == 0) {
@@ -33,6 +42,9 @@ class Die {
         return total;
     };
 
+    /**
+        This generates a new result and stores it on the object. Returns itself.
+    **/
     public function roll() : Die {
         dice = [];
         var current_die = new RawDie(sides, generator);

@@ -127,6 +127,9 @@ class SimpleRoll {
         return this;
     }
 
+    /**
+        Get an array of dice rolled as part of this roll.
+    **/
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
         if(stored_dice != null) {
@@ -138,6 +141,9 @@ class SimpleRoll {
         }
     };
 
+    /**
+        Returns the total sum of the die roll
+    **/
     public var total(get, never) : Int;
     function get_total() : Int {
         var total = 0;
@@ -153,6 +159,7 @@ class SimpleRoll {
             b.result - a.result;
         });
         stored_dice = dice.slice(0, n);
+        return this;
     }
 
     function keep_lowest(n:Int) : SimpleRoll {
@@ -161,5 +168,6 @@ class SimpleRoll {
             a.result - b.result;
         });
         stored_dice = dice.slice(0, n);
+        return this;
     }
 }
