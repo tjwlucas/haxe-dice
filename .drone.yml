@@ -62,7 +62,7 @@ steps:
       secret_key: 
         from_secret: minio_secret_key
       source: badge.svg
-      target: /coverage.svg
+      target: /coverage
       path_style: true
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
@@ -94,6 +94,6 @@ steps:
       - Build Documentation
 ---
 kind: signature
-hmac: 552872b30a84747e2a1252ca2e1eb753c36371409b23d72f8abeb92193665023
+hmac: 9eb34e8304fb9b99b5bc16230caa4641a5cf5e4a6e4d7c7f8823ee5829fee955
 
 ...
