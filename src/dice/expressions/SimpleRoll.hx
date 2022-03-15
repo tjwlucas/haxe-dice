@@ -9,6 +9,7 @@ class SimpleRoll {
     var manager : Null<RollManager>;
 
     var stored_dice : Null<Array<Die>>;
+    var explode : Null<Int>;
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -27,6 +28,7 @@ class SimpleRoll {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
+            explode = getModifier('!');
             return this;
         } catch(e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
@@ -56,9 +58,9 @@ class SimpleRoll {
         @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
     
     **/
-    function getModifier(mod: String) : Null<Int> {
-        // Allow a single character alphabetic modifier
-        var allowed_modifier = ~/^[a-z]$/;
+    public function getModifier(mod: String) : Null<Int> {
+        // Allow a single character alphabetic modifier, or !
+        var allowed_modifier = ~/^[a-z!]$/;
         if(!allowed_modifier.match(mod)) {
             throw new dice.errors.InvalidModifier('$mod Is not a valid modifier');
         }
@@ -74,7 +76,11 @@ class SimpleRoll {
         }
         var number = Std.parseInt(core_matcher.matched(2));
         if (number == null) {
-            number = 1;
+            if(mod == '!') {
+                number = sides;
+            } else {
+                number = 1;
+            }
         }
         return number;
     }
@@ -83,7 +89,7 @@ class SimpleRoll {
         Will (re-)roll all dice attached to this 'roll' object
     **/
     public function roll() : SimpleRoll {
-        stored_dice = [for (i in 0...number) manager.getDie(sides)];
+        stored_dice = [for (i in 0...number) manager.getDie(sides, explode)];
         for (die in stored_dice) {
             die.roll();
         }
@@ -99,5 +105,14 @@ class SimpleRoll {
             roll();
             return stored_dice;
         }
+    };
+
+    public var total(get, never) : Int;
+    function get_total() : Int {
+        var total = 0;
+        for (die in dice) {
+            total += die.result;
+        }
+        return total;
     };
 }
