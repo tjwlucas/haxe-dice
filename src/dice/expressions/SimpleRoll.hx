@@ -8,7 +8,7 @@ class SimpleRoll {
 
     var manager : Null<RollManager>;
 
-    var stored_dice : Null<Array<RawDie>>;
+    var stored_dice : Null<Array<Die>>;
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -83,15 +83,15 @@ class SimpleRoll {
         Will (re-)roll all dice attached to this 'roll' object
     **/
     public function roll() : SimpleRoll {
-        stored_dice = [for (i in 0...number) manager.getRawDie(sides)];
+        stored_dice = [for (i in 0...number) manager.getDie(sides)];
         for (die in stored_dice) {
             die.roll();
         }
         return this;
     }
 
-    public var dice(get, never) : Array<RawDie>;
-    function get_dice() : Array<RawDie> {
+    public var dice(get, never) : Array<Die>;
+    function get_dice() : Array<Die> {
         if(stored_dice != null) {
             return stored_dice;
         }
