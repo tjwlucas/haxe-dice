@@ -13,8 +13,10 @@ class Die {
     public function new(sides: Int, generator : RandomGenerator, ?explode : Int) {
         this.sides = sides;
         this.generator = generator;
-        if (explode <= 1 || explode > sides) {
-            throw new InvalidConstructor('Explode threshold must be between 2 and $sides');
+        if (explode != null) {
+            if (explode <= 1 || explode > sides) {
+                throw new InvalidConstructor('Explode threshold must be between 2 and $sides');
+            }
         }
         this.explode = explode;
     }
@@ -36,10 +38,12 @@ class Die {
         var current_die = new RawDie(sides, generator);
         current_die.roll();
         this.dice.push(current_die);
-        while (current_die.result >= explode) {
-            current_die = new RawDie(sides, generator);
-            current_die.roll();
-            this.dice.push(current_die);
+        if(explode != null) {
+            while (current_die.result >= explode) {
+                current_die = new RawDie(sides, generator);
+                current_die.roll();
+                this.dice.push(current_die);
+            }
         }
         return this;
     }
