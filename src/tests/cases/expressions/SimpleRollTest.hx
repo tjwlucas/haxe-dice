@@ -181,7 +181,7 @@ class SimpleRollTest extends Test {
         @:privateAccess roll1.keep_highest(3);
         roll1.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,5,4],
+            [6,4,5],
             [for(die in roll1.dice) die.result]
         );
     
@@ -191,7 +191,7 @@ class SimpleRollTest extends Test {
         @:privateAccess roll1.keep_highest(3);
         roll1.total == 18;  // 10 (i.e. 6 + 4) + 5 + 3
         Assert.same(
-            [10,5,3],
+            [10,3,5],
             [for(die in roll1.dice) die.result]
         );
     }
@@ -201,7 +201,7 @@ class SimpleRollTest extends Test {
         var roll = manager.getSimpleRoll('5d6k3');
         roll.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,5,4],
+            [6,4,5],
             [for(die in roll.dice) die.result]
         );
         
@@ -209,7 +209,7 @@ class SimpleRollTest extends Test {
         var roll = manager.getSimpleRoll('5d6h3');
         roll.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,5,4],
+            [6,4,5],
             [for(die in roll.dice) die.result]
         );
 
@@ -248,7 +248,7 @@ class SimpleRollTest extends Test {
         @:privateAccess roll.keep_lowest(3);
         roll.total == 9;
         Assert.same(
-            [2,3,4],
+            [2,4,3],
             [for(die in roll.dice) die.result]
         );
         
@@ -257,7 +257,7 @@ class SimpleRollTest extends Test {
         @:privateAccess roll.keep_lowest(3);
         roll.total == 7;  // 2 + 2 + 3
         Assert.same(
-            [2,2,3],
+            [2,3,2],
             [for(die in roll.dice) die.result]
         );
         
@@ -266,7 +266,7 @@ class SimpleRollTest extends Test {
         @:privateAccess roll.keep_lowest(3);
         roll.total == 16;  // 2 + 5 + 9
         Assert.same(
-            [2,5,9],
+            [9,2,5],
             [for(die in roll.dice) die.result]
         );
     }
@@ -276,7 +276,7 @@ class SimpleRollTest extends Test {
         var roll = manager.getSimpleRoll('5d6l3');
         roll.total == 9;
         Assert.same(
-            [2,3,4],
+            [2,4,3],
             [for(die in roll.dice) die.result]
         );
 

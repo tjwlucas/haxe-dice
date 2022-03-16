@@ -153,21 +153,36 @@ class SimpleRoll {
         return total;
     };
 
+    /**
+        Keep the highest n dice in the roll (Retaining the order)
+    **/
     function keep_highest(n:Int) : SimpleRoll {
-        // Sort highest result to lowest
-        dice.sort((a,b) -> {
-            b.result - a.result;
+        // Sort lowest to highest
+        var sorted = dice.copy();
+        sorted.sort((a,b) -> {
+            a.result - b.result;
         });
-        stored_dice = dice.slice(0, n);
+        // Remove the lowest values down to the required kept n
+        for (i in 0...(number-n)) {
+            dice.remove(sorted[i]);
+        }
         return this;
     }
 
+
+    /**
+        Keep the lowest n dice in the roll (Retaining the order)
+    **/
     function keep_lowest(n:Int) : SimpleRoll {
-        // Sort highest result to lowest
-        dice.sort((a,b) -> {
-            a.result - b.result;
+        // Sort highest to lowest
+        var sorted = dice.copy();
+        sorted.sort((a,b) -> {
+            b.result - a.result;
         });
-        stored_dice = dice.slice(0, n);
+        // Remove the highest values down to the required kept n
+        for (i in 0...(number-n)) {
+            dice.remove(sorted[i]);
+        }
         return this;
     }
 
