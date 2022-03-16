@@ -247,4 +247,45 @@ class SimpleRollTest extends Test {
         var roll = manager.getSimpleRoll('5d6!l');
         roll.total == 2;
     }
+
+    function specShuffle() {
+        generator.mock_results[6] = [2,6,4];
+        var roll = manager.getSimpleRoll('3d6');
+        roll.roll();
+        Assert.same(
+            [2,6,4],
+            [for(die in roll.dice) die.result]
+        );
+
+        generator.mock_results = [
+            3 => [2],
+            2 => [1],
+            1 => [1]
+        ];
+        roll.shuffle();
+        Assert.same(
+            [6,2,4],
+            [for(die in roll.dice) die.result]
+        );
+
+        var roll = manager.getSimpleRoll('6d20');
+        generator.mock_results = [
+            20 => [12, 2, 3, 17, 1, 20],
+            6 => [5],
+            5 => [3],
+            4 => [2],
+            3 => [3],
+            2 => [1],
+            1 => [1]
+        ];
+        Assert.same(
+            [12, 2, 3, 17, 1, 20],
+            [for(die in roll.dice) die.result]
+        );
+        roll.shuffle();
+        Assert.same(
+            [1, 3, 2, 20, 12, 17],
+            [for(die in roll.dice) die.result]
+        );
+    }
 }

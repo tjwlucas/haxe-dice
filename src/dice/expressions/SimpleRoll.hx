@@ -170,4 +170,16 @@ class SimpleRoll {
         stored_dice = dice.slice(0, n);
         return this;
     }
+
+    public function shuffle() : SimpleRoll {
+        var shuffled : Array<Die> = [];
+        while(dice.length > 0) {
+            var n = manager.generator.rollPositiveInt(dice.length) - 1;
+            var selected_die = dice[n];
+            shuffled.push(selected_die);
+            dice.remove(selected_die);
+        }
+        stored_dice = shuffled;
+        return this;
+    }
 }
