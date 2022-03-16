@@ -171,6 +171,9 @@ class SimpleRoll {
         return this;
     }
 
+    /**
+        Shuffles the dice using randomness generator provided to the manager. (So e.g. if it is seedy it will be re-producible)
+    **/
     public function shuffle() : SimpleRoll {
         var shuffled : Array<Die> = [];
         while(dice.length > 0) {
