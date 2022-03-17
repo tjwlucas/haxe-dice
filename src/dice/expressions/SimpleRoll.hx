@@ -1,7 +1,9 @@
 package dice.expressions;
 
+import haxe.macro.Context;
 import dice.enums.Modifiers;
 
+@:build(dice.macros.RollParsingMacros.buildSimpleRollExpression())
 class SimpleRoll {
     public var sides : Int;
     public var number : Int;

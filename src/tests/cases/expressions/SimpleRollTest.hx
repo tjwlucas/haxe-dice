@@ -1,5 +1,6 @@
 package tests.cases.expressions;
 
+import dice.enums.Modifiers;
 import dice.errors.InvalidModifier;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidExpression;
@@ -328,5 +329,14 @@ class SimpleRollTest extends Test {
             [1, 3, 2, 20, 12, 17],
             [for(die in roll.dice) die.result]
         );
+    }
+
+    function specParseTest() {
+        var simpleRoll = manager.getSimpleRoll();
+        var roll_expression = simpleRoll.parseRaw('7d6k3l2');
+        roll_expression['number'] == '7';
+        roll_expression['sides'] == '6';
+        roll_expression[Modifiers.KEEP_HIGHEST] == '3';
+        roll_expression[Modifiers.KEEP_LOWEST] == '2';
     }
 }
