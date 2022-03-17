@@ -7,7 +7,7 @@
 -lib utest
 
 -lib instrument
---macro instrument.Instrumentation.coverage([], ['src'], ['tests'])
+--macro instrument.Instrumentation.coverage([], ['src'], ['tests', 'dice.enums'])
 -D coverage-console-file-summary-reporter
 -D coverage-console-package-summary-reporter
 -D coverage-console-missing-reporter
