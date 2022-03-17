@@ -5,6 +5,9 @@ import haxe.macro.Expr;
 import dice.util.Util;
 
 class RollParsingMacros {
+    /**
+        Generates the over all regular expression that validates and initially parses the die expression.
+    **/
     public static macro function buildSimpleRollExpression() : Array<Field> {
         var fields = Context.getBuildFields();    
         
@@ -22,8 +25,14 @@ class RollParsingMacros {
 
         
 		var tmp_class = macro class {
+            /**
+                The general regex that will match a valid die expression
+            **/
             @:keep public static inline var MATCHING_STRING = $v{ full_string };
-            
+
+            /**
+                Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
+            **/
             public function parseCoreExpression(expression : String) {
                 var matcher = new EReg($v{ full_string }, "i");
                 if (matcher.match(expression)) {
