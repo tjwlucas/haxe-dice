@@ -1,5 +1,7 @@
 package dice.expressions;
 
+import dice.enums.Modifiers;
+
 class SimpleRoll {
     public var sides : Int;
     public var number : Int;
@@ -30,22 +32,15 @@ class SimpleRoll {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
-            explode = getModifier('!');
-            keep_highest_number = getModifier('h');
-            if (keep_highest_number != null) {
-                if (getModifier('k') != null) {
-                    throw new dice.errors.InvalidExpression('$expression invalid, must specify only one of `k` or `h`');
-                }
-            } else {
-                keep_highest_number = getModifier('k');
-            }
-            keep_lowest_number = getModifier('l');
+            explode = getModifier(EXPLODE);
+            keep_highest_number = getModifier(KEEP_HIGHEST);
+            keep_lowest_number = getModifier(KEEP_LOWEST);
             if(keep_highest_number != null) {
                 if(keep_highest_number <= 0 || keep_highest_number > number) {
                     throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
                 }
                 if(keep_lowest_number != null) {
-                    throw new dice.errors.InvalidExpression('$expression invalid, must specify only one of `k`/`h` and `l`');
+                    throw new dice.errors.InvalidExpression('$expression invalid, can only keep highest or lowest');
                 }
             }
             
@@ -83,12 +78,7 @@ class SimpleRoll {
         @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
     
     **/
-    public function getModifier(mod: String) : Null<Int> {
-        // Allow a single character alphabetic modifier, or !
-        var allowed_modifier = ~/^[a-z!]$/;
-        if(!allowed_modifier.match(mod)) {
-            throw new dice.errors.InvalidModifier('$mod Is not a valid modifier');
-        }
+    function getModifier(mod: Modifiers) : Null<Int> {
         var core_matcher = new EReg("\\d*d[a-z0-9!]*(" + mod + ")(\\d*)", "i");
         var is_matched = core_matcher.match(expression);
         if(!is_matched) {
@@ -101,7 +91,7 @@ class SimpleRoll {
         }
         var number = Std.parseInt(core_matcher.matched(2));
         if (number == null) {
-            if(mod == '!') {
+            if(mod == EXPLODE) {
                 number = sides;
             } else {
                 number = 1;

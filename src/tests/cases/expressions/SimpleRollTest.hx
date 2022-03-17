@@ -106,39 +106,19 @@ class SimpleRollTest extends Test {
 
     function specGetModifier() {
         var roll_expression = manager.getSimpleRoll('d45q1');
-        @:privateAccess roll_expression.getModifier('q') == 1;
-        Assert.isNull(@:privateAccess roll_expression.getModifier('!'));
-        Assert.isNull(@:privateAccess roll_expression.getModifier('k'));
+        Assert.isNull(@:privateAccess roll_expression.getModifier(EXPLODE));
+        Assert.isNull(@:privateAccess roll_expression.getModifier(KEEP_HIGHEST));
 
         var roll_expression = manager.getSimpleRoll('d45!q3f2k');
-        @:privateAccess roll_expression.getModifier('q') == 3;
-        @:privateAccess roll_expression.getModifier('f') == 2;
-        @:privateAccess roll_expression.getModifier('k') == 1;
-        @:privateAccess roll_expression.getModifier('!') == 45;
-
-        var roll_expression = manager.getSimpleRoll('d45q3f2q2');
-        Assert.raises(() -> {
-            @:privateAccess roll_expression.getModifier('q');
-        }, InvalidExpression);
-
+        @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
+        @:privateAccess roll_expression.getModifier(EXPLODE) == 45;
 
         var roll_expression = manager.getSimpleRoll('3d20k!b');
-        @:privateAccess roll_expression.getModifier('k') == 1;
-        @:privateAccess roll_expression.getModifier('b') == 1;
+        @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
 
-        @:privateAccess roll_expression.getModifier('!') == 20;
-        Assert.equals(
-            @:privateAccess roll_expression.getModifier('f'),
-            null
-        );
+        @:privateAccess roll_expression.getModifier(EXPLODE) == 20;
 
-        Assert.raises(() -> {
-            @:privateAccess roll_expression.getModifier('long');
-        }, InvalidModifier);
 
-        Assert.raises(() -> {
-            @:privateAccess roll_expression.getModifier('');
-        }, InvalidModifier);
     }
 
     function specExplodingExpression() {        
