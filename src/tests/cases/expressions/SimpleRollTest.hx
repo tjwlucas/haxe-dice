@@ -1,6 +1,6 @@
 package tests.cases.expressions;
 
-import dice.enums.Modifiers;
+import dice.enums.Modifier;
 import dice.errors.InvalidModifier;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidExpression;
@@ -41,10 +41,9 @@ class SimpleRollTest extends Test {
             simpleRoll.parse('invalid');
         }, InvalidExpression);
 
-        var roll_expression = simpleRoll.parse('d45q');
-        roll_expression.sides == 45;
-        roll_expression.number == 1;
-        @:privateAccess roll_expression.expression = 'd45q';
+        Assert.raises(() -> {
+            simpleRoll.parse('d45q');
+        }, InvalidExpression);
 
         Assert.raises(() -> {
             simpleRoll.parse('asdd45q');
@@ -106,15 +105,15 @@ class SimpleRollTest extends Test {
     }
 
     function specGetModifier() {
-        var roll_expression = manager.getSimpleRoll('d45q1');
+        var roll_expression = manager.getSimpleRoll('d45');
         Assert.isNull(@:privateAccess roll_expression.getModifier(EXPLODE));
         Assert.isNull(@:privateAccess roll_expression.getModifier(KEEP_HIGHEST));
 
-        var roll_expression = manager.getSimpleRoll('d45!q3f2k');
+        var roll_expression = manager.getSimpleRoll('d45!k');
         @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
         @:privateAccess roll_expression.getModifier(EXPLODE) == 45;
 
-        var roll_expression = manager.getSimpleRoll('3d20k!b');
+        var roll_expression = manager.getSimpleRoll('3d20k!');
         @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
 
         @:privateAccess roll_expression.getModifier(EXPLODE) == 20;
@@ -329,14 +328,5 @@ class SimpleRollTest extends Test {
             [1, 3, 2, 20, 12, 17],
             [for(die in roll.dice) die.result]
         );
-    }
-
-    function specParseTest() {
-        var simpleRoll = manager.getSimpleRoll();
-        var roll_expression = simpleRoll.parseRaw('7d6k3l2');
-        roll_expression['number'] == '7';
-        roll_expression['sides'] == '6';
-        roll_expression[Modifiers.KEEP_HIGHEST] == '3';
-        roll_expression[Modifiers.KEEP_LOWEST] == '2';
     }
 }

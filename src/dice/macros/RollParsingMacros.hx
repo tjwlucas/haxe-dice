@@ -8,38 +8,42 @@ class RollParsingMacros {
         var fields = Context.getBuildFields();    
         
         var base_string = "^([0-9]*)d([0-9]+)";
-        var modifiers : Array<String> = [];
-        for (mod_key in Type.getClassFields(dice.enums.Modifiers)) {
-            var value = Reflect.field(dice.enums.Modifiers, mod_key);
-            modifiers.push(value);
+        var modifiers : Map<String, String> = [];
+        for (mod_key in Type.getClassFields(dice.enums.Modifier)) {
+            var value = Reflect.field(dice.enums.Modifier, mod_key);
+            modifiers[mod_key] = value;
         }
-        var modifier_matchers = [for (mod in modifiers) '$mod([0-9]*)?(?!.*$mod[0-9]*)'];
+
+        function constructMatcher(mod:String) {
+            return '$mod([0-9]*)?(?!.*$mod[0-9]*)';
+        }
+        
+        var modifier_matchers = [for (mod_key => mod in modifiers) constructMatcher(mod)];
         var joined_mods = modifier_matchers.join('|');
         var full_string = '$base_string(?:$joined_mods)*$';    
 
 
-        var get_modifiers : Array<Expr> = [];
-        for (i => mod in modifiers) {
-            get_modifiers.push(
-                macro {
-                    parsed_map[$v{mod}] = matcher.matched($v{i + 3});
-                }
-            );
+        var matcher_map : Map<String, String> = [];
+        for (mod_key => mod in modifiers) {
+                matcher_map[mod] = constructMatcher(mod);
         }
         
 		var tmp_class = macro class {
             @:keep public static inline var MATCHING_STRING = $v{ full_string };
 
-            public function parseRaw(expression : String) {
+            public static var MATCHER = $v{ matcher_map }
+
+            public function parseCoreExpression(expression : String) {
                 var matcher = new EReg($v{ full_string }, "i");
                 if (matcher.match(expression)) {
-                    var parsed_map : Map<String, String> = [];
-                    parsed_map["number"] = matcher.matched(1);
-                    parsed_map["sides"] = matcher.matched(2);
-                    $b{ get_modifiers };
-                    return parsed_map;
+                    var number = Std.parseInt(matcher.matched(1));
+                    var sides = Std.parseInt(matcher.matched(2));
+                    return {
+                        number: number,
+                        sides: sides
+                    };
                 } else {
-                    throw "Oops";
+                    throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
                 };
             }
 		}

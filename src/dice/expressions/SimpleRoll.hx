@@ -1,7 +1,7 @@
 package dice.expressions;
 
 import haxe.macro.Context;
-import dice.enums.Modifiers;
+import dice.enums.Modifier;
 
 @:build(dice.macros.RollParsingMacros.buildSimpleRollExpression())
 class SimpleRoll {
@@ -58,40 +58,17 @@ class SimpleRoll {
     }
 
     /**
-        Parse only the basic XdY portion of the die expression
-    **/
-    static function parseCoreExpression(expression : String) {
-        var core_matcher = ~/^(\d*)d(\d+)/i;
-        var is_matched = core_matcher.match(expression);
-        if(!is_matched) {
-            throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
-        }
-        var number = Std.parseInt(core_matcher.matched(1));
-        var sides = Std.parseInt(core_matcher.matched(2));
-        return {
-            number: number,
-            sides: sides
-        }
-    }
-
-    /**
         Get modifier value for given modifier. If requested modifier is present, but with no number, defaults to 1.
         Returns null if modifier not present.
         @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
     
     **/
-    function getModifier(mod: Modifiers) : Null<Int> {
-        var core_matcher = new EReg("\\d*d[a-z0-9!]*(" + mod + ")(\\d*)", "i");
-        var is_matched = core_matcher.match(expression);
-        if(!is_matched) {
+    function getModifier(mod: Modifier) : Null<Int> {
+        var matcher = new EReg(MATCHER[mod], "i");
+        if(!matcher.match(expression)) {
             return null;
         }
-        var multimatcher =  new EReg("\\d*d[a-z0-9!]*" + mod + "\\d*[a-z0-9!]*" + mod + "\\d*", "i");
-        var multiple_matches = multimatcher.match(expression);
-        if (multiple_matches) {
-            throw new dice.errors.InvalidExpression('$expression contains the $mod modifier more than once');
-        }
-        var number = Std.parseInt(core_matcher.matched(2));
+        var number = Std.parseInt(matcher.matched(1));
         if (number == null) {
             if(mod == EXPLODE) {
                 number = sides;
