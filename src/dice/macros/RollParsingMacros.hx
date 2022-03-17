@@ -2,6 +2,7 @@ package dice.macros;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import dice.util.Util;
 
 class RollParsingMacros {
     public static macro function buildSimpleRollExpression() : Array<Field> {
@@ -14,25 +15,15 @@ class RollParsingMacros {
             modifiers[mod_key] = value;
         }
 
-        function constructMatcher(mod:String) {
-            return '$mod([0-9]*)?(?!.*$mod[0-9]*)';
-        }
         
-        var modifier_matchers = [for (mod_key => mod in modifiers) constructMatcher(mod)];
+        var modifier_matchers = [for (mod_key => mod in modifiers) Util.constructMatcher(mod)];
         var joined_mods = modifier_matchers.join('|');
         var full_string = '$base_string(?:$joined_mods)*$';    
 
-
-        var matcher_map : Map<String, String> = [];
-        for (mod_key => mod in modifiers) {
-                matcher_map[mod] = constructMatcher(mod);
-        }
         
 		var tmp_class = macro class {
             @:keep public static inline var MATCHING_STRING = $v{ full_string };
-
-            public static var MATCHER = $v{ matcher_map }
-
+            
             public function parseCoreExpression(expression : String) {
                 var matcher = new EReg($v{ full_string }, "i");
                 if (matcher.match(expression)) {

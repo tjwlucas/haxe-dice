@@ -1,5 +1,6 @@
 package dice.expressions;
 
+import dice.util.Util;
 import haxe.macro.Context;
 import dice.enums.Modifier;
 
@@ -64,7 +65,7 @@ class SimpleRoll {
     
     **/
     function getModifier(mod: Modifier) : Null<Int> {
-        var matcher = new EReg(MATCHER[mod], "i");
+        var matcher = new EReg(Util.constructMatcher(mod), "i");
         if(!matcher.match(expression)) {
             return null;
         }
