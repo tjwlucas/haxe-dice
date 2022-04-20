@@ -3,8 +3,8 @@ package dice.expressions;
 import dice.util.Util;
 import haxe.macro.Context;
 import dice.enums.Modifier;
+import dice.macros.RollParsingMacros;
 
-@:build(dice.macros.RollParsingMacros.buildSimpleRollExpression())
 class SimpleRoll {
     public var sides : Int;
     public var number : Int;
@@ -17,6 +17,11 @@ class SimpleRoll {
     var explode : Null<Int>;
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
+
+    /**
+        The general regex that will match a valid die expression
+    **/
+    static inline var MATCHING_STRING = RollParsingMacros.buildSimpleRollExpression();
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -56,6 +61,23 @@ class SimpleRoll {
         } catch(e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
         }
+    }
+
+    /**
+        Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
+    **/
+    function parseCoreExpression(expression : String) {
+        var matcher = new EReg(MATCHING_STRING, "i");
+        if (matcher.match(expression)) {
+            var number = Std.parseInt(matcher.matched(1));
+            var sides = Std.parseInt(matcher.matched(2));
+            return {
+                number: number,
+                sides: sides
+            };
+        } else {
+            throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
+        };
     }
 
     /**
