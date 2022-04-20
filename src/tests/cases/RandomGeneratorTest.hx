@@ -60,7 +60,6 @@ class RandomGeneratorTest extends Test {
             mock_generator.mock_raw_results = [for (i in 0...sample_size) i / sample_size];
             mock_generator.mock_raw_results.length == sample_size;
             var rolls = [for (i in 0...sample_size) mock_generator.rollPositiveInt(sides)];
-            var count : Int = 0;
             var other_rolls = rolls;
             var expected_n = sample_size / sides;
 
@@ -72,8 +71,8 @@ class RandomGeneratorTest extends Test {
                 var n = i+1;
                 Assert.isTrue(counts.exists(n), '$n not rolled at all on d$sides');
                 if(counts.exists(n)) {
-                    Assert.isTrue(counts[n] <= expected_n + 1, '$n is being rolled too much on d$sides (${(count*100/expected_n).round()}% of expected)');
-                    Assert.isTrue(counts[n] >= expected_n - 1, '$n is not being rolled enough on d$sides (${(count*100/expected_n).round()}% of expected)');
+                    Assert.isTrue(counts[n] <= expected_n + 1, '$n is being rolled too much on d$sides (${(counts[n]*100/expected_n).round()}% of expected)');
+                    Assert.isTrue(counts[n] >= expected_n - 1, '$n is not being rolled enough on d$sides (${(counts[n]*100/expected_n).round()}% of expected)');
                 }
             }
             for(key => value in counts) {
