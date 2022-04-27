@@ -24,7 +24,7 @@ class ComplexExpression {
         var i = 0;
         parsedExpression = matcher.map(expression, (m) -> {
             var match = m.matched(0);
-            var expr = '(roll("$match"))';
+            var expr = 'roll("$match")';
             i++;
             return expr;
         });

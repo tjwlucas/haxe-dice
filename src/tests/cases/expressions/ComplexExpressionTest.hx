@@ -15,7 +15,7 @@ class ComplexExpressionTest extends Test {
     function specParseExpression() {
         var expression = manager.getComplexExpression('(3d6! / 2) + d4');
 
-        @:privateAccess expression.parsedExpression == '((roll("3d6!")) / 2) + (roll("d4"))';
+        @:privateAccess expression.parsedExpression == '(roll("3d6!") / 2) + roll("d4")';
         Assert.same(
             [],
             [for(v in expression.rolls) @:privateAccess v.expression]
@@ -23,12 +23,12 @@ class ComplexExpressionTest extends Test {
 
         // Test that expressions in quotations are ignored
         var expression = manager.getComplexExpression('"The result of the (3d6! / 2) + d4 roll is: " + (3d6! / 2) + d4');
-        @:privateAccess expression.parsedExpression == '"The result of the (3d6! / 2) + d4 roll is: " + ((roll("3d6!")) / 2) + (roll("d4"))';
+        @:privateAccess expression.parsedExpression == '"The result of the (3d6! / 2) + d4 roll is: " + (roll("3d6!") / 2) + roll("d4")';
         
 
         // Test that expressions in quotations are ignored
         var expression = manager.getComplexExpression("'The result of the (3d6! / 2) + d4 roll is: ' + (3d6! / 2) + d4");
-        @:privateAccess expression.parsedExpression == "'The result of the (3d6! / 2) + d4 roll is: ' + ((roll(\"3d6!\")) / 2) + (roll(\"d4\"))";
+        @:privateAccess expression.parsedExpression == "'The result of the (3d6! / 2) + d4 roll is: ' + (roll(\"3d6!\") / 2) + roll(\"d4\")";
         
     }
 
