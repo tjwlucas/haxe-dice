@@ -33,7 +33,6 @@ class ComplexExpression {
             var parser = new hscript.Parser();
             program = parser.parseString(parsedExpression);
         } catch(e) {
-            trace(parsedExpression);
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
     }
