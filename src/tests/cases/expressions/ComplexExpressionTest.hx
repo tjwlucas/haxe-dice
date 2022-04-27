@@ -15,10 +15,10 @@ class ComplexExpressionTest extends Test {
     function specParseExpression() {
         var expression = manager.getComplexExpression('(3d6! / 2) + d4');
 
-        @:privateAccess expression.parsedExpression == '((rolls[0].roll().total) / 2) + (rolls[1].roll().total)';
+        @:privateAccess expression.parsedExpression == '((roll("3d6!")) / 2) + (roll("d4"))';
         Assert.same(
-            ['3d6!','d4'],
-            [for(v in @:privateAccess expression.rolls) @:privateAccess v.expression]
+            [],
+            [for(v in expression.rolls) @:privateAccess v.expression]
         );
     }
 
@@ -32,6 +32,11 @@ class ComplexExpressionTest extends Test {
     function specExecuteExpression() {
         var expression = manager.getComplexExpression('(3d6! / 2) + d4');
 
+        Assert.same(
+            [],
+            [for(v in expression.rolls) @:privateAccess v.expression]
+        );
+
         generator.mock_results = [
             6 => [
                 3,6,2,5,    // Used for the first 3d6!
@@ -41,8 +46,17 @@ class ComplexExpressionTest extends Test {
         ];
         Assert.equals(9, expression.result);
         Assert.equals(9, expression.result);
+        Assert.same(
+            ['3d6!','d4'],
+            [for(v in expression.rolls) @:privateAccess v.expression]
+        );
+
         Assert.equals(11, expression.roll());
         Assert.equals(11, expression.result);
+        Assert.same(
+            ['3d6!','d4'],
+            [for(v in expression.rolls) @:privateAccess v.expression]
+        );
 
         var expression = manager.getComplexExpression('d4 == 4');
         Assert.isTrue(expression.result);
@@ -74,6 +88,18 @@ class ComplexExpressionTest extends Test {
         generator.mock_results[8] = [6,3,5];
         var expression = manager.getComplexExpression('[d8, d8, d8]');
         Assert.same([6,3,5], expression.result);
+        Assert.same(
+            ['d8', 'd8', 'd8'],
+            [for(v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        generator.mock_results[8] = [6,3,5];
+        var expression = manager.getComplexExpression('[for(i in 0...3) d8]');
+        Assert.same([6,3,5], expression.result);
+        Assert.same(
+            ['d8', 'd8', 'd8'],
+            [for(v in expression.rolls) @:privateAccess v.expression]
+        );
 
         generator.mock_results[3] = [2];
         var expression = manager.getComplexExpression("['one', 'two', 'three'][d3 - 1]");

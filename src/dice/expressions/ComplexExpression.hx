@@ -7,7 +7,7 @@ class ComplexExpression {
     var manager : RollManager;
     var expression : String;
     var parsedExpression : String;
-    var rolls : Array<SimpleRoll> = [];
+    public var rolls : Array<SimpleRoll> = [];
 
     var stored_result : Dynamic;
 
@@ -24,8 +24,7 @@ class ComplexExpression {
         var i = 0;
         parsedExpression = matcher.map(expression, (m) -> {
             var match = m.matched(0);
-            rolls[i] = manager.getSimpleRoll(match);
-            var expr = '(rolls[$i].roll().total)';
+            var expr = '(roll("$match"))';
             i++;
             return expr;
         });
@@ -50,9 +49,16 @@ class ComplexExpression {
         return stored_result;
     }
 
+    function rollFromSimpleExpression(expression:String) {
+        var newRoll = manager.getSimpleRoll(expression);
+        rolls.push(newRoll);
+        return newRoll.total;
+    }
+
     function executeExpression() {
         var interp = new hscript.Interp();
-        interp.variables.set("rolls",rolls);
+        rolls = [];
+        interp.variables.set("roll",rollFromSimpleExpression);
         return interp.execute(program);
     }
 }
