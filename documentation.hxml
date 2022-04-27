@@ -2,6 +2,7 @@
 -D analyzer-optimize
 dice
 -lib dox
+-lib hscript
 
 -xml docs/doc.xml
 

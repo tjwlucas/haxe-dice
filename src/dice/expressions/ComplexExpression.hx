@@ -20,7 +20,7 @@ class ComplexExpression {
     }
 
     private function parse() {
-        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false), 'gi');
+        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), 'gi');
         var i = 0;
         parsedExpression = matcher.map(expression, (m) -> {
             var match = m.matched(0);

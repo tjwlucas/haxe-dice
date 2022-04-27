@@ -20,6 +20,16 @@ class ComplexExpressionTest extends Test {
             [],
             [for(v in expression.rolls) @:privateAccess v.expression]
         );
+
+        // Test that expressions in quotations are ignored
+        var expression = manager.getComplexExpression('"The result of the (3d6! / 2) + d4 roll is: " + (3d6! / 2) + d4');
+        @:privateAccess expression.parsedExpression == '"The result of the (3d6! / 2) + d4 roll is: " + ((roll("3d6!")) / 2) + (roll("d4"))';
+        
+
+        // Test that expressions in quotations are ignored
+        var expression = manager.getComplexExpression("'The result of the (3d6! / 2) + d4 roll is: ' + (3d6! / 2) + d4");
+        @:privateAccess expression.parsedExpression == "'The result of the (3d6! / 2) + d4 roll is: ' + ((roll(\"3d6!\")) / 2) + (roll(\"d4\"))";
+        
     }
 
     function specParseBadExpression() {
@@ -80,10 +90,6 @@ class ComplexExpressionTest extends Test {
         generator.mock_results[4] = [3];
         var expression = manager.getComplexExpression('var value = d4; (value > 2) && (value < 4)');
         Assert.isTrue(expression.result);
-
-        generator.mock_results[4] = [3];
-        var expression = manager.getComplexExpression('var value = d4; (value > 2) * (value < 4) * 3');
-        Assert.equals(3, expression.result);
 
         generator.mock_results[8] = [6,3,5];
         var expression = manager.getComplexExpression('[d8, d8, d8]');
