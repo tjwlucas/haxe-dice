@@ -122,4 +122,32 @@ class ComplexExpressionTest extends Test {
         Assert.same([4,4,2],expression.result);
         generator.shouldBeDoneAll();
     }
+
+    function specUnpackRawResults() {
+        generator.mock_results = [
+            6 => [
+                3,6,2,5,    // Used for the first 3d6!
+            ],
+            4 => [4,2]
+        ];
+
+        var expression = manager.getComplexExpression('3d6! + 2d4');
+        expression.roll();
+
+        Assert.same(
+            [
+                [
+                    [3],
+                    [6,2],
+                    [5]
+                ],
+                [
+                    [4],
+                    [2]
+                ]
+            ],
+            expression.unpackRawResults()
+        );
+
+    }
 }

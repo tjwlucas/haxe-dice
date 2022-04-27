@@ -33,6 +33,7 @@ class ComplexExpression {
             var parser = new hscript.Parser();
             program = parser.parseString(parsedExpression);
         } catch(e) {
+            trace(parsedExpression);
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
     }
@@ -60,5 +61,15 @@ class ComplexExpression {
         rolls = [];
         interp.variables.set("roll",rollFromSimpleExpression);
         return interp.execute(program);
+    }
+
+    public function unpackRawResults() {
+        return [
+            for(roll in rolls) [
+                for(die in roll.dice) [
+                    for(sub in die.dice) sub.result
+                ]
+            ]
+        ];
     }
 }

@@ -15,7 +15,7 @@ class Die {
     var explode : Null<Int>;
     var penetrate : Bool;
 
-    var dice : Array<RawDie> = [];
+    public var dice : Array<RawDie> = [];
 
     public function new(sides: Int, generator : RandomGenerator, ?explode : Int, ?penetrate:Bool) {
         this.sides = sides;
