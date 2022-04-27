@@ -37,8 +37,7 @@ class ComplexExpressionTest extends Test {
                 3,6,2,5,    // Used for the first 3d6!
                 3,2,6,6,1   // Second 3d6!
             ],
-            4 => [1,2, 4, 2],
-            20 => [15, 9]
+            4 => [1,2,4,2]
         ];
         Assert.equals(9, expression.result);
         Assert.equals(9, expression.result);
@@ -50,6 +49,8 @@ class ComplexExpressionTest extends Test {
         var expression = manager.getComplexExpression('d4 > 2');
         Assert.isFalse(expression.result);
 
+        
+        generator.mock_results[20] = [15, 9];
         var expression = manager.getComplexExpression('
             var r = d20;
             if(r >= 12) {
@@ -61,5 +62,17 @@ class ComplexExpressionTest extends Test {
         expression.roll();
         Assert.equals("Above (or equal to) 12", expression.result);
         Assert.equals("Below 12", expression.roll());
+
+        generator.mock_results[4] = [3];
+        var expression = manager.getComplexExpression('var value = d4; (value > 2) && (value < 4)');
+        Assert.isTrue(expression.result);
+
+        generator.mock_results[4] = [3];
+        var expression = manager.getComplexExpression('var value = d4; (value > 2) * (value < 4) * 3');
+        Assert.equals(3, expression.result);
+
+        generator.mock_results[8] = [6,3,5];
+        var expression = manager.getComplexExpression('[d8, d8, d8]');
+        Assert.same([6,3,5], expression.result);
     }
 }
