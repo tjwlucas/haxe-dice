@@ -25,7 +25,7 @@ class ComplexExpression {
         parsedExpression = matcher.map(expression, (m) -> {
             var match = m.matched(0);
             rolls[i] = manager.getSimpleRoll(match);
-            var expr = '(rolls[$i].total)';
+            var expr = '(rolls[$i].roll().total)';
             i++;
             return expr;
         });
@@ -46,9 +46,6 @@ class ComplexExpression {
         return stored_result;
     }
     public function roll() {
-        for(roll in rolls) {
-            roll.roll();
-        }
         stored_result = executeExpression();
         return stored_result;
     }
