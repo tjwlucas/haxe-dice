@@ -19,7 +19,10 @@ class SimpleRoll {
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
 
-    public var rolled_dice : Array<Die>;
+    public var rolled_dice(get, never) : Array<Die>;
+    function get_rolled_dice() {
+        return returnDice(true);
+    }
 
     /**
         The general regex that will match a valid die expression
@@ -119,7 +122,6 @@ class SimpleRoll {
         for (die in stored_dice) {
             die.roll();
         }
-        rolled_dice = stored_dice.copy();
         if(keep_highest_number != null) {
             keep_highest(keep_highest_number);
         }
@@ -135,13 +137,17 @@ class SimpleRoll {
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
         if(stored_dice != null) {
-            return stored_dice;
+            return returnDice();
         }
         else {
             roll();
-            return stored_dice;
+            return returnDice();
         }
     };
+
+    function returnDice(?includeDropped = false) {
+        return [for(die in stored_dice) if(!die.dropped || includeDropped) die];
+    }
 
     /**
         Returns the total sum of the die roll
@@ -166,7 +172,7 @@ class SimpleRoll {
         });
         // Remove the lowest values down to the required kept n
         for (i in 0...(number-n)) {
-            dice.remove(sorted[i]);
+            sorted[i].drop();
         }
         return this;
     }
@@ -183,7 +189,7 @@ class SimpleRoll {
         });
         // Remove the highest values down to the required kept n
         for (i in 0...(number-n)) {
-            dice.remove(sorted[i]);
+            sorted[i].drop();
         }
         return this;
     }
@@ -193,11 +199,11 @@ class SimpleRoll {
     **/
     public function shuffle() : SimpleRoll {
         var shuffled : Array<Die> = [];
-        while(dice.length > 0) {
-            var n = manager.generator.rollPositiveInt(dice.length) - 1;
-            var selected_die = dice[n];
+        while(stored_dice.length > 0) {
+            var n = manager.generator.rollPositiveInt(stored_dice.length) - 1;
+            var selected_die = stored_dice[n];
             shuffled.push(selected_die);
-            dice.remove(selected_die);
+            stored_dice.remove(selected_die);
         }
         stored_dice = shuffled;
         return this;

@@ -16,6 +16,7 @@ class Die {
     var penetrate : Bool;
 
     public var dice : Array<RawDie> = [];
+    public var dropped : Bool = false;
 
     public function new(sides: Int, generator : RandomGenerator, ?explode : Int, ?penetrate:Bool) {
         this.sides = sides;
@@ -63,5 +64,9 @@ class Die {
             }
         }
         return this;
+    }
+
+    public function drop() {
+        dropped = true;
     }
 }
