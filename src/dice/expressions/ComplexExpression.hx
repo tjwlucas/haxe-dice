@@ -9,7 +9,7 @@ class ComplexExpression {
     var parsedExpression : String;
     var rolls : Array<SimpleRoll> = [];
 
-    var stored_result : Int;
+    var stored_result : Dynamic;
 
     var program : Expr;
 
@@ -38,8 +38,8 @@ class ComplexExpression {
         }
     }
 
-    public var result(get, never) : Int;
-    public function get_result() : Int {
+    public var result(get, never) : Dynamic;
+    public function get_result() : Dynamic {
         if(stored_result == null) {
             roll();
         } 

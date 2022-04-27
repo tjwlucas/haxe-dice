@@ -37,11 +37,29 @@ class ComplexExpressionTest extends Test {
                 3,6,2,5,    // Used for the first 3d6!
                 3,2,6,6,1   // Second 3d6!
             ],
-            4 => [1,2]
+            4 => [1,2, 4, 2],
+            20 => [15, 9]
         ];
-        expression.result == 9;
-        expression.result == 9;
-        expression.roll() == 11;
-        expression.result == 11;
+        Assert.equals(9, expression.result);
+        Assert.equals(9, expression.result);
+        Assert.equals(11, expression.roll());
+        Assert.equals(11, expression.result);
+
+        var expression = manager.getComplexExpression('d4 == 4');
+        Assert.isTrue(expression.result);
+        var expression = manager.getComplexExpression('d4 > 2');
+        Assert.isFalse(expression.result);
+
+        var expression = manager.getComplexExpression('
+            var r = d20;
+            if(r >= 12) {
+                return "Above (or equal to) 12";
+            } else {
+                return "Below 12";
+            }
+        ');
+        expression.roll();
+        Assert.equals("Above (or equal to) 12", expression.result);
+        Assert.equals("Below 12", expression.roll());
     }
 }
