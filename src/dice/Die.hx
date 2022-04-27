@@ -15,7 +15,16 @@ class Die {
     var explode : Null<Int>;
     var penetrate : Bool;
 
+    /**
+        List of raw dice rolled for this 'die' (i.e. If the die 'explodes', extra dice will be added on to this result)
+    **/
     public var dice : Array<RawDie> = [];
+
+    /**
+        Flag to determine if this die has been dropped from the over all result.
+        (e.g. In the case of a `2d6k1`, the lowest of the 2 rolled dice will be marked as 'dropped,
+        and excluded from the total)
+    **/
     public var dropped : Bool = false;
 
     public function new(sides: Int, generator : RandomGenerator, ?explode : Int, ?penetrate:Bool) {
@@ -66,6 +75,9 @@ class Die {
         return this;
     }
 
+    /**
+        Do not cout this die result in the total for the parent expression 
+    **/
     public function drop() {
         dropped = true;
     }

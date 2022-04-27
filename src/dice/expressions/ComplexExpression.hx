@@ -37,6 +37,11 @@ class ComplexExpression {
         }
     }
 
+    /**
+        Returns the computed result of the entire expression.
+        Accessing the result for the first time will calculate it, and subsequent accesses will
+        retrieve the same reseult.
+    **/
     public var result(get, never) : Dynamic;
     public function get_result() : Dynamic {
         if(stored_result == null) {
@@ -44,6 +49,10 @@ class ComplexExpression {
         } 
         return stored_result;
     }
+
+    /**
+        Recalculate the result. Including the rolls, and all expression logic.
+    **/
     public function roll() {
         stored_result = executeExpression();
         return stored_result;
@@ -62,6 +71,16 @@ class ComplexExpression {
         return interp.execute(program);
     }
 
+    /**
+        Returns a 3-level nested array, grouped by roll expressions, then individual dice,
+        and finally individual re-rolls, extra rolls, etc.
+        
+        So e.g. `2d6! + 2d3k1` might result in something like:
+        ```
+        [ [[6,3],[4]], [[2],[3]] ]
+        ```
+        Which would evaluate to `13 + 3` = `16`
+    **/
     public function unpackRawResults() {
         return [
             for(roll in rolls) [
