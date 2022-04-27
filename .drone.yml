@@ -56,7 +56,7 @@ steps:
   - name: Update Online Coverage Badge
     image: plugins/s3
     settings:
-      bucket: roll-man
+      bucket: haxe-dice
       access_key: 
         from_secret: minio_access_key
       secret_key: 
@@ -81,7 +81,7 @@ steps:
   - name: Publish Documentation
     image: plugins/s3
     settings:
-      bucket: roll-man
+      bucket: haxe-dice
       access_key: 
         from_secret: minio_access_key
       secret_key: 
@@ -94,6 +94,6 @@ steps:
       - Build Documentation
 ---
 kind: signature
-hmac: 9eb34e8304fb9b99b5bc16230caa4641a5cf5e4a6e4d7c7f8823ee5829fee955
+hmac: 1f9aab73be07148b3994a88a0abb1444b7a26f79e798271f41a7dce5a659c368
 
 ...
