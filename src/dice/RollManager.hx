@@ -1,6 +1,7 @@
 package dice;
 
 import dice.expressions.SimpleRoll;
+import dice.expressions.ComplexExpression;
 
 /**
     `RollManager` manages all the libary functionality, providing access to an expression parser and evaluator, 
@@ -36,5 +37,9 @@ class RollManager {
     **/
     public function getSimpleRoll(?expression: String) {
         return new SimpleRoll(this, expression);
+    }
+
+    public function getComplexExpression(?expression: String) {
+        return new ComplexExpression(this, expression);
     }
 }

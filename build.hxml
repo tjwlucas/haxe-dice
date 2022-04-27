@@ -1,6 +1,7 @@
 -cp src
 -D analyzer-optimize
 -dce full
+-lib hscript
 --macro nullSafety("dice")
 
 -main tests.Tests
