@@ -29,7 +29,11 @@ class ComplexExpressionTest extends Test {
         // Test that expressions in quotations are ignored
         var expression = manager.getComplexExpression("'The result of the (3d6! / 2) + d4 roll is: ' + (3d6! / 2) + d4");
         @:privateAccess expression.parsedExpression == "'The result of the (3d6! / 2) + d4 roll is: ' + (roll(\"3d6!\") / 2) + roll(\"d4\")";
+
         
+        // Allow for multipleinstances of modifiers across *different* subexpressions
+        var expression = manager.getComplexExpression('(3d6! / 2) + d4!');
+        @:privateAccess expression.parsedExpression == '(roll("3d6!") / 2) + roll("d4!")';
     }
 
     function specParseBadExpression() {
