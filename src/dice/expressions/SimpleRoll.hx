@@ -15,6 +15,7 @@ class SimpleRoll {
 
     var stored_dice : Null<Array<Die>>;
     var explode : Null<Int>;
+    var penetrate : Bool;
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
 
@@ -40,7 +41,13 @@ class SimpleRoll {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
-            explode = getModifier(EXPLODE);
+            explode = getModifier(PENETRATE);
+            if(explode == null) {
+                explode = getModifier(EXPLODE);
+                penetrate = false;
+            } else {
+                penetrate = true;
+            }
             keep_highest_number = getModifier(KEEP_HIGHEST);
             keep_lowest_number = getModifier(KEEP_LOWEST);
             if(keep_highest_number != null) {
@@ -93,7 +100,7 @@ class SimpleRoll {
         }
         var number = Std.parseInt(matcher.matched(1));
         if (number == null) {
-            if(mod == EXPLODE) {
+            if(mod == EXPLODE || mod == PENETRATE) {
                 number = sides;
             } else {
                 number = 1;
@@ -106,7 +113,7 @@ class SimpleRoll {
         Will (re-)roll all dice attached to this 'roll' object
     **/
     public function roll() : SimpleRoll {
-        stored_dice = [for (i in 0...number) manager.getDie(sides, explode)];
+        stored_dice = [for (i in 0...number) manager.getDie(sides, explode, penetrate)];
         for (die in stored_dice) {
             die.roll();
         }

@@ -28,8 +28,8 @@ class RollManager {
     /**
         Fetches a die with the specified number of sides, passing in the randomness generator from the `RollManager`
     **/
-    public function getDie(sides:Int, ?explode:Int) : Die {
-        return new Die(sides, generator, explode);
+    public function getDie(sides:Int, ?explode:Int, ?penetrate:Bool) : Die {
+        return new Die(sides, generator, explode, penetrate);
     }
 
     /**

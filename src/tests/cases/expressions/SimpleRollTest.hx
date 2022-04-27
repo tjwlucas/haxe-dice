@@ -153,6 +153,22 @@ class SimpleRollTest extends Test {
             [for(die in roll4.dice) die.result]
         );
         roll4.total == 13;
+
+        generator.mock_results[6] = [6,4,3,6,1];
+        var roll3 = manager.getSimpleRoll('3d6!!');
+        roll3.total == 18;
+        Assert.same(
+            [9,3,6],
+            [for(die in roll3.dice) die.result]
+        );
+
+        generator.mock_results[4] = [3,2,4,3,1];
+        var roll4 = manager.getSimpleRoll('2d4!!3');        
+        Assert.same(
+            [4,6],
+            [for(die in roll4.dice) die.result]
+        );
+        roll4.total == 10;
     }
 
     function specKeepHighest() {        

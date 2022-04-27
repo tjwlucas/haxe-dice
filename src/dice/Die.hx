@@ -13,10 +13,11 @@ class Die {
     var generator : RandomGenerator;
 
     var explode : Null<Int>;
+    var penetrate : Bool;
 
     var dice : Array<RawDie> = [];
 
-    public function new(sides: Int, generator : RandomGenerator, ?explode : Int) {
+    public function new(sides: Int, generator : RandomGenerator, ?explode : Int, ?penetrate:Bool) {
         this.sides = sides;
         this.generator = generator;
         if (explode != null) {
@@ -25,6 +26,7 @@ class Die {
             }
         }
         this.explode = explode;
+        this.penetrate = penetrate;
     }
 
     /**
@@ -38,6 +40,9 @@ class Die {
         var total = 0;
         for (die in dice) {
             total += die.result;
+        }
+        if(penetrate) {
+            total -= (dice.length-1);
         }
         return total;
     };
