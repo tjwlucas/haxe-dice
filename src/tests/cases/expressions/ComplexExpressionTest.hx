@@ -129,9 +129,7 @@ class ComplexExpressionTest extends Test {
 
     function specUnpackRawResults() {
         generator.mock_results = [
-            6 => [
-                3,6,2,5,    // Used for the first 3d6!
-            ],
+            6 => [3,6,2,5],
             4 => [4,2]
         ];
 
@@ -147,6 +145,35 @@ class ComplexExpressionTest extends Test {
                 ],
                 [
                     [4],
+                    [2]
+                ]
+            ],
+            expression.unpackRawResults()
+        );
+
+
+        generator.mock_results = [
+            6 => [3,6,2,5],
+            4 => [4,2],
+            3 => [3,2,1,2]
+        ];
+
+        var expression = manager.getComplexExpression('3d6!k + d4! + 3d3!l2');
+        Assert.equals(17, expression.roll());
+
+        Assert.same(
+            [
+                [
+                    [3],
+                    [6,2],
+                    [5]
+                ],
+                [
+                    [4,2]
+                ],
+                [
+                    [3,2],
+                    [1],
                     [2]
                 ]
             ],

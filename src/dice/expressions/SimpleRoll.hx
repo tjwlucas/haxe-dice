@@ -19,6 +19,8 @@ class SimpleRoll {
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
 
+    public var rolled_dice : Array<Die>;
+
     /**
         The general regex that will match a valid die expression
     **/
@@ -117,6 +119,7 @@ class SimpleRoll {
         for (die in stored_dice) {
             die.roll();
         }
+        rolled_dice = stored_dice.copy();
         if(keep_highest_number != null) {
             keep_highest(keep_highest_number);
         }

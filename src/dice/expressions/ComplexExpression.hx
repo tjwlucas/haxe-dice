@@ -65,7 +65,7 @@ class ComplexExpression {
     public function unpackRawResults() {
         return [
             for(roll in rolls) [
-                for(die in roll.dice) [
+                for(die in roll.rolled_dice) [
                     for(sub in die.dice) sub.result
                 ]
             ]
