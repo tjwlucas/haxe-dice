@@ -223,5 +223,11 @@ class ComplexExpressionTest extends Test {
             3 => [3,3,1]
         ];
         Assert.equals(3, expression.roll());
+
+        var expression = manager.getComplexExpression('abs(2d6 - 2d6)');
+        generator.mock_results = [
+            6 => [1,3,6,4]
+        ];
+        Assert.equals(6, expression.roll());
     }
 }
