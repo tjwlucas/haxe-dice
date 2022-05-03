@@ -181,4 +181,47 @@ class ComplexExpressionTest extends Test {
         );
 
     }
+
+    function specOperations() {
+        var expression = manager.getComplexExpression('3 ^ 2');
+        Assert.equals(9, expression.roll());
+
+        var expression = manager.getComplexExpression('floor(3 / 2)');
+        Assert.equals(1, expression.roll());
+
+        var expression = manager.getComplexExpression('ceil(3 / 2)');
+        Assert.equals(2, expression.roll());
+
+        var expression = manager.getComplexExpression('round(3 / 2)');
+        Assert.equals(2, expression.roll());
+
+        generator.mock_results = [
+            6 => [3],
+            3 => [2]
+        ];
+
+        var expression = manager.getComplexExpression('d6 ^ d3');
+        Assert.equals(9, expression.roll());
+
+        var expression = manager.getComplexExpression('max(d6, d3!)');
+        generator.mock_results = [
+            6 => [4],
+            3 => [3,3,1]
+        ];
+        Assert.equals(7, expression.roll());
+
+        var expression = manager.getComplexExpression('min(d6, d3!)');
+        generator.mock_results = [
+            6 => [4],
+            3 => [3,3,1]
+        ];
+        Assert.equals(4, expression.roll());
+
+        var expression = manager.getComplexExpression('floor(max(d6,d3!)/d6)');
+        generator.mock_results = [
+            6 => [4, 2],
+            3 => [3,3,1]
+        ];
+        Assert.equals(3, expression.roll());
+    }
 }
