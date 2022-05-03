@@ -61,6 +61,9 @@ class RawDie {
         return ans;
     }
 
+    /**
+        Returns result as a string
+    **/
     public function toString() {
         return Std.string(result);
     }

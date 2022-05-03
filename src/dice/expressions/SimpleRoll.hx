@@ -216,6 +216,11 @@ class SimpleRoll {
         return this;
     }
 
+    /**
+        Returns string representation of the roll. Each 'die' separated by a comma.
+
+        e.g. `"3"`, `"2, 6, 5"`, `"2, 6+2, 1"`
+    **/
     public function toString() {
         return Std.string(rolled_dice.join(', '));
     }

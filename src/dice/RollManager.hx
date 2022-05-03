@@ -42,7 +42,8 @@ class RollManager {
     /**
         Generated a complex expression based on the passed expression string.
 
-        e.g. `3d6! + 5` or `2d6 * d4`
+        @param expression e.g. `3d6! + 5` or `2d6 * d4`
+        @param logRolls Flag to enable automatic logging of each roll result to the expression `logs` property
     **/
     public function getComplexExpression(expression: String, ?logRolls : Bool) {
         return new ComplexExpression(this, expression, logRolls);

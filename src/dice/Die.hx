@@ -82,6 +82,11 @@ class Die {
         dropped = true;
     }
 
+    /**
+        Returns string of result (if exploded, returns expression joined with '+')
+
+        e.g. `"4"`, `"6"`, `"6+6+2"`
+    **/
     public function toString() {
         return Std.string(dice.join('+'));
     }

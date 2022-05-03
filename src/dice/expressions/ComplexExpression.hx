@@ -12,6 +12,10 @@ class ComplexExpression {
     var stored_result : Dynamic;
 
     var program : Expr;
+
+    /**
+        Log entries returned by calls to `log()` in the expression (and each roll of roll logging is enabled)
+    **/
     public var logs : Array<String> = [];
     private var logRolls : Bool;
 
