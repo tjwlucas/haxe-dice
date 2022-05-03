@@ -104,19 +104,21 @@ class SimpleRollTest extends Test {
         testSimpleRoll.total == 5;
     }
 
-    function specGetModifier() {
+    function specgetModifierValue() {
         var roll_expression = manager.getSimpleRoll('d45');
-        Assert.isNull(@:privateAccess roll_expression.getModifier(EXPLODE));
-        Assert.isNull(@:privateAccess roll_expression.getModifier(KEEP_HIGHEST));
+        Assert.isNull(@:privateAccess roll_expression.getModifierValue(EXPLODE));
+        Assert.isNull(@:privateAccess roll_expression.getModifierValue(KEEP));
 
         var roll_expression = manager.getSimpleRoll('d45!k');
-        @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
-        @:privateAccess roll_expression.getModifier(EXPLODE) == 45;
+        @:privateAccess roll_expression.getModifier(KEEP) == 'k';
+        @:privateAccess roll_expression.getModifierValue(KEEP) == 1;
+        @:privateAccess roll_expression.getModifierValue(EXPLODE) == 45;
 
         var roll_expression = manager.getSimpleRoll('3d20k!');
-        @:privateAccess roll_expression.getModifier(KEEP_HIGHEST) == 1;
+        @:privateAccess roll_expression.getModifier(KEEP) == 'k';
+        @:privateAccess roll_expression.getModifierValue(KEEP) == 1;
 
-        @:privateAccess roll_expression.getModifier(EXPLODE) == 20;
+        @:privateAccess roll_expression.getModifierValue(EXPLODE) == 20;
 
 
     }
@@ -169,6 +171,10 @@ class SimpleRollTest extends Test {
             [for(die in roll4.dice) die.result]
         );
         roll4.total == 10;
+
+        Assert.raises(() -> {
+            manager.getSimpleRoll('3d6!!!');
+        }, InvalidExpression);
     }
 
     function specKeepHighest() {        

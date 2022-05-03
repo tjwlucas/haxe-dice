@@ -66,21 +66,17 @@ class SimpleRoll {
             var basic = parseCoreExpression(expression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
-            explode = getModifier(PENETRATE);
-            if(explode == null) {
-                explode = getModifier(EXPLODE);
-                penetrate = false;
-            } else {
-                penetrate = true;
+            explode = getModifierValue(EXPLODE);
+            penetrate = getModifier(EXPLODE) == '!!';
+
+            switch(getModifier(KEEP)) {
+                case 'k'|'h': keep_highest_number = getModifierValue(KEEP);
+                case 'l': keep_lowest_number = getModifierValue(KEEP);
             }
-            keep_highest_number = getModifier(KEEP_HIGHEST);
-            keep_lowest_number = getModifier(KEEP_LOWEST);
+
             if(keep_highest_number != null) {
                 if(keep_highest_number <= 0 || keep_highest_number > number) {
                     throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
-                }
-                if(keep_lowest_number != null) {
-                    throw new dice.errors.InvalidExpression('$expression invalid, can only keep highest or lowest');
                 }
             }
             
@@ -118,20 +114,29 @@ class SimpleRoll {
         @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
     
     **/
-    function getModifier(mod: Modifier) : Null<Int> {
+    function getModifierValue(mod: Modifier) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
         if(!matcher.match(expression)) {
             return null;
         }
-        var number = Std.parseInt(matcher.matched(1));
+        var number = Std.parseInt(matcher.matched(2));
         if (number == null) {
-            if(mod == EXPLODE || mod == PENETRATE) {
+            if(mod == EXPLODE) {
                 number = sides;
             } else {
                 number = 1;
             }
         }
         return number;
+    }
+
+    function getModifier(mod: Modifier) : Null<String> {
+        var matcher = new EReg(Util.constructMatcher(mod), "i");
+        if(!matcher.match(expression)) {
+            return null;
+        }
+        var mod = matcher.matched(1);
+        return mod;
     }
 
     /**

@@ -8,6 +8,6 @@ class Util {
         parser will result in an `InvalidExpression` error)
     **/
     public static function constructMatcher(mod:String, param:String = '[0-9]*') {
-        return '$mod($param)?(?![^\\s]*$mod$param)';
+        return '($mod)($param)?(?![^\\s]*$mod$param)';
     }
 }
