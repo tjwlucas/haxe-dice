@@ -81,4 +81,8 @@ class Die {
     public function drop() {
         dropped = true;
     }
+
+    public function toString() {
+        return Std.string(dice.join('+'));
+    }
 }

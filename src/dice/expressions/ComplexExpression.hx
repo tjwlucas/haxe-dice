@@ -12,10 +12,13 @@ class ComplexExpression {
     var stored_result : Dynamic;
 
     var program : Expr;
+    public var logs : Array<String> = [];
+    private var logRolls : Bool;
 
-    public function new(manager: RollManager, expression: String) {
+    public function new(manager: RollManager, expression: String, ?logRolls = false) {
         this.manager = manager;
         this.expression = expression;
+        this.logRolls = logRolls;
         this.parse();
     }
 
@@ -54,13 +57,21 @@ class ComplexExpression {
         Recalculate the result. Including the rolls, and all expression logic.
     **/
     public function roll() {
+        logs = [];
         stored_result = executeExpression();
         return stored_result;
+    }
+
+    function log(entry:String) {
+        logs.push(entry);
     }
 
     function rollFromSimpleExpression(expression:String) {
         var newRoll = manager.getSimpleRoll(expression);
         rolls.push(newRoll);
+        if(logRolls) {
+            log('[$expression]: $newRoll');
+        }
         return newRoll.total;
     }
 
@@ -74,6 +85,7 @@ class ComplexExpression {
         interp.variables.set("ceil",Math.ceil);
         interp.variables.set("round",Math.round);
         interp.variables.set("abs",Math.abs);
+        interp.variables.set("log",log);
         // TODO: Try to avoid using private interface, it *could* be changed
         @:privateAccess interp.binops.set('^', (a, b) -> Math.pow(interp.expr(a), interp.expr(b)));
         return interp.execute(program);

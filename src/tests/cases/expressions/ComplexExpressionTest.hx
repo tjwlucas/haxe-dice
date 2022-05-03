@@ -230,4 +230,73 @@ class ComplexExpressionTest extends Test {
         ];
         Assert.equals(6, expression.roll());
     }
+
+    function specLogs() {
+        generator.mock_results = [
+            6 => [3,6,2,5],
+            4 => [4,2],
+            3 => [3,2,1,2]
+        ];
+        var expression = manager.getComplexExpression('3d6!k + d4! + 3d3!l2', true);
+        expression.roll();
+        Assert.same([
+            '[3d6!k]: 3, 6+2, 5',
+            '[d4!]: 4+2',
+            '[3d3!l2]: 3+2, 1, 2'
+        ], expression.logs);
+
+
+        generator.mock_results = [
+            6 => [3,4,6,5,1,5]
+        ];
+        var expression = manager.getComplexExpression('
+            var count = 0;
+            for(i in 0...6) {
+                var r = d6;
+                if(r >= 4) {
+                    log(r + " is >= 4");
+                    count++;
+                }
+            }
+            count;
+        ', true);
+        expression.roll();
+        Assert.same([
+            '[d6]: 3',
+            '[d6]: 4',
+            '4 is >= 4',
+            '[d6]: 6',
+            '6 is >= 4',
+            '[d6]: 5',
+            '5 is >= 4',
+            '[d6]: 1',
+            '[d6]: 5',
+            '5 is >= 4',
+        ], expression.logs);
+        Assert.equals(4, expression.result);
+
+        // With roll logging off
+        generator.mock_results = [
+            6 => [3,4,6,5,1,5]
+        ];
+        var expression = manager.getComplexExpression('
+            var count = 0;
+            for(i in 0...6) {
+                var r = d6;
+                if(r >= 4) {
+                    log(r + " is >= 4");
+                    count++;
+                }
+            }
+            count;
+        ');
+        expression.roll();
+        Assert.same([
+            '4 is >= 4',
+            '6 is >= 4',
+            '5 is >= 4',
+            '5 is >= 4',
+        ], expression.logs);
+        Assert.equals(4, expression.result);
+    }
 }

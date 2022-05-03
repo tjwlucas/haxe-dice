@@ -60,4 +60,8 @@ class RawDie {
         stored_result = ans;
         return ans;
     }
+
+    public function toString() {
+        return Std.string(result);
+    }
 }

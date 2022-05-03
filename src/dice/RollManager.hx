@@ -44,7 +44,7 @@ class RollManager {
 
         e.g. `3d6! + 5` or `2d6 * d4`
     **/
-    public function getComplexExpression(expression: String) {
-        return new ComplexExpression(this, expression);
+    public function getComplexExpression(expression: String, ?logRolls : Bool) {
+        return new ComplexExpression(this, expression, logRolls);
     }
 }

@@ -18,12 +18,32 @@ class SimpleRoll {
     var penetrate : Bool;
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
-
+    
     public var rolled_dice(get, never) : Array<Die>;
     function get_rolled_dice() {
-        return returnDice(true);
+        if(stored_dice != null) {
+            return returnDice(true);
+        }
+        else {
+            roll();
+            return returnDice(true);
+        }
     }
-
+    
+    /**
+        Get an array of dice rolled as part of this roll.
+    **/
+    public var dice(get, never) : Array<Die>;
+    function get_dice() : Array<Die> {
+        if(stored_dice != null) {
+            return returnDice();
+        }
+        else {
+            roll();
+            return returnDice();
+        }
+    };
+    
     /**
         The general regex that will match a valid die expression
     **/
@@ -131,19 +151,6 @@ class SimpleRoll {
         return this;
     }
 
-    /**
-        Get an array of dice rolled as part of this roll.
-    **/
-    public var dice(get, never) : Array<Die>;
-    function get_dice() : Array<Die> {
-        if(stored_dice != null) {
-            return returnDice();
-        }
-        else {
-            roll();
-            return returnDice();
-        }
-    };
 
     function returnDice(?includeDropped = false) {
         return [for(die in stored_dice) if(!die.dropped || includeDropped) die];
@@ -160,7 +167,7 @@ class SimpleRoll {
         }
         return total;
     };
-
+    
     /**
         Keep the highest n dice in the roll (Retaining the order)
     **/
@@ -207,5 +214,9 @@ class SimpleRoll {
         }
         stored_dice = shuffled;
         return this;
+    }
+
+    public function toString() {
+        return Std.string(rolled_dice.join(', '));
     }
 }
