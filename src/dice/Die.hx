@@ -76,7 +76,7 @@ class Die {
     }
 
     /**
-        Do not cout this die result in the total for the parent expression 
+        Do not count this die result in the total for the parent expression 
     **/
     public function drop() {
         dropped = true;

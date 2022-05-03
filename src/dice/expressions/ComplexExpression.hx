@@ -14,7 +14,7 @@ class ComplexExpression {
     var program : Expr;
 
     /**
-        Log entries returned by calls to `log()` in the expression (and each roll of roll logging is enabled)
+        Log entries returned by calls to `log()` in the expression (and each roll if roll logging is enabled)
     **/
     public var logs : Array<String> = [];
     private var logRolls : Bool;
@@ -50,7 +50,7 @@ class ComplexExpression {
         retrieve the same reseult.
     **/
     public var result(get, never) : Dynamic;
-    public function get_result() : Dynamic {
+    function get_result() : Dynamic {
         if(stored_result == null) {
             roll();
         } 
