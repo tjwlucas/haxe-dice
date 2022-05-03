@@ -85,4 +85,8 @@ class Die {
     public function toString() {
         return Std.string(dice.join('+'));
     }
+
+    #if python
+    @:keep @ignoreCoverage public function __str__() toString();
+    #end
 }

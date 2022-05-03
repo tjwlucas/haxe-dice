@@ -64,4 +64,8 @@ class RawDie {
     public function toString() {
         return Std.string(result);
     }
+
+    #if python
+    @:keep @ignoreCoverage public function __str__() toString();
+    #end
 }
