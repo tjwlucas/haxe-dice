@@ -84,7 +84,7 @@ class SimpleRoll {
         }
     }
 
-    inline function verifyKeepNumber(keepNumber : Int) {
+    inline function verifyKeepNumber(keepNumber : Null<Int>) {
         if(keepNumber != null) {
             if(keepNumber <= 0 || keepNumber > number) {                
                 throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
