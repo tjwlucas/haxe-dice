@@ -35,7 +35,7 @@ class ComplexExpression {
         Log entries returned by calls to `log()` in the expression (and each roll if roll logging is enabled)
     **/
     public var logs : Array<String> = [];
-    private var logRolls : Bool;
+    var logRolls : Bool;
 
     public function new(manager: RollManager, expression: String, ?logRolls = false) {
         this.manager = manager;
@@ -44,7 +44,7 @@ class ComplexExpression {
         this.parse();
     }
 
-    private function parse() {
+    function parse() {
         var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
         var i = 0;
         parsedExpression = matcher.map(expression, m -> {

@@ -36,7 +36,7 @@ class SimpleRoll {
     **/
     public var number : Int;
 
-    private var expression : String;
+    var expression : String;
 
     var manager : Null<RollManager>;
 
