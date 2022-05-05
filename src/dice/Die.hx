@@ -78,7 +78,7 @@ class Die {
     /**
         Do not count this die result in the total for the parent expression 
     **/
-    public function drop() {
+    public function drop() : Void {
         dropped = true;
     }
 
@@ -87,7 +87,7 @@ class Die {
 
         e.g. `"4"`, `"6"`, `"6+6+2"`
     **/
-    public function toString() {
+    public function toString() : String {
         return Std.string(dice.join("+"));
     }
 

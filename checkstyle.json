@@ -352,6 +352,26 @@
 		},
 		{
 			"type": "ParameterNumber"
+		},
+		{
+			"type": "Anonymous"
+		},
+		{
+			"type": "Dynamic"
+		},
+		{
+			"type": "Return",
+			"props": {
+				"enforceReturnType": true,
+				"allowEmptyReturn": true,
+				"enforceReturnTypeForAnonymous": false
+			}
+		},
+		{
+			"type": "Type",
+			"props": {
+				"ignoreEnumAbstractValues": true
+			}
 		}
 	],
 	"exclude": {

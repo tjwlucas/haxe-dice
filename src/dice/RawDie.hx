@@ -64,7 +64,7 @@ class RawDie {
     /**
         Returns result as a string
     **/
-    public function toString() {
+    public function toString() : String {
         return Std.string(result);
     }
 

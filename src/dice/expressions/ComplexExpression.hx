@@ -27,7 +27,7 @@ class ComplexExpression {
     **/
     public var rolls : Array<SimpleRoll> = [];
 
-    var storedResult : Dynamic;
+    var storedResult : Any;
 
     var program : Expr;
 
@@ -44,7 +44,7 @@ class ComplexExpression {
         this.parse();
     }
 
-    function parse() {
+    function parse() : Void {
         var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
         var i = 0;
         parsedExpression = matcher.map(expression, m -> {
@@ -67,8 +67,8 @@ class ComplexExpression {
         Accessing the result for the first time will calculate it, and subsequent accesses will
         retrieve the same reseult.
     **/
-    public var result(get, never) : Dynamic;
-    function get_result() : Dynamic {
+    public var result(get, never) : Any;
+    function get_result() : Any {
         if(storedResult == null) {
             roll();
         } 
@@ -78,17 +78,17 @@ class ComplexExpression {
     /**
         Recalculate the result. Including the rolls, and all expression logic.
     **/
-    public function roll() {
+    public function roll() : Any {
         logs = [];
         storedResult = executeExpression();
         return storedResult;
     }
 
-    function log(entry:String) {
+    function log(entry:String) : Void {
         logs.push(entry);
     }
 
-    function rollFromSimpleExpression(simpleExpression:String) {
+    function rollFromSimpleExpression(simpleExpression:String) : Int {
         var newRoll = manager.getSimpleRoll(simpleExpression);
         rolls.push(newRoll);
         if(logRolls) {
@@ -97,7 +97,7 @@ class ComplexExpression {
         return newRoll.total;
     }
 
-    function executeExpression() {
+    function executeExpression() : Any {
         var interp = new hscript.Interp();
         rolls = [];
         interp.variables.set("roll",rollFromSimpleExpression);
@@ -123,7 +123,7 @@ class ComplexExpression {
         ```
         Which would evaluate to `13 + 3` = `16`
     **/
-    public function unpackRawResults() {
+    public function unpackRawResults() : Array<Array<Array<Int>>> {
         return [
             for(roll in rolls) [
                 for(die in roll.rolledDice) [

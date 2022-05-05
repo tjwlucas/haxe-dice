@@ -51,7 +51,7 @@ class SimpleRoll {
         All dice rolled for this expression (before any are dropped)
     **/
     public var rolledDice(get, never) : Array<Die>;
-    function get_rolledDice() {
+    function get_rolledDice() : Array<Die> {
         if(storedDice != null) {
             return returnDice(true);
         } else {
@@ -76,7 +76,7 @@ class SimpleRoll {
     /**
         The general regex that will match a valid die expression
     **/
-    static inline final MATCHING_STRING = RollParsingMacros.buildSimpleRollExpression();
+    static inline final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -114,7 +114,7 @@ class SimpleRoll {
         }
     }
 
-    inline function verifyKeepNumber(keepNumber : Null<Int>) {
+    inline function verifyKeepNumber(keepNumber : Null<Int>) : Void {
         if(keepNumber != null) {
             if(keepNumber <= 0 || keepNumber > number) {                
                 throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
@@ -125,7 +125,7 @@ class SimpleRoll {
     /**
         Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
     **/
-    function parseCoreExpression(passedExpression : String) {
+    function parseCoreExpression(passedExpression : String) : { number: Int, sides: Int } {
         var matcher = new EReg(MATCHING_STRING, "i");
         if (matcher.match(passedExpression)) {
             var numberInExpression = Std.parseInt(matcher.matched(1));
@@ -190,7 +190,7 @@ class SimpleRoll {
     }
 
 
-    function returnDice(?includeDropped = false) {
+    function returnDice(?includeDropped = false) : Array<Die> {
         return [for(die in storedDice) if(!die.dropped || includeDropped) die];
     }
 
@@ -219,7 +219,7 @@ class SimpleRoll {
         return keepFirstSorted(n, (a,b) -> b.result - a.result);
     }
 
-    function keepFirstSorted(n:Int, sorter:(Die, Die)->Int) {
+    function keepFirstSorted(n:Int, sorter:(Die, Die)->Int) : SimpleRoll {
         var sorted = dice.copy();
         sorted.sort(sorter);
         for (i in 0...(number-n)) {
@@ -248,7 +248,7 @@ class SimpleRoll {
 
         e.g. `"3"`, `"2, 6, 5"`, `"2, 6+2, 1"`
     **/
-    public function toString() {
+    public function toString() : String {
         return Std.string(rolledDice.join(", "));
     }
 
