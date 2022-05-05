@@ -325,6 +325,33 @@
 					"INTERFACE"
 				]
 			}
+		},
+		{
+			"type": "FileLength",
+			"props": {
+				"max": 500,
+				"ignoreEmptyLines": true
+			}
+		},
+		{
+			"type": "LineLength"
+		},
+		{
+			"type": "MethodCount",
+			"props": {
+				"maxTotal": 20,
+				"maxPublic": 10
+			}
+		},
+		{
+			"type": "MethodLength",
+			"props": {
+				"max": 50,
+				"ignoreEmptyLines": true
+			}
+		},
+		{
+			"type": "ParameterNumber"
 		}
 	],
 	"exclude": {
