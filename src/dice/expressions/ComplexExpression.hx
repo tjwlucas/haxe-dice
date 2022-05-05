@@ -70,11 +70,11 @@ class ComplexExpression {
         logs.push(entry);
     }
 
-    function rollFromSimpleExpression(expression:String) {
-        var newRoll = manager.getSimpleRoll(expression);
+    function rollFromSimpleExpression(simpleExpression:String) {
+        var newRoll = manager.getSimpleRoll(simpleExpression);
         rolls.push(newRoll);
         if(logRolls) {
-            log('[$expression]: $newRoll');
+            log('[$simpleExpression]: $newRoll');
         }
         return newRoll.total;
     }

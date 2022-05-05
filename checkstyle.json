@@ -93,6 +93,9 @@
 		},
 		{
 			"type": "DefaultComesLast"
+		},
+		{
+			"type": "HiddenField"
 		}
 	],
 	"exclude": {

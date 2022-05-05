@@ -59,10 +59,11 @@ class SimpleRoll {
         @param expression A 'simple' die-notation style expression (a single roll). Such as `2d6`, `3d4`, `d20`
         @throws dice.errors.InvalidExpression When passed an invalid expression
     **/
-    public function parse(expression : String) : SimpleRoll {
-        this.expression = expression;
+    public function parse(newExpression : String) : SimpleRoll {
+        var oldExpression = this.expression;
+        this.expression = newExpression;
         try {
-            var basic = parseCoreExpression(expression);
+            var basic = parseCoreExpression(newExpression);
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
             explode = getModifierValue(EXPLODE);
@@ -78,7 +79,8 @@ class SimpleRoll {
 
             return this;
         } catch (e) {
-            throw new InvalidExpression('$expression is not a valid core die expression');
+            this.expression = oldExpression;
+            throw new InvalidExpression('$newExpression is not a valid core die expression');
         }
     }
 
@@ -93,17 +95,17 @@ class SimpleRoll {
     /**
         Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
     **/
-    function parseCoreExpression(expression : String) {
+    function parseCoreExpression(passedExpression : String) {
         var matcher = new EReg(MATCHING_STRING, "i");
-        if (matcher.match(expression)) {
-            var number = Std.parseInt(matcher.matched(1));
-            var sides = Std.parseInt(matcher.matched(2));
+        if (matcher.match(passedExpression)) {
+            var numberInExpression = Std.parseInt(matcher.matched(1));
+            var sidesInExpression = Std.parseInt(matcher.matched(2));
             return {
-                number: number,
-                sides: sides
+                number: numberInExpression,
+                sides: sidesInExpression
             };
         } else {
-            throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
+            throw new dice.errors.InvalidExpression('$passedExpression is not a valid core die expression');
         };
     }
 
@@ -116,15 +118,15 @@ class SimpleRoll {
     function getModifierValue(mod: Modifier) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
         if(matcher.match(expression)) {            
-            var number = Std.parseInt(matcher.matched(2));
-            if (number == null) {
+            var numberParameter = Std.parseInt(matcher.matched(2));
+            if (numberParameter == null) {
                 if(mod == EXPLODE) {
-                    number = sides;
+                    numberParameter = sides;
                 } else {
-                    number = 1;
+                    numberParameter = 1;
                 }
             }
-            return number;
+            return numberParameter;
         } else {
             return null;
         }
@@ -167,9 +169,9 @@ class SimpleRoll {
     **/
     public var total(get, never) : Int;
     function get_total() : Int {
-        var total = 0;
-        for (die in dice) total += die.result;
-        return total;
+        var runningTotal = 0;
+        for (die in dice) runningTotal += die.result;
+        return runningTotal;
     };
     
     /**
