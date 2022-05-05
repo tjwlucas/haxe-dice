@@ -1,7 +1,5 @@
 package dice.macros;
 
-import haxe.macro.Context;
-import haxe.macro.Expr;
 import dice.util.Util;
 
 /**

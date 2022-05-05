@@ -185,6 +185,21 @@
 		},
 		{
 			"type": "TypeDocComment"
+		},
+		{
+			"type": "EmptyPackage",
+			"props": {
+				"enforceEmptyPackage": false
+			}
+		},
+		{
+			"type": "UnnecessaryConstructor"
+		},
+		{
+			"type": "AvoidStarImport"
+		},
+		{
+			"type": "UnusedImport"
 		}
 	],
 	"exclude": {

@@ -1,7 +1,6 @@
 package dice.expressions;
 
 import dice.util.Util;
-import haxe.macro.Context;
 import dice.enums.Modifier;
 import dice.macros.RollParsingMacros;
 import dice.errors.InvalidExpression;
