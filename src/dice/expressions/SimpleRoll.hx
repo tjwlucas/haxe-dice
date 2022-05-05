@@ -23,9 +23,9 @@ import dice.errors.InvalidExpression;
     
     - Exploding/Penetrating Dice
         `!` will, for each die rolled, if the provided threshold (default: the max on the die) is reached, 
-            reroll and add the result, continuing if that meats the threshold, and so on. 
-            If a number is provided after the `!`, that will be used as the threshold.
-            If `!!` is used, instead of `!`, one will be subtracted from the result, before each addition (this is sometimes referred to as 'penetrating' dice).
+        reroll and add the result, continuing if that meats the threshold, and so on. 
+        If a number is provided after the `!`, that will be used as the threshold.
+        If `!!` is used, instead of `!`, one will be subtracted from the result, before each addition (this is sometimes referred to as 'penetrating' dice).
 **/
 class SimpleRoll {
     /**
