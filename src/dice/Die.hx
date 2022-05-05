@@ -88,7 +88,7 @@ class Die {
         e.g. `"4"`, `"6"`, `"6+6+2"`
     **/
     public function toString() {
-        return Std.string(dice.join('+'));
+        return Std.string(dice.join("+"));
     }
 
     #if python

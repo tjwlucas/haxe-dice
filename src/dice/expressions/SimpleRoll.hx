@@ -96,11 +96,11 @@ class SimpleRoll {
             number = basic.number != null ? basic.number : 1;
             sides = basic.sides;
             explode = getModifierValue(EXPLODE);
-            penetrate = getModifier(EXPLODE) == '!!';
+            penetrate = getModifier(EXPLODE) == "!!";
 
             switch(getModifier(KEEP)) {
-                case 'k'|'h': keep_highest_number = getModifierValue(KEEP);
-                case 'l': keep_lowest_number = getModifierValue(KEEP);
+                case "k"|"h": keep_highest_number = getModifierValue(KEEP);
+                case "l": keep_lowest_number = getModifierValue(KEEP);
             }
 
             verifyKeepNumber(keep_highest_number);
@@ -248,7 +248,7 @@ class SimpleRoll {
         e.g. `"3"`, `"2, 6, 5"`, `"2, 6+2, 1"`
     **/
     public function toString() {
-        return Std.string(rolled_dice.join(', '));
+        return Std.string(rolled_dice.join(", "));
     }
 
     #if python

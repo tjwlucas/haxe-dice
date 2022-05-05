@@ -22,7 +22,7 @@ class RollParsingMacros {
         }
 
         // TODO: This is clumsy, determine a tidier way
-        var lookaheads = '';
+        var lookaheads = "";
         if(exclude_in_quotations) {
             for(quote in ["'", '"']) {
                 lookaheads += '(?=([^$quote\\\\]*(\\\\.|$quote([^$quote\\\\]*\\\\.)*[^$quote\\\\]*$quote))*[^$quote]*$)';
@@ -30,7 +30,7 @@ class RollParsingMacros {
         }
         
         var modifier_matchers = [for (mod_key => mod in modifiers) Util.constructMatcher(mod)];
-        var joined_mods = modifier_matchers.join('|');
+        var joined_mods = modifier_matchers.join("|");
         var full_string = '$base_string(?:$joined_mods)*$lookaheads';  
         if(only_complete) {
             full_string = '^$full_string' + "$";

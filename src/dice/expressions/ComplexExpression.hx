@@ -45,7 +45,7 @@ class ComplexExpression {
     }
 
     private function parse() {
-        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), 'gi');
+        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
         var i = 0;
         parsedExpression = matcher.map(expression, m -> {
             var match = m.matched(0);
@@ -109,7 +109,7 @@ class ComplexExpression {
         interp.variables.set("abs",Math.abs);
         interp.variables.set("log",log);
         // TODO: Try to avoid using private interface, it *could* be changed
-        @:privateAccess interp.binops.set('^', (a, b) -> Math.pow(interp.expr(a), interp.expr(b)));
+        @:privateAccess interp.binops.set("^", (a, b) -> Math.pow(interp.expr(a), interp.expr(b)));
         return interp.execute(program);
     }
 

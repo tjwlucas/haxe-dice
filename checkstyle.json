@@ -200,6 +200,29 @@
 		},
 		{
 			"type": "UnusedImport"
+		},
+		{
+			"type": "ArrayLiteral"
+		},
+		{
+			"type": "ERegLiteral"
+		},
+		{
+			"type": "HexadecimalLiteral"
+		},
+		{
+			"type": "MultipleStringLiterals",
+			"props": {
+				"allowDuplicates": 1,
+				"minLength": 2
+			}
+		},
+		{
+			"type": "StringLiteral",
+			"props": {
+				"allowException": true,
+				"policy": "doubleAndInterpolation"
+			}
 		}
 	],
 	"exclude": {
