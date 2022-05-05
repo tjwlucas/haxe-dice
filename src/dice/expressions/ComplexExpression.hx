@@ -7,6 +7,9 @@ class ComplexExpression {
     var manager : RollManager;
     var expression : String;
     var parsedExpression : String;
+    /**
+        Array of all rolls made by this expression
+    **/
     public var rolls : Array<SimpleRoll> = [];
 
     var stored_result : Dynamic;

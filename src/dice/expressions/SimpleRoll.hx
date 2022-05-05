@@ -7,7 +7,13 @@ import dice.macros.RollParsingMacros;
 import dice.errors.InvalidExpression;
 
 class SimpleRoll {
+    /**
+        Number of sides on the die used in this roll
+    **/
     public var sides : Int;
+    /**
+        Base number of dice represented on this roll
+    **/
     public var number : Int;
 
     private var expression : String;
@@ -20,6 +26,9 @@ class SimpleRoll {
     var keep_highest_number : Null<Int>;
     var keep_lowest_number : Null<Int>;
     
+    /**
+        All dice rolled for this expression (before any are dropped)
+    **/
     public var rolled_dice(get, never) : Array<Die>;
     function get_rolled_dice() {
         if(stored_dice != null) {
@@ -31,7 +40,7 @@ class SimpleRoll {
     }
     
     /**
-        Get an array of dice rolled as part of this roll.
+        Get an array of dice rolled as part of this roll (After any are dropped).
     **/
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
@@ -56,7 +65,7 @@ class SimpleRoll {
     }
 
     /**
-        @param expression A 'simple' die-notation style expression (a single roll). Such as `2d6`, `3d4`, `d20`
+        @param newExpression A 'simple' die-notation style expression (a single roll). Such as `2d6`, `3d4`, `d20`
         @throws dice.errors.InvalidExpression When passed an invalid expression
     **/
     public function parse(newExpression : String) : SimpleRoll {

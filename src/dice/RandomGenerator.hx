@@ -19,6 +19,8 @@ class RandomGenerator {
         Returns a generated random integer between `1` and `n` (inclusive).
         
         e.g. `rollPositiveInt(6)` will return a result equivalent to rolling a 6-sided die.
+
+        @param n Max value to be rolled
     **/
     public function rollPositiveInt(n:Int) : Int {
         return (random() * n).floor() + 1;

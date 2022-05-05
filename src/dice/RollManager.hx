@@ -8,6 +8,9 @@ import dice.expressions.ComplexExpression;
     as well as general die rolling functionality
 **/
 class RollManager {
+    /**
+        The randomness generator class used by this manager, and all dice and expressions yielded from it
+    **/
     public var generator : RandomGenerator;
 
     /**
@@ -20,6 +23,8 @@ class RollManager {
 
     /**
         Fetches a basic die with the specified number of sides, passing in the randomness generator from the `RollManager`
+
+        @param sides Number of sides
     **/
     public function getRawDie(sides:Int) : RawDie {
         return new RawDie(sides, generator);
@@ -27,6 +32,10 @@ class RollManager {
 
     /**
         Fetches a die with the specified number of sides, passing in the randomness generator from the `RollManager`
+
+        @param sides Number of sides
+        @param explode Should die 'explode' (i.e. Roll again and add the result, on results above this integer)
+        @param penetrate If die explodes, subtract one from result before adding subsequent results
     **/
     public function getDie(sides:Int, ?explode:Int, ?penetrate:Bool) : Die {
         return new Die(sides, generator, explode, penetrate);

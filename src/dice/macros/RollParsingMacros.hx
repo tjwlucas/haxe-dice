@@ -8,6 +8,9 @@ import dice.util.Util;
 class RollParsingMacros {
     /**
         Generates the over all regular expression that validates and initially parses the die expression.
+
+        @param only_complete Only matches if the matches string is the entire expression
+        @param exclude_in_quotations If true, any valid strings are only matched if they are not inside paired '' or ""
     **/
     public static macro function buildSimpleRollExpression(only_complete : Bool = true, exclude_in_quotations : Bool = false) : ExprOf<String> {
         var base_string = "([0-9]*)d([0-9]+)";

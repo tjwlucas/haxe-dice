@@ -153,11 +153,35 @@
 		},
 		{
 			"type": "UnusedLocalVar"
+		},
+		{
+			"type": "DocCommentStyle",
+			"props": {
+				"lineStyle": "none",
+				"startStyle": "twostars"
+			}
+		},
+		{
+			"type": "FieldDocComment",
+			"props": {
+				"modifier": "PUBLIC",
+				"requireReturn": false,
+				"excludeNames": [
+					"__str__",
+					"new"
+				],
+				"tokens": [
+					"CLASS_DEF",
+					"INTERFACE_DEF",
+					"TYPEDEF_DEF"
+				]
+			}
 		}
 	],
 	"exclude": {
 		"all": [
-			"Test$"
+			"Tests?$",
+			"Mock$"
 		]
 	},
 	"version": 1
