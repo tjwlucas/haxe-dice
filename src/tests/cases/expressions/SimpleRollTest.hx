@@ -169,7 +169,7 @@ class SimpleRollTest extends Test {
     function specKeepHighest() {        
         generator.mock_results[6] = [2,6,4,3,5];
         var roll1 = manager.getSimpleRoll('5d6');
-        @:privateAccess roll1.keep_highest(3);
+        @:privateAccess roll1.keepHighest(3);
         roll1.total == 15;  // 6 + 5 + 4
         Assert.same(
             [6,4,5],
@@ -179,7 +179,7 @@ class SimpleRollTest extends Test {
         
         generator.mock_results[6] = [2,6,4,3,5,2];
         var roll1 = manager.getSimpleRoll('5d6!');
-        @:privateAccess roll1.keep_highest(3);
+        @:privateAccess roll1.keepHighest(3);
         roll1.total == 18;  // 10 (i.e. 6 + 4) + 5 + 3
         Assert.same(
             [10,3,5],
@@ -230,7 +230,7 @@ class SimpleRollTest extends Test {
     function specKeepLowest() {        
         generator.mock_results[6] = [2,6,4,3,5];
         var roll = manager.getSimpleRoll('5d6');
-        @:privateAccess roll.keep_lowest(3);
+        @:privateAccess roll.keepLowest(3);
         roll.total == 9;
         Assert.same(
             [2,4,3],
@@ -239,7 +239,7 @@ class SimpleRollTest extends Test {
         
         generator.mock_results[6] = [2,6,4,3,5,2];
         var roll = manager.getSimpleRoll('5d6!');
-        @:privateAccess roll.keep_lowest(3);
+        @:privateAccess roll.keepLowest(3);
         roll.total == 7;  // 2 + 2 + 3
         Assert.same(
             [2,3,2],
@@ -248,7 +248,7 @@ class SimpleRollTest extends Test {
         
         generator.mock_results[6] = [6,3,6,4,6,6,1,2,5];
         var roll = manager.getSimpleRoll('5d6!');
-        @:privateAccess roll.keep_lowest(3);
+        @:privateAccess roll.keepLowest(3);
         roll.total == 16;  // 2 + 5 + 9
         Assert.same(
             [9,2,5],

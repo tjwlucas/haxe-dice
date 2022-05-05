@@ -180,10 +180,10 @@ class SimpleRoll {
             die.roll();
         }
         if(keepHighestNumber != null) {
-            keep_highest(keepHighestNumber);
+            keepHighest(keepHighestNumber);
         }
         if(keepLowestNumber != null) {
-            keep_lowest(keepLowestNumber);
+            keepLowest(keepLowestNumber);
         }
         return this;
     }
@@ -206,7 +206,7 @@ class SimpleRoll {
     /**
         Keep the highest n dice in the roll (Retaining the order)
     **/
-    function keep_highest(n:Int) : SimpleRoll {
+    function keepHighest(n:Int) : SimpleRoll {
         return keepFirstSorted(n, (a,b) -> a.result - b.result);
     }
 
@@ -214,7 +214,7 @@ class SimpleRoll {
     /**
         Keep the lowest n dice in the roll (Retaining the order)
     **/
-    function keep_lowest(n:Int) : SimpleRoll {
+    function keepLowest(n:Int) : SimpleRoll {
         return keepFirstSorted(n, (a,b) -> b.result - a.result);
     }
 

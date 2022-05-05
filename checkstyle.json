@@ -305,6 +305,26 @@
 			  "ENUM"
 			]
 		  }
+		},
+		{
+			"type": "MethodName"
+		},
+		{
+			"type": "ParameterName"
+		},
+		{
+			"type": "TypeName",
+			"props": {
+				"severity": "ERROR",
+				"format": "^[A-Z]+[a-zA-Z0-9]*$",
+				"tokens": [
+					"CLASS",
+					"ENUM",
+					"TYPEDEF",
+					"ABSTRACT",
+					"INTERFACE"
+				]
+			}
 		}
 	],
 	"exclude": {
