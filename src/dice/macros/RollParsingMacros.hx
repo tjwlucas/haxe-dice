@@ -14,7 +14,7 @@ class RollParsingMacros {
         @param exclude_in_quotations If true, any valid strings are only matched if they are not inside paired '' or ""
     **/
     public static macro function buildSimpleRollExpression(only_complete : Bool = true, exclude_in_quotations : Bool = false) : ExprOf<String> {
-        var base_string = "([0-9]*)d([0-9]+)";
+        var baseString = "([0-9]*)d([0-9]+)";
         var modifiers : Map<String, String> = [];
         for (mod_key in Type.getClassFields(dice.enums.Modifier)) {
             var value = Reflect.field(dice.enums.Modifier, mod_key);
@@ -29,12 +29,12 @@ class RollParsingMacros {
             }
         }
         
-        var modifier_matchers = [for (mod_key => mod in modifiers) Util.constructMatcher(mod)];
-        var joined_mods = modifier_matchers.join("|");
-        var full_string = '$base_string(?:$joined_mods)*$lookaheads';  
+        var modifierMatchers = [for (mod_key => mod in modifiers) Util.constructMatcher(mod)];
+        var joinedMods = modifierMatchers.join("|");
+        var fullString = '$baseString(?:$joinedMods)*$lookaheads';  
         if(only_complete) {
-            full_string = '^$full_string' + "$";
+            fullString = '^$fullString' + "$";
         }
-        return macro $v{ full_string };
+        return macro $v{ fullString };
     }
 }

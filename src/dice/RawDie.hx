@@ -20,7 +20,7 @@ class RawDie {
 
     @:dox(hide)
     public function new(sides:Int, generator : RandomGenerator) {
-        var sides_int : Int;
+        var sidesInt : Int;
         try {
             if(sides <= 0) {
                 throw new InvalidConstructor("Non-positive number given");
@@ -31,11 +31,11 @@ class RawDie {
                     throw new InvalidConstructor("Non-integer given");
                 }
             #end
-            sides_int = cast(sides, Int);
+            sidesInt = cast(sides, Int);
         } catch (e) {
             throw new InvalidConstructor("Must have positive integer number of sides");
         }
-        this.sides = sides_int;
+        this.sides = sidesInt;
         this.generator = generator;
     }
 

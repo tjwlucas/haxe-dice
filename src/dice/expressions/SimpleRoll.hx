@@ -234,9 +234,9 @@ class SimpleRoll {
         var shuffled : Array<Die> = [];
         while(stored_dice.length > 0) {
             var n = manager.generator.rollPositiveInt(stored_dice.length) - 1;
-            var selected_die = stored_dice[n];
-            shuffled.push(selected_die);
-            stored_dice.remove(selected_die);
+            var selectedDie = stored_dice[n];
+            shuffled.push(selectedDie);
+            stored_dice.remove(selectedDie);
         }
         stored_dice = shuffled;
         return this;

@@ -270,6 +270,21 @@
 		},
 		{
 			"type": "RedundantModifier"
+		},
+		{
+			"type": "CatchParameterName",
+			"props": {
+				"format": "^e$"
+			}
+		},
+		{
+			"type": "ConstantName",
+			"props": {
+				"format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"
+			}
+		},
+		{
+			"type": "LocalVariableName"
 		}
 	],
 	"exclude": {

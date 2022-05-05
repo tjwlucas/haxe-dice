@@ -62,14 +62,14 @@ class Die {
     **/
     public function roll() : Die {
         dice = [];
-        var current_die = new RawDie(sides, generator);
-        current_die.roll();
-        this.dice.push(current_die);
+        var currentDie = new RawDie(sides, generator);
+        currentDie.roll();
+        this.dice.push(currentDie);
         if(explode != null) {
-            while (current_die.result >= explode) {
-                current_die = new RawDie(sides, generator);
-                current_die.roll();
-                this.dice.push(current_die);
+            while (currentDie.result >= explode) {
+                currentDie = new RawDie(sides, generator);
+                currentDie.roll();
+                this.dice.push(currentDie);
             }
         }
         return this;
