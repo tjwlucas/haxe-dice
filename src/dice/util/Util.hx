@@ -1,5 +1,8 @@
 package dice.util;
 
+/**
+    General Util class for miscellaneous utility functions
+**/
 class Util {
     /**
         Constructs the regex to match the provided modifier (and parameter format).

@@ -1,7 +1,6 @@
 package tests.cases.expressions;
 
 import dice.enums.Modifier;
-import dice.errors.InvalidModifier;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidExpression;
 import utest.Assert;

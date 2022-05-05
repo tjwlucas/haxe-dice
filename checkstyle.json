@@ -176,6 +176,15 @@
 					"TYPEDEF_DEF"
 				]
 			}
+		},
+		{
+			"type": "TODOComment",
+			"props": {
+				"severity": "INFO"
+			}
+		},
+		{
+			"type": "TypeDocComment"
 		}
 	],
 	"exclude": {

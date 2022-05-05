@@ -4,6 +4,9 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import dice.util.Util;
 
+/**
+    Home for some internal macros to build the regex to match the dice expressions
+**/
 @ignoreCoverage
 class RollParsingMacros {
     /**

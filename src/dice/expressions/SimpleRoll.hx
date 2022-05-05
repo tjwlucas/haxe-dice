@@ -6,6 +6,27 @@ import dice.enums.Modifier;
 import dice.macros.RollParsingMacros;
 import dice.errors.InvalidExpression;
 
+/**
+    Represents a simple roll, represented by a single die statement
+
+    e.g. `d6`, `2d20`, `3d8k`, `2d6!` etc.
+
+    Every expression *must* include at its core a base roll matching `d[0-9]+` (e.g. `d6`). 
+    If there is a number in front (e.g. `3d20`), the die will be rolled that many times.
+
+    There a currently 2 main classes of modifier permitted afterwards:
+
+    - Keep
+        Keep highest (`k`/`h`) or lowest (`l`). By default will kep one result, but if followed by a number, will keep that many.
+
+        e.g. `2d20k` will roll 2 `d20` and keep the highest. `3d6h2` will roll 3 `d6` and keep the highest 2. 
+        `3d6l` will roll 3d6 and keep the lowest one.
+    
+    - Exploding/Penetrating Dice
+        `!` will, for each die rolled, if the provided threshold (default: the max on the die) is reached, 
+            reroll and add the result, continuing if that meats the threshold, and so on. If a number is provided after the `!`, that will be used as the threshold.
+            If `!!` is used, instead of `!`, one will be subtracted from the result, before each addition (this is sometimes referred to as 'penetrating' dice).
+**/
 class SimpleRoll {
     /**
         Number of sides on the die used in this roll

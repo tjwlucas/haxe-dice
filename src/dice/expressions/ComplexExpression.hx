@@ -3,6 +3,21 @@ package dice.expressions;
 import hscript.Expr;
 import dice.macros.RollParsingMacros;
 
+/**
+    Represents a complex expression, which may include any number of `SimpleRoll` expressions.
+
+    e.g. `3d6 + 5`, `(2d3! * 3) - 2d4k1`
+
+    The functions: `max`, `min`, `floor`, `ceil`, `round`, `abs` are also available in expressions.
+
+    e.g. `max(2d20k, 3d6)` will compare the highest of 2 `d20` rolls with the sum of 3 `d6` rolls, and return the highest.
+
+    These expressions are powered by hscript, so simple haxe style expressions are also permitted:
+
+    e.g. `[for (i in 0...d6) d3]` would roll a `d6`, then roll a `d3` that many times, and return a list of the results.
+
+    @see `SimpleRoll`
+**/
 class ComplexExpression {
     var manager : RollManager;
     var expression : String;
