@@ -96,6 +96,63 @@
 		},
 		{
 			"type": "HiddenField"
+		},
+		{
+			"type": "InnerAssignment"
+		},
+		{
+			"type": "MagicNumber"
+		},
+		{
+			"type": "MultipleVariableDeclarations"
+		},
+		{
+			"type": "NestedControlFlow",
+			"props": {
+				"max": 3
+			}
+		},
+		{
+			"type": "NestedForDepth",
+			"props": {
+				"max": 1
+			}
+		},
+		{
+			"type": "NestedIfDepth",
+			"props": {
+				"max": 2
+			}
+		},
+		{
+			"type": "NestedTryDepth",
+			"props": {
+				"max": 1
+			}
+		},
+		{
+			"type": "NullableParameter",
+			"props": {
+				"option": "questionMark"
+			}
+		},
+		{
+			"type": "ReturnCount",
+			"props": {
+				"max": 2
+			}
+		},
+		{
+			"type": "SimplifyBooleanExpression"
+		},
+		{
+			"type": "SimplifyBooleanReturn"
+		},
+		{
+			"type": "Trace"
+		},
+		{
+			"type": "UnusedLocalVar"
 		}
 	],
 	"exclude": {
