@@ -42,20 +42,12 @@ class DieTest extends Test {
         die.sides == 20;
         @:privateAccess die.explode == 20;
 
-        Assert.raises(() -> {
-            manager.getDie(6,1);
-        }, InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6,1), InvalidConstructor);
 
-        Assert.raises(() -> {
-            manager.getDie(6,7);
-        }, InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6,7), InvalidConstructor);
 
-        Assert.raises(() -> {
-            manager.getDie(6,0);
-        }, InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6,0), InvalidConstructor);
 
-        Assert.raises(() -> {
-            manager.getDie(6,-3);
-        }, InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6,-3), InvalidConstructor);
     }
 }

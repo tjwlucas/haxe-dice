@@ -1,0 +1,79 @@
+{
+	"defaultSeverity": "ERROR",
+	"extendsConfigPath": "",
+	"numberOfCheckerThreads": 5,
+	"baseDefines": [],
+	"defineCombinations": [],
+	"checks": [
+		{
+			"type": "BlockBreakingConditional"
+		},
+		{
+			"type": "ConditionalCompilation",
+			"props": {
+				"allowSingleline": true,
+				"policy": "aligned"
+			}
+		},
+		{
+			"type": "EmptyBlock",
+			"props": {
+				"option": "empty"
+			}
+		},
+		{
+			"type": "NeedBraces",
+			"props": {
+				"allowSingleLineStatement": true,
+				"tokens": [
+					"CATCH",
+					"DO_WHILE",
+					"ELSE_IF",
+					"FUNCTION",
+					"IF",
+					"WHILE"
+				]
+			}
+		},
+		{
+			"type": "LeftCurly",
+			"props": {
+				"option": "eol",
+				"ignoreEmptySingleline": true
+			}
+		},
+		{
+			"type": "RightCurly",
+			"props": {
+				"option": "aloneorsingle",
+				"tokens": [
+					"ABSTRACT_DEF",
+					"ARRAY_COMPREHENSION",
+					"CATCH",
+					"CLASS_DEF",
+					"ENUM_DEF",
+					"FOR",
+					"FUNCTION",
+					"INTERFACE_DEF",
+					"OBJECT_DECL",
+					"REIFICATION",
+					"SWITCH",
+					"TYPEDEF_DEF",
+					"WHILE"
+				]
+			}
+		},
+		{
+			"type": "RightCurly",
+			"props": {
+				"option": "same",
+				"tokens": [
+					"IF",
+					"TRY"
+				]
+			}
+		}
+	],
+	"exclude": {},
+	"version": 1
+}

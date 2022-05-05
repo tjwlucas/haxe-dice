@@ -23,8 +23,7 @@ class SimpleRoll {
     function get_rolled_dice() {
         if(stored_dice != null) {
             return returnDice(true);
-        }
-        else {
+        } else {
             roll();
             return returnDice(true);
         }
@@ -37,8 +36,7 @@ class SimpleRoll {
     function get_dice() : Array<Die> {
         if(stored_dice != null) {
             return returnDice();
-        }
-        else {
+        } else {
             roll();
             return returnDice();
         }
@@ -47,7 +45,7 @@ class SimpleRoll {
     /**
         The general regex that will match a valid die expression
     **/
-    static inline var MATCHING_STRING = RollParsingMacros.buildSimpleRollExpression();
+    static inline final MATCHING_STRING = RollParsingMacros.buildSimpleRollExpression();
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
@@ -79,14 +77,14 @@ class SimpleRoll {
                     throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
                 }
             }
-            
+
             if(keep_lowest_number != null) {
                 if(keep_lowest_number <= 0 || keep_lowest_number > number) {
                     throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_lowest_number given)');
                 }
             }
             return this;
-        } catch(e) {
+        } catch (e) {
             throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
         }
     }

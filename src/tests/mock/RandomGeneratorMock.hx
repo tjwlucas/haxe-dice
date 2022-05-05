@@ -36,7 +36,7 @@ class RandomGeneratorMock extends RandomGenerator {
 	public function shouldBeDoneAll(?pos:haxe.PosInfos) {
 		for(key => value in mock_results) {
 			shouldBeDone(key, pos);
-		}	
+		}
 		shouldBeDoneRaw(pos);
 	}
 

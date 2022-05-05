@@ -37,21 +37,13 @@ class SimpleRollTest extends Test {
         roll_expression.sides == 20;
         roll_expression.number == 3;
 
-        Assert.raises(() -> {
-            simpleRoll.parse('invalid');
-        }, InvalidExpression);
+        Assert.raises(() -> simpleRoll.parse('invalid'), InvalidExpression);
 
-        Assert.raises(() -> {
-            simpleRoll.parse('d45q');
-        }, InvalidExpression);
+        Assert.raises(() -> simpleRoll.parse('d45q'), InvalidExpression);
 
-        Assert.raises(() -> {
-            simpleRoll.parse('asdd45q');
-        }, InvalidExpression);
+        Assert.raises(() -> simpleRoll.parse('asdd45q'), InvalidExpression);
 
-        Assert.raises(() -> {
-            simpleRoll.parse('45q');
-        }, InvalidExpression);
+        Assert.raises(() -> simpleRoll.parse('45q'), InvalidExpression);
     }
 
     function specBuildDice() {
@@ -172,9 +164,7 @@ class SimpleRollTest extends Test {
         );
         roll4.total == 10;
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('3d6!!!');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('3d6!!!'), InvalidExpression);
     }
 
     function specKeepHighest() {        
@@ -215,17 +205,11 @@ class SimpleRollTest extends Test {
             [for(die in roll.dice) die.result]
         );
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('5d6h3k');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('5d6h3k'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('5d6h0');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('5d6h0'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('3d6k4');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('3d6k4'), InvalidExpression);
         
         generator.mock_results[6] = [2,6,4,3,5];
         var roll = manager.getSimpleRoll('5d6k');
@@ -282,17 +266,11 @@ class SimpleRollTest extends Test {
             [for(die in roll.dice) die.result]
         );
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('5d6h3l');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('5d6h3l'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('5d6l0');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('5d6l0'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getSimpleRoll('3d6l4');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('3d6l4'), InvalidExpression);
         
         generator.mock_results[6] = [2,6,4,3,5];
         var roll = manager.getSimpleRoll('5d6l');

@@ -37,21 +37,13 @@ class ComplexExpressionTest extends Test {
     }
 
     function specParseBadExpression() {
-        Assert.raises(() -> {
-            manager.getComplexExpression('(3d6! / 2 + d4');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getComplexExpression('(3d6! / 2 + d4'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getComplexExpression('2d6!x + 3');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getComplexExpression('2d6!x + 3'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getComplexExpression('2d6kl + 3');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getComplexExpression('2d6kl + 3'), InvalidExpression);
 
-        Assert.raises(() -> {
-            manager.getComplexExpression('5d6k2l1 + 3');
-        }, InvalidExpression);
+        Assert.raises(() -> manager.getComplexExpression('5d6k2l1 + 3'), InvalidExpression);
     }
 
     @:depends(specParseExpression)

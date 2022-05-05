@@ -52,7 +52,7 @@ class Die {
             total += die.result;
         }
         if(penetrate) {
-            total -= (dice.length-1);
+            total -= (dice.length - 1);
         }
         return total;
     };
@@ -92,6 +92,6 @@ class Die {
     }
 
     #if python
-    @:keep @ignoreCoverage public function __str__() toString();
+        @:keep @ignoreCoverage public function __str__() toString();
     #end
 }
