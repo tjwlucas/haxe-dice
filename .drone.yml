@@ -78,7 +78,7 @@ steps:
   - name: Build Documentation
     image: haxe:4.2.3
     commands:
-      - haxelib install --always documentation.hxml
+      - haxelib install --always --quiet documentation.hxml
       - haxe documentation.hxml
     depends_on:
       - Tests in NodeJS
