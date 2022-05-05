@@ -125,7 +125,7 @@ class SimpleRoll {
     /**
         Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
     **/
-    function parseCoreExpression(passedExpression : String) : { number: Int, sides: Int } {
+    function parseCoreExpression(passedExpression : String) : { number: Null<Int>, sides: Int } {
         var matcher = new EReg(MATCHING_STRING, "i");
         if (matcher.match(passedExpression)) {
             var numberInExpression = Std.parseInt(matcher.matched(1));
