@@ -11,12 +11,12 @@ steps:
   - name: Check Style
     image: haxe:4.2.3
     commands:
-      - haxelib install --always checkstyle
+      - haxelib install --always --quiet checkstyle
       - haxelib run checkstyle -s src --exitcode
   - name: Build
     image: haxe:4.2.3
     commands:
-      - haxelib install --always all.hxml
+      - haxelib install --always --quiet all.hxml
       - haxe all.hxml
     depends_on:
       - Check Style
