@@ -72,8 +72,33 @@
 					"TRY"
 				]
 			}
+		},
+		{
+			"type": "ArrowFunction",
+			"props": {
+				"allowCurlyBody": true,
+				"allowFunction": false,
+				"allowReturn": true,
+				"allowSingleArgParens": false
+			}
+		},
+		{
+			"type": "CodeSimilarity",
+			"props": {
+				"thresholdIdentical": 12,
+				"thresholdSimilar": 32,
+				"severityIdentical": "WARNING",
+				"severity": "WARNING"
+			}
+		},
+		{
+			"type": "DefaultComesLast"
 		}
 	],
-	"exclude": {},
+	"exclude": {
+		"all": [
+			"Test$"
+		]
+	},
 	"version": 1
 }

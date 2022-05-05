@@ -4,6 +4,7 @@ import dice.util.Util;
 import haxe.macro.Context;
 import dice.enums.Modifier;
 import dice.macros.RollParsingMacros;
+import dice.errors.InvalidExpression;
 
 class SimpleRoll {
     public var sides : Int;
@@ -72,20 +73,20 @@ class SimpleRoll {
                 case 'l': keep_lowest_number = getModifierValue(KEEP);
             }
 
-            if(keep_highest_number != null) {
-                if(keep_highest_number <= 0 || keep_highest_number > number) {
-                    throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_highest_number given)');
-                }
-            }
+            verifyKeepNumber(keep_highest_number);
+            verifyKeepNumber(keep_lowest_number);
 
-            if(keep_lowest_number != null) {
-                if(keep_lowest_number <= 0 || keep_lowest_number > number) {
-                    throw new dice.errors.InvalidExpression('Number of dice to keep must be between 1 and $number. ($keep_lowest_number given)');
-                }
-            }
             return this;
         } catch (e) {
-            throw new dice.errors.InvalidExpression('$expression is not a valid core die expression');
+            throw new InvalidExpression('$expression is not a valid core die expression');
+        }
+    }
+
+    inline function verifyKeepNumber(keepNumber : Int) {
+        if(keepNumber != null) {
+            if(keepNumber <= 0 || keepNumber > number) {                
+                throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
+            }
         }
     }
 
@@ -114,27 +115,29 @@ class SimpleRoll {
     **/
     function getModifierValue(mod: Modifier) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if(!matcher.match(expression)) {
+        if(matcher.match(expression)) {            
+            var number = Std.parseInt(matcher.matched(2));
+            if (number == null) {
+                if(mod == EXPLODE) {
+                    number = sides;
+                } else {
+                    number = 1;
+                }
+            }
+            return number;
+        } else {
             return null;
         }
-        var number = Std.parseInt(matcher.matched(2));
-        if (number == null) {
-            if(mod == EXPLODE) {
-                number = sides;
-            } else {
-                number = 1;
-            }
-        }
-        return number;
     }
 
     function getModifier(mod: Modifier) : Null<String> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if(!matcher.match(expression)) {
+        if(matcher.match(expression)) {
+            var mod = matcher.matched(1);
+            return mod;
+        } else {
             return null;
         }
-        var mod = matcher.matched(1);
-        return mod;
     }
 
     /**
@@ -165,9 +168,7 @@ class SimpleRoll {
     public var total(get, never) : Int;
     function get_total() : Int {
         var total = 0;
-        for (die in dice) {
-            total += die.result;
-        }
+        for (die in dice) total += die.result;
         return total;
     };
     
@@ -175,16 +176,7 @@ class SimpleRoll {
         Keep the highest n dice in the roll (Retaining the order)
     **/
     function keep_highest(n:Int) : SimpleRoll {
-        // Sort lowest to highest
-        var sorted = dice.copy();
-        sorted.sort((a,b) -> {
-            a.result - b.result;
-        });
-        // Remove the lowest values down to the required kept n
-        for (i in 0...(number-n)) {
-            sorted[i].drop();
-        }
-        return this;
+        return keepFirstSorted(n, (a,b) -> a.result - b.result);
     }
 
 
@@ -192,12 +184,12 @@ class SimpleRoll {
         Keep the lowest n dice in the roll (Retaining the order)
     **/
     function keep_lowest(n:Int) : SimpleRoll {
-        // Sort highest to lowest
+        return keepFirstSorted(n, (a,b) -> b.result - a.result);
+    }
+
+    function keepFirstSorted(n:Int, sorter:(Die, Die)->Int) {
         var sorted = dice.copy();
-        sorted.sort((a,b) -> {
-            b.result - a.result;
-        });
-        // Remove the highest values down to the required kept n
+        sorted.sort(sorter);
         for (i in 0...(number-n)) {
             sorted[i].drop();
         }
@@ -229,6 +221,6 @@ class SimpleRoll {
     }
 
     #if python
-    @:keep @ignoreCoverage public function __str__() toString();
+    @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
     #end
 }

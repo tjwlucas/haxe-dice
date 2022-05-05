@@ -69,6 +69,6 @@ class RawDie {
     }
 
     #if python
-    @:keep @ignoreCoverage public function __str__() toString();
+    @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
     #end
 }
