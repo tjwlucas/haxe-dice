@@ -285,6 +285,26 @@
 		},
 		{
 			"type": "LocalVariableName"
+		},
+		{
+			"type": "MemberName",
+			"props": {
+				"format": "^[a-z][a-zA-Z0-9]*$",
+				"tokens": [
+					"PUBLIC",
+					"PRIVATE",
+					"CLASS"
+				]
+			}
+		},
+		{
+		  "type": "MemberName",
+		  "props": {
+			"format": "^[A-Z][a-zA-Z0-9]*$",
+			"tokens": [
+			  "ENUM"
+			]
+		  }
 		}
 	],
 	"exclude": {

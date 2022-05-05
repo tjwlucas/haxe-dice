@@ -40,18 +40,18 @@ class SimpleRoll {
 
     var manager : Null<RollManager>;
 
-    var stored_dice : Null<Array<Die>>;
+    var storedDice : Null<Array<Die>>;
     var explode : Null<Int>;
     var penetrate : Bool;
-    var keep_highest_number : Null<Int>;
-    var keep_lowest_number : Null<Int>;
+    var keepHighestNumber : Null<Int>;
+    var keepLowestNumber : Null<Int>;
     
     /**
         All dice rolled for this expression (before any are dropped)
     **/
-    public var rolled_dice(get, never) : Array<Die>;
-    function get_rolled_dice() {
-        if(stored_dice != null) {
+    public var rolledDice(get, never) : Array<Die>;
+    function get_rolledDice() {
+        if(storedDice != null) {
             return returnDice(true);
         } else {
             roll();
@@ -64,7 +64,7 @@ class SimpleRoll {
     **/
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
-        if(stored_dice != null) {
+        if(storedDice != null) {
             return returnDice();
         } else {
             roll();
@@ -99,12 +99,12 @@ class SimpleRoll {
             penetrate = getModifier(EXPLODE) == "!!";
 
             switch(getModifier(KEEP)) {
-                case "k"|"h": keep_highest_number = getModifierValue(KEEP);
-                case "l": keep_lowest_number = getModifierValue(KEEP);
+                case "k"|"h": keepHighestNumber = getModifierValue(KEEP);
+                case "l": keepLowestNumber = getModifierValue(KEEP);
             }
 
-            verifyKeepNumber(keep_highest_number);
-            verifyKeepNumber(keep_lowest_number);
+            verifyKeepNumber(keepHighestNumber);
+            verifyKeepNumber(keepLowestNumber);
 
             return this;
         } catch (e) {
@@ -175,22 +175,22 @@ class SimpleRoll {
         Will (re-)roll all dice attached to this 'roll' object
     **/
     public function roll() : SimpleRoll {
-        stored_dice = [for (i in 0...number) manager.getDie(sides, explode, penetrate)];
-        for (die in stored_dice) {
+        storedDice = [for (i in 0...number) manager.getDie(sides, explode, penetrate)];
+        for (die in storedDice) {
             die.roll();
         }
-        if(keep_highest_number != null) {
-            keep_highest(keep_highest_number);
+        if(keepHighestNumber != null) {
+            keep_highest(keepHighestNumber);
         }
-        if(keep_lowest_number != null) {
-            keep_lowest(keep_lowest_number);
+        if(keepLowestNumber != null) {
+            keep_lowest(keepLowestNumber);
         }
         return this;
     }
 
 
     function returnDice(?includeDropped = false) {
-        return [for(die in stored_dice) if(!die.dropped || includeDropped) die];
+        return [for(die in storedDice) if(!die.dropped || includeDropped) die];
     }
 
     /**
@@ -232,13 +232,13 @@ class SimpleRoll {
     **/
     public function shuffle() : SimpleRoll {
         var shuffled : Array<Die> = [];
-        while(stored_dice.length > 0) {
-            var n = manager.generator.rollPositiveInt(stored_dice.length) - 1;
-            var selectedDie = stored_dice[n];
+        while(storedDice.length > 0) {
+            var n = manager.generator.rollPositiveInt(storedDice.length) - 1;
+            var selectedDie = storedDice[n];
             shuffled.push(selectedDie);
-            stored_dice.remove(selectedDie);
+            storedDice.remove(selectedDie);
         }
-        stored_dice = shuffled;
+        storedDice = shuffled;
         return this;
     }
 
@@ -248,7 +248,7 @@ class SimpleRoll {
         e.g. `"3"`, `"2, 6, 5"`, `"2, 6+2, 1"`
     **/
     public function toString() {
-        return Std.string(rolled_dice.join(", "));
+        return Std.string(rolledDice.join(", "));
     }
 
     #if python

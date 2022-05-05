@@ -27,7 +27,7 @@ class ComplexExpression {
     **/
     public var rolls : Array<SimpleRoll> = [];
 
-    var stored_result : Dynamic;
+    var storedResult : Dynamic;
 
     var program : Expr;
 
@@ -69,10 +69,10 @@ class ComplexExpression {
     **/
     public var result(get, never) : Dynamic;
     function get_result() : Dynamic {
-        if(stored_result == null) {
+        if(storedResult == null) {
             roll();
         } 
-        return stored_result;
+        return storedResult;
     }
 
     /**
@@ -80,8 +80,8 @@ class ComplexExpression {
     **/
     public function roll() {
         logs = [];
-        stored_result = executeExpression();
-        return stored_result;
+        storedResult = executeExpression();
+        return storedResult;
     }
 
     function log(entry:String) {
@@ -126,7 +126,7 @@ class ComplexExpression {
     public function unpackRawResults() {
         return [
             for(roll in rolls) [
-                for(die in roll.rolled_dice) [
+                for(die in roll.rolledDice) [
                     for(sub in die.dice) sub.result
                 ]
             ]

@@ -39,7 +39,7 @@ class RawDie {
         this.generator = generator;
     }
 
-    var stored_result : Null<Int>;
+    var storedResult : Null<Int>;
 
     /**
         Gets the stored result of the die roll.
@@ -48,7 +48,7 @@ class RawDie {
     **/
     public var result(get, never) : Int;
     function get_result() : Int {
-        if(stored_result != null) return stored_result;
+        if(storedResult != null) return storedResult;
         else return roll();
     };
 
@@ -57,7 +57,7 @@ class RawDie {
     **/
     public function roll() : Int {
         var ans = generator.rollPositiveInt(sides);
-        stored_result = ans;
+        storedResult = ans;
         return ans;
     }
 
