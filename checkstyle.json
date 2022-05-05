@@ -372,6 +372,99 @@
 			"props": {
 				"ignoreEnumAbstractValues": true
 			}
+		},
+		{
+			"type": "ArrayAccess",
+			"props": {
+				"spaceBefore": false,
+				"spaceInside": false
+			}
+		},
+		{
+			"type": "EmptyLines",
+			"props": {
+				"allowEmptyLineAfterMultiLineComment": false,
+				"allowEmptyLineAfterSingleLineComment": false,
+				"max": 1,
+				"requireEmptyLineAfterAbstract": false,
+				"requireEmptyLineAfterClass": false,
+				"requireEmptyLineAfterInterface": false,
+				"requireEmptyLineAfterPackage": true
+			}
+		},
+		{
+			"type": "Indentation",
+			"props": {
+				"character": "    ",
+				"conditionalPolicy": "aligned_increase",
+				"wrapPolicy": "exact"
+			}
+		},
+		{
+			"type": "OperatorWhitespace",
+			"props": {
+				"arithmeticOpPolicy": "around",
+				"arrowFunctionPolicy": "around",
+				"arrowPolicy": "around",
+				"assignOpPolicy": "around",
+				"bitwiseOpPolicy": "around",
+				"boolOpPolicy": "around",
+				"compareOpPolicy": "around",
+				"intervalOpPolicy": "none",
+				"newFunctionTypePolicy": "around",
+				"oldFunctionTypePolicy": "around",
+				"ternaryOpPolicy": "around",
+				"unaryOpPolicy": "none"
+			}
+		},
+		{
+			"type": "OperatorWrap",
+			"props": {
+				"option": "nl"
+			}
+		},
+		{
+			"type": "SeparatorWhitespace",
+			"props": {
+				"commaPolicy": "after",
+				"dotPolicy": "none",
+				"semicolonPolicy": "after",
+				"allowTrailingComma": true
+			}
+		},
+		{
+			"type": "SeparatorWrap",
+			"props": {
+				"option": "nl",
+				"tokens": [
+					"."
+				]
+			}
+		},
+		{
+			"type": "SeparatorWrap",
+			"props": {
+				"option": "eol",
+				"tokens": [
+					","
+				]
+			}
+		},
+		{
+			"type": "Spacing",
+			"props": {
+				"ignoreRangeOperator": true,
+				"noSpaceAroundUnop": true,
+				"spaceAroundBinop": true,
+				"spaceCatch": "should",
+				"spaceForLoop": "should",
+				"spaceIfCondition": "should",
+				"spaceSwitchCase": "should",
+				"spaceWhileLoop": "should"
+			}
+		},
+		{
+			"type": "TrailingWhitespace"
 		}
 	],
 	"exclude": {

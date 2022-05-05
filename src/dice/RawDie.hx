@@ -22,12 +22,12 @@ class RawDie {
     public function new(sides:Int, generator : RandomGenerator) {
         var sidesInt : Int;
         try {
-            if(sides <= 0) {
+            if (sides <= 0) {
                 throw new InvalidConstructor("Non-positive number given");
             }
             #if php
                 // On other targets, the cast will fail anyway
-                if(sides.floor() != sides.ceil()) {
+                if (sides.floor() != sides.ceil()) {
                     throw new InvalidConstructor("Non-integer given");
                 }
             #end
@@ -48,7 +48,7 @@ class RawDie {
     **/
     public var result(get, never) : Int;
     function get_result() : Int {
-        if(storedResult != null) return storedResult;
+        if (storedResult != null) return storedResult;
         else return roll();
     };
 
@@ -69,6 +69,6 @@ class RawDie {
     }
 
     #if python
-    @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
+        @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
     #end
 }

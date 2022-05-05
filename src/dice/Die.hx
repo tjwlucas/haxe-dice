@@ -44,14 +44,14 @@ class Die {
     **/
     public var result(get, never) : Int;
     function get_result() : Int {
-        if(dice.length == 0) {
+        if (dice.length == 0) {
             roll();
         }
         var total = 0;
         for (die in dice) {
             total += die.result;
         }
-        if(penetrate) {
+        if (penetrate) {
             total -= (dice.length - 1);
         }
         return total;
@@ -65,7 +65,7 @@ class Die {
         var currentDie = new RawDie(sides, generator);
         currentDie.roll();
         this.dice.push(currentDie);
-        if(explode != null) {
+        if (explode != null) {
             while (currentDie.result >= explode) {
                 currentDie = new RawDie(sides, generator);
                 currentDie.roll();
@@ -92,6 +92,6 @@ class Die {
     }
 
     #if python
-    @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
+        @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
     #end
 }

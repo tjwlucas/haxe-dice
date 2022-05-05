@@ -57,7 +57,7 @@ class ComplexExpression {
         try {
             var parser = new hscript.Parser();
             program = parser.parseString(parsedExpression);
-        } catch(e) {
+        } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
     }
@@ -69,9 +69,9 @@ class ComplexExpression {
     **/
     public var result(get, never) : Any;
     function get_result() : Any {
-        if(storedResult == null) {
+        if (storedResult == null) {
             roll();
-        } 
+        }
         return storedResult;
     }
 
@@ -91,7 +91,7 @@ class ComplexExpression {
     function rollFromSimpleExpression(simpleExpression:String) : Int {
         var newRoll = manager.getSimpleRoll(simpleExpression);
         rolls.push(newRoll);
-        if(logRolls) {
+        if (logRolls) {
             log('[$simpleExpression]: $newRoll');
         }
         return newRoll.total;
@@ -100,14 +100,14 @@ class ComplexExpression {
     function executeExpression() : Any {
         var interp = new hscript.Interp();
         rolls = [];
-        interp.variables.set("roll",rollFromSimpleExpression);
-        interp.variables.set("max",Math.max);
-        interp.variables.set("min",Math.min);
-        interp.variables.set("floor",Math.floor);
-        interp.variables.set("ceil",Math.ceil);
-        interp.variables.set("round",Math.round);
-        interp.variables.set("abs",Math.abs);
-        interp.variables.set("log",log);
+        interp.variables.set("roll", rollFromSimpleExpression);
+        interp.variables.set("max", Math.max);
+        interp.variables.set("min", Math.min);
+        interp.variables.set("floor", Math.floor);
+        interp.variables.set("ceil", Math.ceil);
+        interp.variables.set("round", Math.round);
+        interp.variables.set("abs", Math.abs);
+        interp.variables.set("log", log);
         // TODO: Try to avoid using private interface, it *could* be changed
         @:privateAccess interp.binops.set("^", (a, b) -> Math.pow(interp.expr(a), interp.expr(b)));
         return interp.execute(program);
@@ -125,9 +125,9 @@ class ComplexExpression {
     **/
     public function unpackRawResults() : Array<Array<Array<Int>>> {
         return [
-            for(roll in rolls) [
-                for(die in roll.rolledDice) [
-                    for(sub in die.dice) sub.result
+            for (roll in rolls) [
+                for (die in roll.rolledDice) [
+                    for (sub in die.dice) sub.result
                 ]
             ]
         ];

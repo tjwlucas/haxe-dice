@@ -1,4 +1,5 @@
 package dice;
+
 using Math;
 
 /**

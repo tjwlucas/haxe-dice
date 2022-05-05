@@ -46,33 +46,33 @@ class SimpleRoll {
     var penetrate : Bool;
     var keepHighestNumber : Null<Int>;
     var keepLowestNumber : Null<Int>;
-    
+
     /**
         All dice rolled for this expression (before any are dropped)
     **/
     public var rolledDice(get, never) : Array<Die>;
     function get_rolledDice() : Array<Die> {
-        if(storedDice != null) {
+        if (storedDice != null) {
             return returnDice(true);
         } else {
             roll();
             return returnDice(true);
         }
     }
-    
+
     /**
         Get an array of dice rolled as part of this roll (After any are dropped).
     **/
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
-        if(storedDice != null) {
+        if (storedDice != null) {
             return returnDice();
         } else {
             roll();
             return returnDice();
         }
     };
-    
+
     /**
         The general regex that will match a valid die expression
     **/
@@ -80,7 +80,7 @@ class SimpleRoll {
 
     public function new(manager: RollManager, ?expression: String) {
         this.manager = manager;
-        if(expression != null) {
+        if (expression != null) {
             this.parse(expression);
         }
     }
@@ -99,8 +99,8 @@ class SimpleRoll {
             explode = getModifierValue(EXPLODE);
             penetrate = getModifier(EXPLODE) == "!!";
 
-            switch(getModifier(KEEP)) {
-                case "k"|"h": keepHighestNumber = getModifierValue(KEEP);
+            switch (getModifier(KEEP)) {
+                case "k" | "h": keepHighestNumber = getModifierValue(KEEP);
                 case "l": keepLowestNumber = getModifierValue(KEEP);
             }
 
@@ -115,8 +115,8 @@ class SimpleRoll {
     }
 
     inline function verifyKeepNumber(keepNumber : Null<Int>) : Void {
-        if(keepNumber != null) {
-            if(keepNumber <= 0 || keepNumber > number) {                
+        if (keepNumber != null) {
+            if (keepNumber <= 0 || keepNumber > number) {
                 throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
             }
         }
@@ -147,10 +147,10 @@ class SimpleRoll {
     **/
     function getModifierValue(mod: Modifier) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if(matcher.match(expression)) {            
+        if (matcher.match(expression)) {
             var numberParameter = Std.parseInt(matcher.matched(2));
             if (numberParameter == null) {
-                if(mod == EXPLODE) {
+                if (mod == EXPLODE) {
                     numberParameter = sides;
                 } else {
                     numberParameter = 1;
@@ -164,7 +164,7 @@ class SimpleRoll {
 
     function getModifier(mod: Modifier) : Null<String> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if(matcher.match(expression)) {
+        if (matcher.match(expression)) {
             var mod = matcher.matched(1);
             return mod;
         } else {
@@ -180,18 +180,17 @@ class SimpleRoll {
         for (die in storedDice) {
             die.roll();
         }
-        if(keepHighestNumber != null) {
+        if (keepHighestNumber != null) {
             keepHighest(keepHighestNumber);
         }
-        if(keepLowestNumber != null) {
+        if (keepLowestNumber != null) {
             keepLowest(keepLowestNumber);
         }
         return this;
     }
 
-
     function returnDice(?includeDropped = false) : Array<Die> {
-        return [for(die in storedDice) if(!die.dropped || includeDropped) die];
+        return [for (die in storedDice) if (!die.dropped || includeDropped) die];
     }
 
     /**
@@ -203,26 +202,25 @@ class SimpleRoll {
         for (die in dice) runningTotal += die.result;
         return runningTotal;
     };
-    
+
     /**
         Keep the highest n dice in the roll (Retaining the order)
     **/
     function keepHighest(n:Int) : SimpleRoll {
-        return keepFirstSorted(n, (a,b) -> a.result - b.result);
+        return keepFirstSorted(n, (a, b) -> a.result - b.result);
     }
-
 
     /**
         Keep the lowest n dice in the roll (Retaining the order)
     **/
     function keepLowest(n:Int) : SimpleRoll {
-        return keepFirstSorted(n, (a,b) -> b.result - a.result);
+        return keepFirstSorted(n, (a, b) -> b.result - a.result);
     }
 
-    function keepFirstSorted(n:Int, sorter:(Die, Die)->Int) : SimpleRoll {
+    function keepFirstSorted(n:Int, sorter:(Die, Die) -> Int) : SimpleRoll {
         var sorted = dice.copy();
         sorted.sort(sorter);
-        for (i in 0...(number-n)) {
+        for (i in 0...(number - n)) {
             sorted[i].drop();
         }
         return this;
@@ -233,7 +231,7 @@ class SimpleRoll {
     **/
     public function shuffle() : SimpleRoll {
         var shuffled : Array<Die> = [];
-        while(storedDice.length > 0) {
+        while (storedDice.length > 0) {
             var n = manager.generator.rollPositiveInt(storedDice.length) - 1;
             var selectedDie = storedDice[n];
             shuffled.push(selectedDie);
@@ -253,6 +251,6 @@ class SimpleRoll {
     }
 
     #if python
-    @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
+        @SuppressWarnings("checkstyle:CodeSimilarity") @:keep @ignoreCoverage public function __str__() toString();
     #end
 }

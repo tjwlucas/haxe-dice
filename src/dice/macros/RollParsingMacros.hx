@@ -23,16 +23,16 @@ class RollParsingMacros {
 
         // TODO: This is clumsy, determine a tidier way
         var lookaheads = "";
-        if(excludeInQuotations) {
-            for(quote in ["'", '"']) {
+        if (excludeInQuotations) {
+            for (quote in ["'", '"']) {
                 lookaheads += '(?=([^$quote\\\\]*(\\\\.|$quote([^$quote\\\\]*\\\\.)*[^$quote\\\\]*$quote))*[^$quote]*$)';
             }
         }
-        
+
         var modifierMatchers = [for (mod_key => mod in modifiers) Util.constructMatcher(mod)];
         var joinedMods = modifierMatchers.join("|");
-        var fullString = '$baseString(?:$joinedMods)*$lookaheads';  
-        if(onlyComplete) {
+        var fullString = '$baseString(?:$joinedMods)*$lookaheads';
+        if (onlyComplete) {
             fullString = '^$fullString' + "$";
         }
         return macro $v{ fullString };
