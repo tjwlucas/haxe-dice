@@ -100,18 +100,11 @@ class ComplexExpression {
     }
 
     function executeExpression() : Any {
-        var interp = new hscript.Interp();
+        var interp = new ExpressionInterpreter([
+            "roll" => rollFromSimpleExpression,
+            "log" => log
+        ]);
         rolls = [];
-        interp.variables.set("roll", rollFromSimpleExpression);
-        interp.variables.set("max", Math.max);
-        interp.variables.set("min", Math.min);
-        interp.variables.set("floor", Math.floor);
-        interp.variables.set("ceil", Math.ceil);
-        interp.variables.set("round", Math.round);
-        interp.variables.set("abs", Math.abs);
-        interp.variables.set("log", log);
-        // TODO: Try to avoid using private interface, it *could* be changed
-        @:privateAccess interp.binops.set("^", (a, b) -> Math.pow(interp.expr(a), interp.expr(b)));
         return interp.execute(program);
     }
 
