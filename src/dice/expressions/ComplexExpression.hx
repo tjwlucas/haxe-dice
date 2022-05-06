@@ -27,7 +27,7 @@ class ComplexExpression {
     **/
     public var rolls : Array<SimpleRoll> = [];
 
-    var storedResult : Any;
+    var storedResult : Null<Any>;
 
     var program : Expr;
 
@@ -37,23 +37,21 @@ class ComplexExpression {
     public var logs : Array<String> = [];
     var logRolls : Bool;
 
-    public function new(manager: RollManager, expression: String, ?logRolls = false) {
+    public function new(manager: RollManager, expression: String, logRolls = false) {
         this.manager = manager;
         this.expression = expression;
         this.logRolls = logRolls;
-        this.parse();
-    }
-
-    function parse() : ComplexExpression {
-        parsedExpression = parseExpressionString(expression);
-
+        var program : Expr;
+        var parsedExpression : String;
         try {
+            parsedExpression = parseExpressionString(expression);
             var parser = new hscript.Parser();
             program = parser.parseString(parsedExpression);
-            return this;
         } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
+        this.parsedExpression = parsedExpression;
+        this.program = program;
     }
 
     static function parseExpressionString(expressionString : String) : String {
@@ -73,7 +71,7 @@ class ComplexExpression {
     public var result(get, never) : Any;
     function get_result() : Any {
         if (storedResult == null) {
-            roll();
+            storedResult = roll();
         }
         return storedResult;
     }

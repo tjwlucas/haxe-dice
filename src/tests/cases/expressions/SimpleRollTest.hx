@@ -15,16 +15,10 @@ class SimpleRollTest extends Test {
 
     function specBasicParse() {
         // Get empty, then parse expression
-        var simpleRoll = manager.getSimpleRoll();
-        var rollExpression = simpleRoll.parse('d6');
-        rollExpression.sides == 6;
-        rollExpression.number == 1;
-        @:privateAccess rollExpression.expression = 'd6';
-
-        // Set expression in initial getSimpleRoll
         var rollExpression = manager.getSimpleRoll('d6');
         rollExpression.sides == 6;
         rollExpression.number == 1;
+        @:privateAccess rollExpression.expression = 'd6';
 
         var rollExpression = manager.getSimpleRoll('3d20');
         rollExpression.sides == 20;
@@ -34,13 +28,13 @@ class SimpleRollTest extends Test {
         rollExpression.sides == 20;
         rollExpression.number == 3;
 
-        Assert.raises(() -> simpleRoll.parse('invalid'), InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('invalid'), InvalidExpression);
 
-        Assert.raises(() -> simpleRoll.parse('d45q'), InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('d45q'), InvalidExpression);
 
-        Assert.raises(() -> simpleRoll.parse('asdd45q'), InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('asdd45q'), InvalidExpression);
 
-        Assert.raises(() -> simpleRoll.parse('45q'), InvalidExpression);
+        Assert.raises(() -> manager.getSimpleRoll('45q'), InvalidExpression);
     }
 
     function specBuildDice() {
@@ -320,6 +314,17 @@ class SimpleRollTest extends Test {
         roll.shuffle();
         Assert.same(
             [1, 3, 2, 20, 12, 17],
+            [for (die in roll.dice) die.result]
+        );
+    }
+
+    function specShuffleWithoutResults() {
+        generator.mockResults = [];
+        var roll = manager.getSimpleRoll('3d6');
+        roll.shuffle();
+        generator.mockResults[6] = [2, 6, 4];
+        Assert.same(
+            [2, 6, 4],
             [for (die in roll.dice) die.result]
         );
     }

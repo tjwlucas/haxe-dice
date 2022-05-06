@@ -1,11 +1,4 @@
--cp src
--D analyzer-optimize
--dce full
--lib hscript
---macro nullSafety("dice")
-
--main tests.Tests
--lib utest
+base.hxml
 
 -lib instrument
 --macro instrument.Instrumentation.coverage([], ['src'], ['tests', 'dice.enums'])
@@ -13,7 +6,6 @@
 -D coverage-console-package-summary-reporter
 -D coverage-console-missing-reporter
 -D coverage-lcov-reporter
-
 
 --each
 -D js-es=6

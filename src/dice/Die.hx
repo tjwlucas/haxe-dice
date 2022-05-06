@@ -27,7 +27,7 @@ class Die {
     **/
     public var dropped : Bool = false;
 
-    public function new(sides: Int, generator : RandomGenerator, ?explode : Int, ?penetrate:Bool) {
+    public function new(sides: Int, generator : RandomGenerator, ?explode : Int, penetrate:Bool = false) {
         this.sides = sides;
         this.generator = generator;
         if (explode != null) {
@@ -78,8 +78,9 @@ class Die {
     /**
         Do not count this die result in the total for the parent expression 
     **/
-    public function drop() : Void {
+    public function drop() : Die {
         dropped = true;
+        return this;
     }
 
     /**

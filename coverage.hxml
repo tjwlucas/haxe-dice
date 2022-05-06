@@ -1,4 +1,4 @@
-build.hxml
+build-with-coverage.hxml
 # Put this in to give node filesystem access for the lcov.info coverage report 
 -lib hxnodejs
 

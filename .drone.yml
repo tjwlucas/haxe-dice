@@ -13,6 +13,11 @@ steps:
     commands:
       - haxelib install --always --quiet checkstyle
       - haxelib run checkstyle -s src --exitcode
+  - name: NullSafe Build
+    image: haxe:4.2.3
+    commands:
+      - haxelib install --always --quiet build-nullsafe.hxml
+      - haxe build-nullsafe.hxml
   - name: Build
     image: haxe:4.2.3
     commands:
@@ -20,6 +25,7 @@ steps:
       - haxe all.hxml
     depends_on:
       - Check Style
+      - NullSafe Build
   - name: Tests in NodeJS
     image: node:16.3.0-alpine3.13
     commands:

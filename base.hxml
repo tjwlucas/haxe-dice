@@ -1,0 +1,7 @@
+-cp src
+-D analyzer-optimize
+-dce full
+-lib hscript
+
+-main tests.Tests
+-lib utest

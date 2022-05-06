@@ -44,7 +44,7 @@ class RollManager {
     /**
         @param expression Optionally pass a simple expression to be parsed by `SimpleRoll.parse()`
     **/
-    public function getSimpleRoll(?expression: String) : SimpleRoll {
+    public function getSimpleRoll(expression: String) : SimpleRoll {
         return new SimpleRoll(this, expression);
     }
 

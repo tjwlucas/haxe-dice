@@ -41,25 +41,20 @@ class SimpleRoll {
 
     var expression : String;
 
-    var manager : Null<RollManager>;
+    var manager : RollManager;
 
-    var storedDice : Null<Array<Die>>;
-    var explode : Null<Int>;
-    var penetrate : Bool;
-    var keepHighestNumber : Null<Int>;
-    var keepLowestNumber : Null<Int>;
+    var storedDice : Null<Array<Die>> = null;
+    var explode : Null<Int> = null;
+    var penetrate : Bool = false;
+    var keepHighestNumber : Null<Int> = null;
+    var keepLowestNumber : Null<Int> = null;
 
     /**
         All dice rolled for this expression (before any are dropped)
     **/
     public var rolledDice(get, never) : Array<Die>;
     function get_rolledDice() : Array<Die> {
-        if (storedDice != null) {
-            return returnDice(true);
-        } else {
-            roll();
-            return returnDice(true);
-        }
+        return returnDice(true);
     }
 
     /**
@@ -67,12 +62,7 @@ class SimpleRoll {
     **/
     public var dice(get, never) : Array<Die>;
     function get_dice() : Array<Die> {
-        if (storedDice != null) {
-            return returnDice();
-        } else {
-            roll();
-            return returnDice();
-        }
+        return returnDice();
     };
 
     /**
@@ -80,40 +70,23 @@ class SimpleRoll {
     **/
     static inline final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
 
-    public function new(manager: RollManager, ?expression: String) {
+    public function new(manager: RollManager, expression: String) {
         this.manager = manager;
-        if (expression != null) {
-            this.parse(expression);
+        this.expression = expression;
+        var basic = parseCoreExpression(expression);
+        number = basic.number != null ? basic.number : 1;
+        sides = basic.sides;
+        explode = getModifierValue(EXPLODE);
+        penetrate = getModifier(EXPLODE) == "!!";
+
+        switch (getModifier(KEEP)) {
+            case "k" | "h": keepHighestNumber = getModifierValue(KEEP);
+            case "l": keepLowestNumber = getModifierValue(KEEP);
+            default:
         }
-    }
 
-    /**
-        @param newExpression A 'simple' die-notation style expression (a single roll). Such as `2d6`, `3d4`, `d20`
-        @throws dice.errors.InvalidExpression When passed an invalid expression
-    **/
-    public function parse(newExpression : String) : SimpleRoll {
-        var oldExpression = this.expression;
-        this.expression = newExpression;
-        try {
-            var basic = parseCoreExpression(newExpression);
-            number = basic.number != null ? basic.number : 1;
-            sides = basic.sides;
-            explode = getModifierValue(EXPLODE);
-            penetrate = getModifier(EXPLODE) == "!!";
-
-            switch (getModifier(KEEP)) {
-                case "k" | "h": keepHighestNumber = getModifierValue(KEEP);
-                case "l": keepLowestNumber = getModifierValue(KEEP);
-            }
-
-            for (numberToKeep in [keepHighestNumber, keepLowestNumber]) {
-                verifyKeepNumber(numberToKeep);
-            }
-
-            return this;
-        } catch (e) {
-            this.expression = oldExpression;
-            throw new InvalidExpression('$newExpression is not a valid core die expression');
+        for (numberToKeep in [keepHighestNumber, keepLowestNumber]) {
+            verifyKeepNumber(numberToKeep);
         }
     }
 
@@ -129,11 +102,12 @@ class SimpleRoll {
     /**
         Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
     **/
-    function parseCoreExpression(passedExpression : String) : { number: Null<Int>, sides: Int } {
+    inline function parseCoreExpression(passedExpression : String) : { number: Null<Int>, sides: Int } {
         var matcher = new EReg(MATCHING_STRING, "i");
-        if (matcher.match(passedExpression)) {
+        if (#if python @:nullSafety(Off) #end matcher.match(passedExpression)) {
             var numberInExpression = Std.parseInt(matcher.matched(1));
-            var sidesInExpression = Std.parseInt(matcher.matched(2));
+            // Due to the regex, the following *cannot* be null, there *must* be a [0-9]+ match
+            @:nullSafety(Off) var sidesInExpression : Int = Std.parseInt(matcher.matched(2));
             return {
                 number: numberInExpression,
                 sides: sidesInExpression
@@ -151,7 +125,7 @@ class SimpleRoll {
     **/
     function getModifierValue(mod: Modifier) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if (matcher.match(expression)) {
+        if (#if python @:nullSafety(Off) #end matcher.match(expression)) {
             var numberParameter = Std.parseInt(matcher.matched(2));
             if (numberParameter == null) {
                 if (mod == EXPLODE) {
@@ -168,7 +142,7 @@ class SimpleRoll {
 
     function getModifier(mod: Modifier) : Null<String> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if (matcher.match(expression)) {
+        if (#if python @:nullSafety(Off) #end matcher.match(expression)) {
             var mod = matcher.matched(1);
             return mod;
         } else {
@@ -194,7 +168,12 @@ class SimpleRoll {
     }
 
     function returnDice(?includeDropped = false) : Array<Die> {
-        return [for (die in storedDice) if (!die.dropped || includeDropped) die];
+        if (storedDice != null) {
+            return [for (die in storedDice) if (!die.dropped || includeDropped) die];
+        } else {
+            roll();
+            return returnDice(includeDropped);
+        }
     }
 
     /**
@@ -234,15 +213,19 @@ class SimpleRoll {
         Shuffles the dice using randomness generator provided to the manager. (So e.g. if it is seedy it will be re-producible)
     **/
     public function shuffle() : SimpleRoll {
-        var shuffled : Array<Die> = [];
-        while (storedDice.length > 0) {
-            var n = manager.generator.rollPositiveInt(storedDice.length) - 1;
-            var selectedDie = storedDice[n];
-            shuffled.push(selectedDie);
-            storedDice.remove(selectedDie);
+        if (storedDice == null) {
+            return this;
+        } else {
+            var shuffled : Array<Die> = [];
+            while (storedDice.length > 0) {
+                var n = manager.generator.rollPositiveInt(storedDice.length) - 1;
+                var selectedDie = storedDice[n];
+                shuffled.push(selectedDie);
+                storedDice.remove(selectedDie);
+            }
+            storedDice = shuffled;
+            return this;
         }
-        storedDice = shuffled;
-        return this;
     }
 
     /**
