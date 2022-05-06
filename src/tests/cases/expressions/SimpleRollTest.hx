@@ -1,10 +1,8 @@
 package tests.cases.expressions;
 
-import dice.enums.Modifier;
 import tests.mock.RandomGeneratorMock;
 import dice.errors.InvalidExpression;
 import utest.Assert;
-import dice.expressions.SimpleRoll;
 import utest.Test;
 
 class SimpleRollTest extends Test {
@@ -18,23 +16,23 @@ class SimpleRollTest extends Test {
     function specBasicParse() {
         // Get empty, then parse expression
         var simpleRoll = manager.getSimpleRoll();
-        var roll_expression = simpleRoll.parse('d6');
-        roll_expression.sides == 6;
-        roll_expression.number == 1;
-        @:privateAccess roll_expression.expression = 'd6';
+        var rollExpression = simpleRoll.parse('d6');
+        rollExpression.sides == 6;
+        rollExpression.number == 1;
+        @:privateAccess rollExpression.expression = 'd6';
 
         // Set expression in initial getSimpleRoll
-        var roll_expression = manager.getSimpleRoll('d6');
-        roll_expression.sides == 6;
-        roll_expression.number == 1;
+        var rollExpression = manager.getSimpleRoll('d6');
+        rollExpression.sides == 6;
+        rollExpression.number == 1;
 
-        var roll_expression = manager.getSimpleRoll('3d20');
-        roll_expression.sides == 20;
-        roll_expression.number == 3;
+        var rollExpression = manager.getSimpleRoll('3d20');
+        rollExpression.sides == 20;
+        rollExpression.number == 3;
 
-        var roll_expression = manager.getSimpleRoll('3D20');
-        roll_expression.sides == 20;
-        roll_expression.number == 3;
+        var rollExpression = manager.getSimpleRoll('3D20');
+        rollExpression.sides == 20;
+        rollExpression.number == 3;
 
         Assert.raises(() -> simpleRoll.parse('invalid'), InvalidExpression);
 
@@ -47,8 +45,8 @@ class SimpleRollTest extends Test {
 
     function specBuildDice() {
         generator.mockResults = [
-            6 => [1,2,3],
-            20 => [1,2,3,4],
+            6 => [1, 2, 3],
+            20 => [1, 2, 3, 4],
             4 => [2]
         ];
         var testDiceBuild1 = manager.getSimpleRoll('3d6');
@@ -71,137 +69,134 @@ class SimpleRollTest extends Test {
     }
 
     function specRollDice() {
-        generator.mockResults[6] = [2,4,3,2,5,4];
+        generator.mockResults[6] = [2, 4, 3, 2, 5, 4];
         var testSimpleRoll = manager.getSimpleRoll('2d6');
         Assert.same(
-            [2,4],
-            [for(die in testSimpleRoll.dice) die.result]
+            [2, 4],
+            [for (die in testSimpleRoll.dice) die.result]
         );
         testSimpleRoll.total == 6;
 
         // Fetch again
         Assert.same(
-            [2,4],
-            [for(die in testSimpleRoll.dice) die.result]
+            [2, 4],
+            [for (die in testSimpleRoll.dice) die.result]
         );
         testSimpleRoll.total == 6;
 
         // Reroll
         testSimpleRoll.roll();
         Assert.same(
-            [3,2],
-            [for(die in testSimpleRoll.dice) die.result]
+            [3, 2],
+            [for (die in testSimpleRoll.dice) die.result]
         );
         testSimpleRoll.total == 5;
     }
 
     function specgetModifierValue() {
-        var roll_expression = manager.getSimpleRoll('d45');
-        Assert.isNull(@:privateAccess roll_expression.getModifierValue(EXPLODE));
-        Assert.isNull(@:privateAccess roll_expression.getModifierValue(KEEP));
+        var rollExpression = manager.getSimpleRoll('d45');
+        Assert.isNull(@:privateAccess rollExpression.getModifierValue(EXPLODE));
+        Assert.isNull(@:privateAccess rollExpression.getModifierValue(KEEP));
 
-        var roll_expression = manager.getSimpleRoll('d45!k');
-        @:privateAccess roll_expression.getModifier(KEEP) == 'k';
-        @:privateAccess roll_expression.getModifierValue(KEEP) == 1;
-        @:privateAccess roll_expression.getModifierValue(EXPLODE) == 45;
+        var rollExpression = manager.getSimpleRoll('d45!k');
+        @:privateAccess rollExpression.getModifier(KEEP) == 'k';
+        @:privateAccess rollExpression.getModifierValue(KEEP) == 1;
+        @:privateAccess rollExpression.getModifierValue(EXPLODE) == 45;
 
-        var roll_expression = manager.getSimpleRoll('3d20k!');
-        @:privateAccess roll_expression.getModifier(KEEP) == 'k';
-        @:privateAccess roll_expression.getModifierValue(KEEP) == 1;
+        var rollExpression = manager.getSimpleRoll('3d20k!');
+        @:privateAccess rollExpression.getModifier(KEEP) == 'k';
+        @:privateAccess rollExpression.getModifierValue(KEEP) == 1;
 
-        @:privateAccess roll_expression.getModifierValue(EXPLODE) == 20;
-
-
+        @:privateAccess rollExpression.getModifierValue(EXPLODE) == 20;
     }
 
-    function specExplodingExpression() {        
+    function specExplodingExpression() {
         generator.mockResults[6] = [2];
         var roll1 = manager.getSimpleRoll('d6!');
         Assert.same(
             [2],
-            [for(die in roll1.dice) die.result]
+            [for (die in roll1.dice) die.result]
         );
         roll1.total == 2;
-      
-        generator.mockResults[6] = [6,3,2];
+
+        generator.mockResults[6] = [6, 3, 2];
         var roll2 = manager.getSimpleRoll('d6!');
         Assert.same(
             [9],
-            [for(die in roll2.dice) die.result]
+            [for (die in roll2.dice) die.result]
         );
         roll2.total == 9;
 
-        generator.mockResults[6] = [6,4,3,6,1];
+        generator.mockResults[6] = [6, 4, 3, 6, 1];
         var roll3 = manager.getSimpleRoll('3d6!');
         roll3.total == 20;
         Assert.same(
-            [10,3,7],
-            [for(die in roll3.dice) die.result]
+            [10, 3, 7],
+            [for (die in roll3.dice) die.result]
         );
 
-        generator.mockResults[4] = [3,2,4,3,1];
-        var roll4 = manager.getSimpleRoll('2d4!3');        
+        generator.mockResults[4] = [3, 2, 4, 3, 1];
+        var roll4 = manager.getSimpleRoll('2d4!3');
         Assert.same(
-            [5,8],
-            [for(die in roll4.dice) die.result]
+            [5, 8],
+            [for (die in roll4.dice) die.result]
         );
         roll4.total == 13;
 
-        generator.mockResults[6] = [6,4,3,6,1];
+        generator.mockResults[6] = [6, 4, 3, 6, 1];
         var roll3 = manager.getSimpleRoll('3d6!!');
         roll3.total == 18;
         Assert.same(
-            [9,3,6],
-            [for(die in roll3.dice) die.result]
+            [9, 3, 6],
+            [for (die in roll3.dice) die.result]
         );
 
-        generator.mockResults[4] = [3,2,4,3,1];
-        var roll4 = manager.getSimpleRoll('2d4!!3');        
+        generator.mockResults[4] = [3, 2, 4, 3, 1];
+        var roll4 = manager.getSimpleRoll('2d4!!3');
         Assert.same(
-            [4,6],
-            [for(die in roll4.dice) die.result]
+            [4, 6],
+            [for (die in roll4.dice) die.result]
         );
         roll4.total == 10;
 
         Assert.raises(() -> manager.getSimpleRoll('3d6!!!'), InvalidExpression);
     }
 
-    function specKeepHighest() {        
-        generator.mockResults[6] = [2,6,4,3,5];
+    function specKeepHighest() {
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll1 = manager.getSimpleRoll('5d6');
         @:privateAccess roll1.keepHighest(3);
         roll1.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,4,5],
-            [for(die in roll1.dice) die.result]
+            [6, 4, 5],
+            [for (die in roll1.dice) die.result]
         );
-    
-        
-        generator.mockResults[6] = [2,6,4,3,5,2];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5, 2];
         var roll1 = manager.getSimpleRoll('5d6!');
         @:privateAccess roll1.keepHighest(3);
         roll1.total == 18;  // 10 (i.e. 6 + 4) + 5 + 3
         Assert.same(
-            [10,3,5],
-            [for(die in roll1.dice) die.result]
+            [10, 3, 5],
+            [for (die in roll1.dice) die.result]
         );
     }
 
     function specKeepHighestExpression() {
-        generator.mockResults[6] = [2,6,4,3,5];
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6k3');
         roll.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,4,5],
-            [for(die in roll.dice) die.result]
+            [6, 4, 5],
+            [for (die in roll.dice) die.result]
         );
-        
-        generator.mockResults[6] = [2,6,4,3,5];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6h3');
         roll.total == 15;  // 6 + 5 + 4
         Assert.same(
-            [6,4,5],
-            [for(die in roll.dice) die.result]
+            [6, 4, 5],
+            [for (die in roll.dice) die.result]
         );
 
         Assert.raises(() -> manager.getSimpleRoll('5d6h3k'), InvalidExpression);
@@ -209,60 +204,60 @@ class SimpleRollTest extends Test {
         Assert.raises(() -> manager.getSimpleRoll('5d6h0'), InvalidExpression);
 
         Assert.raises(() -> manager.getSimpleRoll('3d6k4'), InvalidExpression);
-        
-        generator.mockResults[6] = [2,6,4,3,5];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6k');
         roll.total == 6;
         Assert.same(
             [6],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
-        
-        generator.mockResults[6] = [2,6,4,3,5,3];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5, 3];
         var roll = manager.getSimpleRoll('5d6!k');
         roll.total == 10;
         Assert.same(
             [10],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
     }
 
-    function specKeepLowest() {        
-        generator.mockResults[6] = [2,6,4,3,5];
+    function specKeepLowest() {
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6');
         @:privateAccess roll.keepLowest(3);
         roll.total == 9;
         Assert.same(
-            [2,4,3],
-            [for(die in roll.dice) die.result]
+            [2, 4, 3],
+            [for (die in roll.dice) die.result]
         );
-        
-        generator.mockResults[6] = [2,6,4,3,5,2];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5, 2];
         var roll = manager.getSimpleRoll('5d6!');
         @:privateAccess roll.keepLowest(3);
         roll.total == 7;  // 2 + 2 + 3
         Assert.same(
-            [2,3,2],
-            [for(die in roll.dice) die.result]
+            [2, 3, 2],
+            [for (die in roll.dice) die.result]
         );
-        
-        generator.mockResults[6] = [6,3,6,4,6,6,1,2,5];
+
+        generator.mockResults[6] = [6, 3, 6, 4, 6, 6, 1, 2, 5];
         var roll = manager.getSimpleRoll('5d6!');
         @:privateAccess roll.keepLowest(3);
         roll.total == 16;  // 2 + 5 + 9
         Assert.same(
-            [9,2,5],
-            [for(die in roll.dice) die.result]
+            [9, 2, 5],
+            [for (die in roll.dice) die.result]
         );
     }
 
     function specKeepLowestExpression() {
-        generator.mockResults[6] = [2,6,4,3,5];
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6l3');
         roll.total == 9;
         Assert.same(
-            [2,4,3],
-            [for(die in roll.dice) die.result]
+            [2, 4, 3],
+            [for (die in roll.dice) die.result]
         );
 
         Assert.raises(() -> manager.getSimpleRoll('5d6h3l'), InvalidExpression);
@@ -270,31 +265,31 @@ class SimpleRollTest extends Test {
         Assert.raises(() -> manager.getSimpleRoll('5d6l0'), InvalidExpression);
 
         Assert.raises(() -> manager.getSimpleRoll('3d6l4'), InvalidExpression);
-        
-        generator.mockResults[6] = [2,6,4,3,5];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5];
         var roll = manager.getSimpleRoll('5d6l');
         roll.total == 2;
         Assert.same(
             [2],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
-        
-        generator.mockResults[6] = [2,6,4,3,5,3];
+
+        generator.mockResults[6] = [2, 6, 4, 3, 5, 3];
         var roll = manager.getSimpleRoll('5d6!l');
         roll.total == 2;
         Assert.same(
             [2],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
     }
 
     function specShuffle() {
-        generator.mockResults[6] = [2,6,4];
+        generator.mockResults[6] = [2, 6, 4];
         var roll = manager.getSimpleRoll('3d6');
         roll.roll();
         Assert.same(
-            [2,6,4],
-            [for(die in roll.dice) die.result]
+            [2, 6, 4],
+            [for (die in roll.dice) die.result]
         );
 
         generator.mockResults = [
@@ -304,8 +299,8 @@ class SimpleRollTest extends Test {
         ];
         roll.shuffle();
         Assert.same(
-            [6,2,4],
-            [for(die in roll.dice) die.result]
+            [6, 2, 4],
+            [for (die in roll.dice) die.result]
         );
 
         var roll = manager.getSimpleRoll('6d20');
@@ -320,12 +315,12 @@ class SimpleRollTest extends Test {
         ];
         Assert.same(
             [12, 2, 3, 17, 1, 20],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
         roll.shuffle();
         Assert.same(
             [1, 3, 2, 20, 12, 17],
-            [for(die in roll.dice) die.result]
+            [for (die in roll.dice) die.result]
         );
     }
 }

@@ -9,14 +9,13 @@ class DieTest extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
 
-    var sample_size = 10000;
     function setup() {
         generator = new RandomGeneratorMock();
         manager = new dice.RollManager(generator);
     }
 
     function specBasicDie() {
-        generator.mockResults[6] = [2,6,2];
+        generator.mockResults[6] = [2, 6, 2];
         var die1 = manager.getDie(6);
         die1.result == 2;
         die1.roll().result == 6;
@@ -24,14 +23,14 @@ class DieTest extends Test {
     }
 
     function specExplodingDie() {
-        generator.mockResults[6] = [2,4,6,3];
+        generator.mockResults[6] = [2, 4, 6, 3];
         // With exploding 6
         var die1 = manager.getDie(6, 6);
         die1.result == 2;
         die1.roll().result == 4;
         die1.roll().result == 9;
 
-        generator.mockResults[6] = [4,6,5,3];
+        generator.mockResults[6] = [4, 6, 5, 3];
         // With exploding on 4+
         var die2 = manager.getDie(6, 4);
         die2.result == 18;
@@ -42,12 +41,12 @@ class DieTest extends Test {
         die.sides == 20;
         @:privateAccess die.explode == 20;
 
-        Assert.raises(() -> manager.getDie(6,1), InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6, 1), InvalidConstructor);
 
-        Assert.raises(() -> manager.getDie(6,7), InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6, 7), InvalidConstructor);
 
-        Assert.raises(() -> manager.getDie(6,0), InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6, 0), InvalidConstructor);
 
-        Assert.raises(() -> manager.getDie(6,-3), InvalidConstructor);
+        Assert.raises(() -> manager.getDie(6, -3), InvalidConstructor);
     }
 }

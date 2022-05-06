@@ -12,7 +12,6 @@ class RawDieTest extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
 
-    var sample_size = 10000;
     function setup() {
         generator = new RandomGeneratorMock();
         manager = new dice.RollManager(generator);
@@ -22,18 +21,18 @@ class RawDieTest extends Test {
         var die = manager.getRawDie(6);
         die.sides == 6;
 
-        Assert.raises(()-> var die = manager.getRawDie(0), InvalidConstructor);
-        Assert.raises(()-> var die = manager.getRawDie(-4), InvalidConstructor);
+        Assert.raises(() -> var die = manager.getRawDie(0), InvalidConstructor);
+        Assert.raises(() -> var die = manager.getRawDie(-4), InvalidConstructor);
         //Test against invalid values provided dynamically (at runtime)
-        Assert.raises(()-> var die = manager.getRawDie((2.3:Dynamic)), InvalidConstructor);
-        Assert.raises(()-> var die = manager.getRawDie((-0.3:Dynamic)), InvalidConstructor);
-        
-        var die = manager.getRawDie( (3.0:Dynamic) );
+        Assert.raises(() -> var die = manager.getRawDie((2.3:Any)), InvalidConstructor);
+        Assert.raises(() -> var die = manager.getRawDie((-0.3:Any)), InvalidConstructor);
+
+        var die = manager.getRawDie( (3.0:Any) );
         die.sides == 3;
     }
 
     function specBasicDieMocking() {
-        generator.mockResults[6] = [2,4,3];
+        generator.mockResults[6] = [2, 4, 3];
         var d6 = manager.getRawDie(6);
         d6.result == 2;
         d6.roll() == 4;
@@ -53,7 +52,7 @@ class RawDieTest extends Test {
         generator.shouldBeDoneAll();
 
         generator.mockResults = [
-            6 => [1,2,3],
+            6 => [1, 2, 3],
             20 => [3, 16, 20, 1]
         ];
 

@@ -104,9 +104,6 @@
 			"type": "MagicNumber"
 		},
 		{
-			"type": "MultipleVariableDeclarations"
-		},
-		{
 			"type": "NestedControlFlow",
 			"props": {
 				"max": 3
@@ -468,8 +465,27 @@
 		}
 	],
 	"exclude": {
-		"all": [
-			"Tests?$"
+		"all": [],
+		"MagicNumber": [
+			"Test$"
+		],
+		"StringLiteral": [
+			"Test$"
+		],
+		"MultipleStringLiterals": [
+			"Test$"
+		],
+		"Return": [
+			"Test$"
+		],
+		"TypeDocComment": [
+			"Test$"
+		],
+		"CodeSimilarity": [
+			"Test$"
+		],
+		"CyclomaticComplexity": [
+			"Test$"
 		]
 	},
 	"version": 1
