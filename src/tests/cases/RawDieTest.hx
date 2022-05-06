@@ -33,7 +33,7 @@ class RawDieTest extends Test {
     }
 
     function specBasicDieMocking() {
-        generator.mock_results[6] = [2,4,3];
+        generator.mockResults[6] = [2,4,3];
         var d6 = manager.getRawDie(6);
         d6.result == 2;
         d6.roll() == 4;
@@ -45,14 +45,14 @@ class RawDieTest extends Test {
 
         var d20 = manager.getRawDie(20);
 
-        generator.mock_results[20] = [15, 1, 20];
+        generator.mockResults[20] = [15, 1, 20];
         d20.result == 15;
         d20.roll() == 1;
         d20.roll() == 20;
 
         generator.shouldBeDoneAll();
 
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [1,2,3],
             20 => [3, 16, 20, 1]
         ];

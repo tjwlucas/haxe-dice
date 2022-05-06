@@ -53,12 +53,12 @@ class RandomGeneratorTest extends Test {
     **/
     function specDeterministicDistribution() {
         var mock_generator = new RandomGeneratorMock();
-        mock_generator.use_raw = true;
+        mock_generator.useRaw = true;
 
         for(sides in [2,3,4,6,8,10,12,20,100]) {
             // The random number generator being used return 0 <= n < 1
-            mock_generator.mock_raw_results = [for (i in 0...sample_size) i / sample_size];
-            mock_generator.mock_raw_results.length == sample_size;
+            mock_generator.mockRawResults = [for (i in 0...sample_size) i / sample_size];
+            mock_generator.mockRawResults.length == sample_size;
             var rolls = [for (i in 0...sample_size) mock_generator.rollPositiveInt(sides)];
             var other_rolls = rolls;
             var expected_n = sample_size / sides;
@@ -82,6 +82,6 @@ class RandomGeneratorTest extends Test {
             }
             mock_generator.shouldBeDoneRaw();
         }
-        mock_generator.use_raw = false;
+        mock_generator.useRaw = false;
     }
 }

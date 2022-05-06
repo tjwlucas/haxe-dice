@@ -256,11 +256,11 @@
 			"type": "ModifierOrder",
 			"props": {
 				"modifiers": [
+					"OVERRIDE",
 					"PUBLIC_PRIVATE",
 					"STATIC",
 					"INLINE",
 					"MACRO",
-					"OVERRIDE",
 					"DYNAMIC"
 				]
 			}
@@ -469,8 +469,7 @@
 	],
 	"exclude": {
 		"all": [
-			"Tests?$",
-			"Mock$"
+			"Tests?$"
 		]
 	},
 	"version": 1

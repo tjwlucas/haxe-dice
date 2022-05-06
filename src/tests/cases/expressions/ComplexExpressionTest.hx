@@ -55,7 +55,7 @@ class ComplexExpressionTest extends Test {
             [for(v in expression.rolls) @:privateAccess v.expression]
         );
 
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [
                 3,6,2,5,    // Used for the first 3d6!
                 3,2,6,6,1   // Second 3d6!
@@ -82,7 +82,7 @@ class ComplexExpressionTest extends Test {
         Assert.isFalse(expression.result);
 
         
-        generator.mock_results[20] = [15, 9];
+        generator.mockResults[20] = [15, 9];
         var expression = manager.getComplexExpression('
             var r = d20;
             if(r >= 12) {
@@ -95,11 +95,11 @@ class ComplexExpressionTest extends Test {
         Assert.equals("Above (or equal to) 12", expression.result);
         Assert.equals("Below 12", expression.roll());
 
-        generator.mock_results[4] = [3];
+        generator.mockResults[4] = [3];
         var expression = manager.getComplexExpression('var value = d4; (value > 2) && (value < 4)');
         Assert.isTrue(expression.result);
 
-        generator.mock_results[8] = [6,3,5];
+        generator.mockResults[8] = [6,3,5];
         var expression = manager.getComplexExpression('[d8, d8, d8]');
         Assert.same([6,3,5], expression.result);
         Assert.same(
@@ -107,7 +107,7 @@ class ComplexExpressionTest extends Test {
             [for(v in expression.rolls) @:privateAccess v.expression]
         );
 
-        generator.mock_results[8] = [6,3,5];
+        generator.mockResults[8] = [6,3,5];
         var expression = manager.getComplexExpression('[for(i in 0...3) d8]');
         Assert.same([6,3,5], expression.result);
         Assert.same(
@@ -115,11 +115,11 @@ class ComplexExpressionTest extends Test {
             [for(v in expression.rolls) @:privateAccess v.expression]
         );
 
-        generator.mock_results[3] = [2];
+        generator.mockResults[3] = [2];
         var expression = manager.getComplexExpression("['one', 'two', 'three'][d3 - 1]");
         Assert.same("two", expression.result);
 
-        generator.mock_results[3] = [2,1,3,2,1,3,1,2,1,2];
+        generator.mockResults[3] = [2,1,3,2,1,3,1,2,1,2];
         var expression = manager.getComplexExpression("
             var stats = [0,0,0];
             for(i in 0...10) {
@@ -132,7 +132,7 @@ class ComplexExpressionTest extends Test {
     }
 
     function specUnpackRawResults() {
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3,6,2,5],
             4 => [4,2]
         ];
@@ -156,7 +156,7 @@ class ComplexExpressionTest extends Test {
         );
 
 
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3,6,2,5],
             4 => [4,2],
             3 => [3,2,1,2]
@@ -199,7 +199,7 @@ class ComplexExpressionTest extends Test {
         var expression = manager.getComplexExpression('round(3 / 2)');
         Assert.equals(2, expression.roll());
 
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3],
             3 => [2]
         ];
@@ -208,35 +208,35 @@ class ComplexExpressionTest extends Test {
         Assert.equals(9, expression.roll());
 
         var expression = manager.getComplexExpression('max(d6, d3!)');
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [4],
             3 => [3,3,1]
         ];
         Assert.equals(7, expression.roll());
 
         var expression = manager.getComplexExpression('min(d6, d3!)');
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [4],
             3 => [3,3,1]
         ];
         Assert.equals(4, expression.roll());
 
         var expression = manager.getComplexExpression('floor(max(d6,d3!)/d6)');
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [4, 2],
             3 => [3,3,1]
         ];
         Assert.equals(3, expression.roll());
 
         var expression = manager.getComplexExpression('abs(2d6 - 2d6)');
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [1,3,6,4]
         ];
         Assert.equals(6, expression.roll());
     }
 
     function specLogs() {
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3,6,2,5],
             4 => [4,2],
             3 => [3,2,1,2]
@@ -250,7 +250,7 @@ class ComplexExpressionTest extends Test {
         ], expression.logs);
 
 
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3,4,6,5,1,5]
         ];
         var expression = manager.getComplexExpression('
@@ -280,7 +280,7 @@ class ComplexExpressionTest extends Test {
         Assert.equals(4, expression.result);
 
         // With roll logging off
-        generator.mock_results = [
+        generator.mockResults = [
             6 => [3,4,6,5,1,5]
         ];
         var expression = manager.getComplexExpression('
