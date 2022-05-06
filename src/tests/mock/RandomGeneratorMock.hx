@@ -16,7 +16,11 @@ class RandomGeneratorMock extends RandomGenerator {
 		Holds a list of results that return successively for each call to random (i.e. In the interval `[0, 1)`)
 	**/
     public var mockRawResults : Array<Float> = [];
-    var useRaw : Bool;
+
+    /**
+        Flag to use built in `rollPositiveInt` method with the `mockRawResults` list 
+    **/
+    public var useRaw : Bool;
 
     static inline final NOT_ENOUGH_MOCKS : String = "Not enough mock results provided";
 
