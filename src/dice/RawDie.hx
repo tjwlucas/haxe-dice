@@ -18,8 +18,7 @@ class RawDie {
     public var sides : Int;
     var generator : RandomGenerator;
 
-    @:allow(dice.Die)
-    @:allow(dice.RollManager)
+    @:allow(dice.Die, dice.RollManager)
     function new(sides:Int, generator : RandomGenerator) {
         var sidesInt : Int;
         try {
