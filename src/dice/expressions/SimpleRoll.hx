@@ -16,14 +16,16 @@ import dice.errors.InvalidExpression;
     There a currently 2 main classes of modifier permitted afterwards:
 
     - Keep
+
         Keep highest (`k`/`h`) or lowest (`l`). By default will kep one result, but if followed by a number, will keep that many.
 
         e.g. `2d20k` will roll 2 `d20` and keep the highest. `3d6h2` will roll 3 `d6` and keep the highest 2. 
         `3d6l` will roll 3d6 and keep the lowest one.
     
     - Exploding/Penetrating Dice
+
         `!` will, for each die rolled, if the provided threshold (default: the max on the die) is reached, 
-        reroll and add the result, continuing if that meats the threshold, and so on. 
+        reroll and add the result, continuing if that meets the threshold, and so on. 
         If a number is provided after the `!`, that will be used as the threshold.
         If `!!` is used, instead of `!`, one will be subtracted from the result, before each addition (this is sometimes referred to as 'penetrating' dice).
 **/
