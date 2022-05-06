@@ -44,22 +44,25 @@ class ComplexExpression {
         this.parse();
     }
 
-    function parse() : Void {
-        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
-        var i = 0;
-        parsedExpression = matcher.map(expression, m -> {
-            var match = m.matched(0);
-            var expr = 'roll("$match")';
-            i++;
-            return expr;
-        });
+    function parse() : ComplexExpression {
+        parsedExpression = parseExpressionString(expression);
 
         try {
             var parser = new hscript.Parser();
             program = parser.parseString(parsedExpression);
+            return this;
         } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
+    }
+
+    static function parseExpressionString(expressionString : String) : String {
+        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
+        return matcher.map(expressionString, m -> {
+            var match = m.matched(0);
+            var expr = 'roll("$match")';
+            return expr;
+        });
     }
 
     /**
