@@ -10,7 +10,8 @@ class ExpressionInterpreter extends hscript.Interp {
     /**
         @param injectedVariables Map of variables to inject into interpreter environment, of the form `["var_name" => value]`
     **/
-    public function new(injectedVariables : Map<String, Any>) {
+    @:allow(dice.expressions.ComplexExpression)
+    function new(injectedVariables : Map<String, Any>) {
         super();
         variables.set("max", Math.max);
         variables.set("min", Math.min);
