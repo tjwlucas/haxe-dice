@@ -70,7 +70,8 @@ class SimpleRoll {
     **/
     static inline final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
 
-    public function new(manager: RollManager, expression: String) {
+    @:allow(dice.RollManager)
+    function new(manager: RollManager, expression: String) {
         this.manager = manager;
         this.expression = expression;
         var basic = parseCoreExpression(expression);

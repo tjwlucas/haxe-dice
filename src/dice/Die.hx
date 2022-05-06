@@ -27,7 +27,8 @@ class Die {
     **/
     public var dropped : Bool = false;
 
-    public function new(sides: Int, generator : RandomGenerator, ?explode : Int, penetrate:Bool = false) {
+    @:allow(dice.RollManager)
+    function new(sides: Int, generator : RandomGenerator, ?explode : Int, penetrate:Bool = false) {
         this.sides = sides;
         this.generator = generator;
         if (explode != null) {

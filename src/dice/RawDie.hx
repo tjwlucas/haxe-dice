@@ -18,8 +18,9 @@ class RawDie {
     public var sides : Int;
     var generator : RandomGenerator;
 
-    @:dox(hide)
-    public function new(sides:Int, generator : RandomGenerator) {
+    @:allow(dice.Die)
+    @:allow(dice.RollManager)
+    function new(sides:Int, generator : RandomGenerator) {
         var sidesInt : Int;
         try {
             if (sides <= 0) {

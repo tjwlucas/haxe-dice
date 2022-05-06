@@ -37,7 +37,8 @@ class ComplexExpression {
     public var logs : Array<String> = [];
     var logRolls : Bool;
 
-    public function new(manager: RollManager, expression: String, logRolls = false) {
+    @:allow(dice.RollManager)
+    function new(manager: RollManager, expression: String, logRolls = false) {
         this.manager = manager;
         this.expression = expression;
         this.logRolls = logRolls;
