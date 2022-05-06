@@ -106,8 +106,9 @@ class SimpleRoll {
                 case "l": keepLowestNumber = getModifierValue(KEEP);
             }
 
-            verifyKeepNumber(keepHighestNumber);
-            verifyKeepNumber(keepLowestNumber);
+            for (numberToKeep in [keepHighestNumber, keepLowestNumber]) {
+                verifyKeepNumber(numberToKeep);
+            }
 
             return this;
         } catch (e) {
@@ -116,12 +117,13 @@ class SimpleRoll {
         }
     }
 
-    inline function verifyKeepNumber(keepNumber : Null<Int>) : Void {
+    inline function verifyKeepNumber(keepNumber : Null<Int>) : SimpleRoll {
         if (keepNumber != null) {
             if (keepNumber <= 0 || keepNumber > number) {
                 throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
             }
         }
+        return this;
     }
 
     /**

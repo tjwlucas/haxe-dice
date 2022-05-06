@@ -87,8 +87,9 @@ class ComplexExpression {
         return storedResult;
     }
 
-    function log(entry:String) : Void {
+    function log(entry:String) : ComplexExpression {
         logs.push(entry);
+        return this;
     }
 
     function rollFromSimpleExpression(simpleExpression:String) : Int {
