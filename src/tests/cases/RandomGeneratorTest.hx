@@ -56,31 +56,37 @@ class RandomGeneratorTest extends Test {
         mockGenerator.useRaw = true;
 
         for (sides in [2, 3, 4, 6, 8, 10, 12, 20, 100]) {
-            // The random number generator being used return 0 <= n < 1
-            mockGenerator.mockRawResults = [for (i in 0...sampleSize) i / sampleSize];
-            mockGenerator.mockRawResults.length == sampleSize;
-            var rolls = [for (i in 0...sampleSize) mockGenerator.rollPositiveInt(sides)];
-            var expectedN = sampleSize / sides;
-
-            var counts : Map<Int, Int> = [];
-
-            rolls.map(value -> counts.exists(value) ? counts[value]++ : counts[value] = 1 );
-
-            for (i in 0...sides) {
-                var n = i + 1;
-                Assert.isTrue(counts.exists(n), '$n not rolled at all on d$sides');
-                if (counts.exists(n)) {
-                    Assert.isTrue(counts[n] <= expectedN + 1, '$n is being rolled too much on d$sides (${(counts[n]*100/expectedN).round()}% of expected)');
-                    Assert.isTrue(counts[n] >= expectedN - 1, '$n is not being rolled enough on d$sides (${(counts[n]*100/expectedN).round()}% of expected)');
-                }
-            }
-            for (key => value in counts) {
-                if (key < 1 || key > sides) {
-                    Assert.fail('Unexpected roll returned on d$sides: $key (${value * 100 / sampleSize}%)');
-                }
-            }
-            mockGenerator.shouldBeDoneRaw();
+            verifyDistributionForNSides(mockGenerator, sides);
         }
         mockGenerator.useRaw = false;
+    }
+
+    inline function verifyDistributionForNSides(mockGenerator : RandomGeneratorMock, sides : Int) : Void {
+        // The random number generator being used returns 0 <= n < 1
+        mockGenerator.mockRawResults = [for (i in 0...sampleSize) i / sampleSize];
+        Assert.equals(sampleSize, mockGenerator.mockRawResults.length);
+        var expectedN = sampleSize / sides;
+        var counts = generateCountsMap(mockGenerator, sides);
+        for (i in 0...sides) {
+            var n = i + 1;
+            Assert.isTrue(counts.exists(n), '$n not rolled at all on d$sides');
+            if (counts.exists(n)) {
+                Assert.isTrue(counts[n] <= expectedN + 1, '$n is being rolled too much on d$sides (${(counts[n]*100/expectedN).round()}% of expected)');
+                Assert.isTrue(counts[n] >= expectedN - 1, '$n is not being rolled enough on d$sides (${(counts[n]*100/expectedN).round()}% of expected)');
+            }
+        }
+        mockGenerator.shouldBeDoneRaw();
+    }
+
+    inline function generateCountsMap(mockGenerator : RandomGeneratorMock, sides : Int) : Map<Int, Int> {
+        var counts : Map<Int, Int> = [];
+        for (i in 0...sampleSize) {
+            var value = mockGenerator.rollPositiveInt(sides);
+            if (value < 1 || value > sides) {
+                Assert.fail('Unexpected roll returned on d$sides: $value');
+            }
+            counts.exists(value) ? counts[value]++ : counts[value] = 1;
+        }
+        return counts;
     }
 }

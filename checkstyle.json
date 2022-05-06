@@ -483,9 +483,6 @@
 		],
 		"CodeSimilarity": [
 			"Test$"
-		],
-		"CyclomaticComplexity": [
-			"Test$"
 		]
 	},
 	"version": 1
