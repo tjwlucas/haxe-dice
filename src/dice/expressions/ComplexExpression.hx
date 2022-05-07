@@ -83,6 +83,7 @@ class ComplexExpression {
         simpleExpression:String,
         params:Array<Any>
     ) : Int {
+        @SuppressWarnings("checkstyle:MagicNumber")
         var newRoll : SimpleRoll = {
             sides: params[0],
             number: params[1],
