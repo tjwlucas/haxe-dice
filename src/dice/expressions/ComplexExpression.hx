@@ -76,25 +76,20 @@ class ComplexExpression {
             parsed.keepHighestNumber != null ? parsed.keepHighestNumber : NULL_STRING
         ];
         var paramString = params.map(Std.string).join(",");
-        return 'roll("$simpleRollString",$paramString)';
+        return 'roll("$simpleRollString",[$paramString])';
     }
 
     function rollFromParams(
         simpleExpression:String,
-        sides:Int,
-        number:Int,
-        explode:Null<Int>,
-        penetrate:Bool,
-        keepLowest:Null<Int>,
-        keepHighest:Null<Int>
+        params:Array<Any>
     ) : Int {
         var newRoll : SimpleRoll = {
-            sides: sides,
-            number: number,
-            explode: explode,
-            penetrate: penetrate,
-            keepLowestNumber: keepLowest,
-            keepHighestNumber: keepHighest,
+            sides: params[0],
+            number: params[1],
+            explode: params[2],
+            penetrate: params[3],
+            keepLowestNumber: params[4],
+            keepHighestNumber: params[5],
             expression: simpleExpression,
             manager: manager
         };
