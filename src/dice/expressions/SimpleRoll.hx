@@ -89,7 +89,7 @@ using dice.expressions.SimpleRoll;
     @:allow(dice.expressions.ComplexExpression)
     static function parseExpression(passedExpression : String) : SimpleRollParsedValues {
         var basic = parseCoreExpression(passedExpression);
-        var parsedNumber = basic.number != null ? basic.number : 1;
+        var parsedNumber : Int = basic.number != null ? basic.number : 1;
         var parsedSides = basic.sides;
         var parsedExplodeValue = passedExpression.getModifierValue(EXPLODE, parsedSides);
         var parsedDoesPenetrate = passedExpression.getModifier(EXPLODE) == "!!";

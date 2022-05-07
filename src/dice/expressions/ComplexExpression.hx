@@ -19,6 +19,7 @@ import dice.macros.RollParsingMacros;
     @see `SimpleRoll`
 **/
 class ComplexExpression {
+    static inline final NULL_STRING : String = "null";
     var manager : RollManager;
     var expression : String;
     var parsedExpression : String;
@@ -69,10 +70,10 @@ class ComplexExpression {
         var params : Array<Any> = [
             parsed.sides,
             parsed.number,
-            parsed.explode,
+            parsed.explode != null ? parsed.explode : NULL_STRING,
             parsed.penetrate,
-            parsed.keepLowestNumber,
-            parsed.keepHighestNumber
+            parsed.keepLowestNumber != null ? parsed.keepLowestNumber : NULL_STRING,
+            parsed.keepHighestNumber != null ? parsed.keepHighestNumber : NULL_STRING
         ];
         var paramString = params.map(Std.string).join(",");
         return 'roll("$simpleRollString",$paramString)';
