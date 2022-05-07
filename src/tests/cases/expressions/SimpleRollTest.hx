@@ -5,6 +5,8 @@ import dice.errors.InvalidExpression;
 import utest.Assert;
 import utest.Test;
 
+using dice.expressions.SimpleRoll;
+
 class SimpleRollTest extends Test {
     var generator : RandomGeneratorMock;
     var manager : dice.RollManager;
@@ -88,16 +90,16 @@ class SimpleRollTest extends Test {
     }
 
     function specgetModifierValue() {
-        var rollExpression = manager.getSimpleRoll('d45');
+        var rollExpression = 'd45';
         Assert.isNull(@:privateAccess rollExpression.getModifierValue(EXPLODE));
         Assert.isNull(@:privateAccess rollExpression.getModifierValue(KEEP));
 
-        var rollExpression = manager.getSimpleRoll('d45!k');
+        var rollExpression = 'd45!k';
         @:privateAccess rollExpression.getModifier(KEEP) == 'k';
         @:privateAccess rollExpression.getModifierValue(KEEP) == 1;
         @:privateAccess rollExpression.getModifierValue(EXPLODE) == 45;
 
-        var rollExpression = manager.getSimpleRoll('3d20k!');
+        var rollExpression = '3d20k!';
         @:privateAccess rollExpression.getModifier(KEEP) == 'k';
         @:privateAccess rollExpression.getModifierValue(KEEP) == 1;
 

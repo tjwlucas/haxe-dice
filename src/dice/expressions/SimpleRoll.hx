@@ -4,6 +4,7 @@ import dice.util.Util;
 import dice.enums.Modifier;
 import dice.macros.RollParsingMacros;
 import dice.errors.InvalidExpression;
+using dice.expressions.SimpleRoll;
 
 /**
     Represents a simple roll, represented by a single die statement
@@ -29,7 +30,7 @@ import dice.errors.InvalidExpression;
         If a number is provided after the `!`, that will be used as the threshold.
         If `!!` is used, instead of `!`, one will be subtracted from the result, before each addition (this is sometimes referred to as 'penetrating' dice).
 **/
-class SimpleRoll {
+@:structInit class SimpleRoll {
     /**
         Number of sides on the die used in this roll
     **/
@@ -71,39 +72,50 @@ class SimpleRoll {
     static inline final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
 
     @:allow(dice.RollManager)
-    function new(manager: RollManager, expression: String) {
-        this.manager = manager;
-        this.expression = expression;
-        var basic = parseCoreExpression(expression);
-        number = basic.number != null ? basic.number : 1;
-        sides = basic.sides;
-        explode = getModifierValue(EXPLODE);
-        penetrate = getModifier(EXPLODE) == "!!";
+    static function fromExpression(rollManager: RollManager, passedExpression: String) : SimpleRoll {
+        var basic = parseCoreExpression(passedExpression);
+        var parsedNumber = basic.number != null ? basic.number : 1;
+        var parsedSides = basic.sides;
+        var parsedExplodeValue = passedExpression.getModifierValue(EXPLODE, parsedSides);
+        var parsedDoesPenetrate = passedExpression.getModifier(EXPLODE) == "!!";
 
-        switch (getModifier(KEEP)) {
-            case "k" | "h": keepHighestNumber = getModifierValue(KEEP);
-            case "l": keepLowestNumber = getModifierValue(KEEP);
+        var parsedKeepHighestNumber : Null<Int> = null;
+        var parsedKeepLowestNumber : Null<Int> = null;
+
+        switch (getModifier(passedExpression, KEEP)) {
+            case "k" | "h": parsedKeepHighestNumber = passedExpression.getModifierValue(KEEP);
+            case "l": parsedKeepLowestNumber = passedExpression.getModifierValue(KEEP);
             default:
         }
 
-        for (numberToKeep in [keepHighestNumber, keepLowestNumber]) {
-            verifyKeepNumber(numberToKeep);
+        for (numberToKeep in [parsedKeepHighestNumber, parsedKeepLowestNumber]) {
+            verifyKeepNumber(numberToKeep, parsedNumber);
         }
+
+        return {
+            sides: parsedSides,
+            number: parsedNumber,
+            explode: parsedExplodeValue,
+            penetrate: parsedDoesPenetrate,
+            manager: rollManager,
+            keepLowestNumber: parsedKeepLowestNumber,
+            keepHighestNumber: parsedKeepHighestNumber,
+            expression: passedExpression
+        };
     }
 
-    inline function verifyKeepNumber(keepNumber : Null<Int>) : SimpleRoll {
+    static inline function verifyKeepNumber(keepNumber : Null<Int>, totalNumber : Int) : Void {
         if (keepNumber != null) {
-            if (keepNumber <= 0 || keepNumber > number) {
-                throw new InvalidExpression('Number of dice to keep must be between 1 and $number. ($keepNumber given)');
+            if (keepNumber <= 0 || keepNumber > totalNumber) {
+                throw new InvalidExpression('Number of dice to keep must be between 1 and $totalNumber. ($keepNumber given)');
             }
         }
-        return this;
     }
 
     /**
         Validates the provided expression and extracts the initial basic info (number of dice and number of sides)
     **/
-    inline function parseCoreExpression(passedExpression : String) : { number: Null<Int>, sides: Int } {
+    static inline function parseCoreExpression(passedExpression : String) : { number: Null<Int>, sides: Int } {
         var matcher = new EReg(MATCHING_STRING, "i");
         if (#if python @:nullSafety(Off) #end matcher.match(passedExpression)) {
             var numberInExpression = Std.parseInt(matcher.matched(1));
@@ -124,15 +136,16 @@ class SimpleRoll {
         @param mod Parameter key. e.g. The modifier "k" on the expression "4d6k2" would return 2.
     
     **/
-    function getModifierValue(mod: Modifier) : Null<Int> {
+    static function getModifierValue(passedExpression:String, mod: Modifier, ?dieSides : Int) : Null<Int> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if (#if python @:nullSafety(Off) #end matcher.match(expression)) {
+        if (#if python @:nullSafety(Off) #end matcher.match(passedExpression)) {
             var numberParameter = Std.parseInt(matcher.matched(2));
             if (numberParameter == null) {
-                if (mod == EXPLODE) {
-                    numberParameter = sides;
-                } else {
-                    numberParameter = 1;
+                numberParameter = switch (mod) {
+                    case EXPLODE: {
+                            dieSides != null ? dieSides : parseCoreExpression(passedExpression).sides;
+                        }
+                    default: 1;
                 }
             }
             return numberParameter;
@@ -141,9 +154,9 @@ class SimpleRoll {
         }
     }
 
-    function getModifier(mod: Modifier) : Null<String> {
+    static function getModifier(passExpression:String, mod: Modifier) : Null<String> {
         var matcher = new EReg(Util.constructMatcher(mod), "i");
-        if (#if python @:nullSafety(Off) #end matcher.match(expression)) {
+        if (#if python @:nullSafety(Off) #end matcher.match(passExpression)) {
             var mod = matcher.matched(1);
             return mod;
         } else {
