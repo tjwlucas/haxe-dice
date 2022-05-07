@@ -69,7 +69,14 @@ using dice.expressions.SimpleRoll;
     /**
         The general regex that will match a valid die expression
     **/
-    static inline final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
+    #if !macro
+    static final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
+    #else
+    static var MATCHING_STRING : String;
+    static function __init__() {
+        MATCHING_STRING = @:privateAccess RollParsingMacros.doBuildSimpleRollExpression();
+    }
+    #end
 
     @:allow(dice.RollManager)
     static function fromExpression(rollManager: RollManager, passedExpression: String) : SimpleRoll {
@@ -86,7 +93,7 @@ using dice.expressions.SimpleRoll;
         };
     }
 
-    @:allow(dice.expressions.ComplexExpression)
+    @:allow(dice.expressions.ComplexExpression, dice.RollManager)
     static function parseExpression(passedExpression : String) : SimpleRollParsedValues {
         var basic = parseCoreExpression(passedExpression);
         var parsedNumber : Int = basic.number != null ? basic.number : 1;

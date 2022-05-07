@@ -15,12 +15,12 @@ class SimpleRollTest extends Test {
         manager = new dice.RollManager(generator);
     }
 
-    function specBasicParse() {
+    function specBasicParseMacro() {
         // Get empty, then parse expression
         var rollExpression = manager.getSimpleRoll('d6');
         rollExpression.sides == 6;
         rollExpression.number == 1;
-        @:privateAccess rollExpression.expression = 'd6';
+        @:privateAccess rollExpression.expression == 'd6';
 
         var rollExpression = manager.getSimpleRoll('3d20');
         rollExpression.sides == 20;
@@ -37,6 +37,37 @@ class SimpleRollTest extends Test {
         Assert.raises(() -> manager.getSimpleRoll('asdd45q'), InvalidExpression);
 
         Assert.raises(() -> manager.getSimpleRoll('45q'), InvalidExpression);
+    }
+
+    function specBasicParseRuntime() {
+        // Get empty, then parse expression
+        var expr = 'd6';
+        var rollExpression = manager.getSimpleRoll(expr);
+        rollExpression.sides == 6;
+        rollExpression.number == 1;
+        @:privateAccess rollExpression.expression == 'd6';
+
+        var expr = '3d20';
+        var rollExpression = manager.getSimpleRoll(expr);
+        rollExpression.sides == 20;
+        rollExpression.number == 3;
+
+        var expr = '3D20';
+        var rollExpression = manager.getSimpleRoll(expr);
+        rollExpression.sides == 20;
+        rollExpression.number == 3;
+
+        var expr = 'invalid';
+        Assert.raises(() -> manager.getSimpleRoll(expr), InvalidExpression);
+
+        var expr = 'd45q';
+        Assert.raises(() -> manager.getSimpleRoll(expr), InvalidExpression);
+
+        var expr = 'asdd45q';
+        Assert.raises(() -> manager.getSimpleRoll(expr), InvalidExpression);
+
+        var expr = '45q';
+        Assert.raises(() -> manager.getSimpleRoll(expr), InvalidExpression);
     }
 
     function specBuildDice() {
@@ -141,6 +172,15 @@ class SimpleRollTest extends Test {
 
         generator.mockResults[6] = [6, 4, 3, 6, 1];
         var roll3 = manager.getSimpleRoll('3d6!!');
+        roll3.total == 18;
+        Assert.same(
+            [9, 3, 6],
+            [for (die in roll3.dice) die.result]
+        );
+
+        generator.mockResults[6] = [6, 4, 3, 6, 1];
+        var expr = '3d6!!';
+        var roll3 = manager.getSimpleRoll(expr);
         roll3.total == 18;
         Assert.same(
             [9, 3, 6],

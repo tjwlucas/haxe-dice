@@ -44,7 +44,35 @@ class RollManager {
     /**
         @param expression Optionally pass a simple expression to be parsed by `SimpleRoll.parse()`
     **/
-    public function getSimpleRoll(expression: String) : SimpleRoll {
+    @:ignoreCoverage
+    public macro function getSimpleRoll(manager: ExprOf<RollManager>, expression:ExprOf<String>) : ExprOf<SimpleRoll> {
+        // trace(@:privateAccess ComplexExpression.parseExpressionString('3d6'));
+        var expressionLiteral = switch (expression.expr) {
+            case EConst(CString(s)): s;
+            default: null;
+        }
+        try {
+            var expr = @:privateAccess SimpleRoll.parseExpression(expressionLiteral);
+            return macro {
+                ({
+                    sides: $v{ expr.sides },
+                    number: $v{ expr.number },
+                    explode: $v{ expr.explode },
+                    penetrate: $v{ expr.penetrate },
+                    keepLowestNumber: $v{ expr.keepLowestNumber },
+                    keepHighestNumber: $v{ expr.keepHighestNumber },
+                    expression: $v{ expressionLiteral },
+                    manager: $manager
+                }
+                : dice.expressions.SimpleRoll);
+            }
+        } catch (e) {
+            return macro $manager.getSimpleRollRuntime($expression);
+        }
+    }
+
+    @:native('getSimpleRoll')
+    public function getSimpleRollRuntime(expression:String) : SimpleRoll {
         return SimpleRoll.fromExpression(this, expression);
     }
 
