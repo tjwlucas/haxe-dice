@@ -73,6 +73,21 @@ using dice.expressions.SimpleRoll;
 
     @:allow(dice.RollManager)
     static function fromExpression(rollManager: RollManager, passedExpression: String) : SimpleRoll {
+        var parsed = parseExpression(passedExpression);
+        return {
+            sides: parsed.sides,
+            number: parsed.number,
+            explode: parsed.explode,
+            penetrate: parsed.penetrate,
+            keepLowestNumber: parsed.keepLowestNumber,
+            keepHighestNumber: parsed.keepHighestNumber,
+            expression: passedExpression,
+            manager: rollManager,
+        };
+    }
+
+    @:allow(dice.expressions.ComplexExpression)
+    static function parseExpression(passedExpression : String) : SimpleRollParsedValues {
         var basic = parseCoreExpression(passedExpression);
         var parsedNumber = basic.number != null ? basic.number : 1;
         var parsedSides = basic.sides;
@@ -97,10 +112,8 @@ using dice.expressions.SimpleRoll;
             number: parsedNumber,
             explode: parsedExplodeValue,
             penetrate: parsedDoesPenetrate,
-            manager: rollManager,
             keepLowestNumber: parsedKeepLowestNumber,
-            keepHighestNumber: parsedKeepHighestNumber,
-            expression: passedExpression
+            keepHighestNumber: parsedKeepHighestNumber
         };
     }
 

@@ -59,9 +59,49 @@ class ComplexExpression {
         var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
         return matcher.map(expressionString, m -> {
             var match = m.matched(0);
-            var expr = 'roll("$match")';
+            var expr = buildSimpleRoll(match);
             return expr;
         });
+    }
+
+    static function buildSimpleRoll(simpleRollString : String) : String {
+        var parsed = SimpleRoll.parseExpression(simpleRollString);
+        var params : Array<Any> = [
+            parsed.sides,
+            parsed.number,
+            parsed.explode,
+            parsed.penetrate,
+            parsed.keepLowestNumber,
+            parsed.keepHighestNumber
+        ];
+        var paramString = params.map(Std.string).join(",");
+        return 'roll("$simpleRollString",$paramString)';
+    }
+
+    function rollFromParams(
+        simpleExpression:String,
+        sides:Int,
+        number:Int,
+        explode:Null<Int>,
+        penetrate:Bool,
+        keepLowest:Null<Int>,
+        keepHighest:Null<Int>
+    ) : Int {
+        var newRoll : SimpleRoll = {
+            sides: sides,
+            number: number,
+            explode: explode,
+            penetrate: penetrate,
+            keepLowestNumber: keepLowest,
+            keepHighestNumber: keepHighest,
+            expression: simpleExpression,
+            manager: manager
+        };
+        rolls.push(newRoll);
+        if (logRolls) {
+            log('[$simpleExpression]: $newRoll');
+        }
+        return newRoll.total;
     }
 
     /**
@@ -91,19 +131,10 @@ class ComplexExpression {
         return this;
     }
 
-    function rollFromSimpleExpression(simpleExpression:String) : Int {
-        var newRoll = manager.getSimpleRoll(simpleExpression);
-        rolls.push(newRoll);
-        if (logRolls) {
-            log('[$simpleExpression]: $newRoll');
-        }
-        return newRoll.total;
-    }
-
     function executeExpression() : Any {
         var interp = new ExpressionInterpreter([
-            "roll" => rollFromSimpleExpression,
-            "log" => log
+            "log" => log,
+            "roll" => rollFromParams
         ]);
         rolls = [];
         return interp.execute(program);
