@@ -42,11 +42,14 @@ class RollManager {
     }
 
     /**
-        @param expression Optionally pass a simple expression to be parsed by `SimpleRoll.parse()`
+        Returns a built SimpleRoll object based on the provided expression. This is generated at compiletime, if provided as a string literal,
+        or at runtime, if a dynamic expression is provided.
+
+        @param manager (This) Mmanager to provide for randomness
+        @param expression Expression string (e.g. `"5d8!"`)
     **/
     @:ignoreCoverage
     public macro function getSimpleRoll(manager: ExprOf<RollManager>, expression:ExprOf<String>) : ExprOf<SimpleRoll> {
-        // trace(@:privateAccess ComplexExpression.parseExpressionString('3d6'));
         var expressionLiteral = switch (expression.expr) {
             case EConst(CString(s)): s;
             default: null;
@@ -70,12 +73,10 @@ class RollManager {
             return macro $manager.getSimpleRollRuntime($expression);
         }
     }
-
-    @:native('getSimpleRoll')
+    
     public function getSimpleRollRuntime(expression:String) : SimpleRoll {
         return SimpleRoll.fromExpression(this, expression);
     }
-
     /**
         Generated a complex expression based on the passed expression string.
 

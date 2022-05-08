@@ -57,10 +57,11 @@ class ComplexExpression {
     }
 
     static function parseExpressionString(expressionString : String) : String {
+        final regexFlags = "gi";
         #if macro
-            var matcher = new EReg(@:privateAccess RollParsingMacros.doBuildSimpleRollExpression(false, true), "gi");
+            var matcher = new EReg(@:privateAccess RollParsingMacros.doBuildSimpleRollExpression(false, true), regexFlags);
         #else
-        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), "gi");
+        var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), regexFlags);
         #end
         return matcher.map(expressionString, m -> {
             var match = m.matched(0);

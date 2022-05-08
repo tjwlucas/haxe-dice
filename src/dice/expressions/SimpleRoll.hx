@@ -70,7 +70,7 @@ using dice.expressions.SimpleRoll;
         The general regex that will match a valid die expression
     **/
     #if !macro
-    static final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
+        static final MATCHING_STRING : String = RollParsingMacros.buildSimpleRollExpression();
     #else
     static var MATCHING_STRING : String;
     static function __init__() {
