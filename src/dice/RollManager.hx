@@ -73,7 +73,12 @@ class RollManager {
             return macro $manager.getSimpleRollRuntime($expression);
         }
     }
-    
+
+    /**
+        Returns a built SimpleRoll object based on the provided expression. This is generated at runtime.
+
+        @param expression Expression string (e.g. `"5d8!"`)
+    **/
     public function getSimpleRollRuntime(expression:String) : SimpleRoll {
         return SimpleRoll.fromExpression(this, expression);
     }
