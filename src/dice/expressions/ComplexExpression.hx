@@ -30,7 +30,7 @@ class ComplexExpression {
 
     var storedResult : Null<Any>;
 
-    var program : Expr;
+    var program : Null<Expr>;
 
     /**
         Log entries returned by calls to `log()` in the expression (and each roll if roll logging is enabled)
@@ -38,24 +38,31 @@ class ComplexExpression {
     public var logs : Array<String> = [];
     var logRolls : Bool;
 
+    var nativeExecutor : Null<ComplexExpression -> Any>;
+
     @:allow(dice.RollManager)
-    function new(manager: RollManager, expression: String, logRolls = false) {
+    function new(manager: RollManager, expression: String, logRolls = false, ?nativeExecutor: ComplexExpression -> Any) {
         this.manager = manager;
         this.expression = expression;
         this.logRolls = logRolls;
-        var program : Expr;
+        var program : Null<Expr>;
         var parsedExpression : String;
         try {
             parsedExpression = parseExpressionString(expression);
-            var parser = new hscript.Parser();
-            program = parser.parseString(parsedExpression);
+            if (nativeExecutor == null) {
+                var parser = new hscript.Parser();
+                program = parser.parseString('${expressionPreamble()}\n$parsedExpression');
+                this.program = program;
+            } else {
+                this.nativeExecutor = nativeExecutor;
+            }
         } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
         this.parsedExpression = parsedExpression;
-        this.program = program;
     }
 
+    @:allow(dice.RollManager)
     static function parseExpressionString(expressionString : String) : String {
         final regexFlags = "gi";
         #if macro
@@ -63,11 +70,21 @@ class ComplexExpression {
         #else
         var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), regexFlags);
         #end
-        return matcher.map(expressionString, m -> {
+        var parsedExpressionString = matcher.map(expressionString, m -> {
             var match = m.matched(0);
             var expr = buildSimpleRoll(match);
             return expr;
         });
+        return parsedExpressionString;
+    }
+
+    @:allow(dice.RollManager)
+    static function expressionPreamble() : String {
+        var preamble = "";
+        for (op in ["max", "min", "floor", "ceil", "round", "abs", "pow"]) {
+            preamble = 'var $op = Math.$op;\n$preamble';
+        }
+        return preamble;
     }
 
     static function buildSimpleRoll(simpleRollString : String) : String {
@@ -84,6 +101,7 @@ class ComplexExpression {
         return 'roll("$simpleRollString",[$paramString])';
     }
 
+    @:allow(dice.RollManager)
     function rollFromParams(
         simpleExpression:String,
         params:Array<Any>
@@ -134,12 +152,17 @@ class ComplexExpression {
     }
 
     function executeExpression() : Any {
-        var interp = new ExpressionInterpreter([
-            "log" => log,
-            "roll" => rollFromParams
-        ]);
         rolls = [];
-        return interp.execute(program);
+        if (nativeExecutor == null) {
+            var interp = new ExpressionInterpreter([
+                "log" => log,
+                "roll" => rollFromParams
+            ]);
+            @:nullSafety(Off) // If we are here, program `variable` cannot be null if `nativeExecutor` is (The constructor would have thrown an error)
+            return interp.execute(program);
+        } else {
+            return nativeExecutor(this);
+        }
     }
 
     /**

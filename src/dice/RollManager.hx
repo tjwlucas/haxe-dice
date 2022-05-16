@@ -2,6 +2,12 @@ package dice;
 
 import dice.expressions.SimpleRoll;
 import dice.expressions.ComplexExpression;
+using StringTools;
+
+#if macro
+    import haxe.macro.Context;
+    using haxe.macro.ExprTools;
+#end
 
 /**
     `RollManager` manages all the libary functionality, providing access to an expression parser and evaluator, 
@@ -45,7 +51,7 @@ class RollManager {
         Returns a built SimpleRoll object based on the provided expression. This is generated at compiletime, if provided as a string literal,
         or at runtime, if a dynamic expression is provided.
 
-        @param manager (This) Mmanager to provide for randomness
+        @param manager (This) Manager to provide for randomness
         @param expression Expression string (e.g. `"5d8!"`)
     **/
     @:ignoreCoverage
@@ -82,13 +88,51 @@ class RollManager {
     public function getSimpleRollRuntime(expression:String) : SimpleRoll {
         return SimpleRoll.fromExpression(this, expression);
     }
+
     /**
-        Generated a complex expression based on the passed expression string.
+        Generated a complex expression based on the passed expression string. This is generated at compiletime, if provided as a string literal,
+        or at runtime, if a dynamic expression is provided.
+
+        @param manager (This) Manager to provide for randomness
+        @param expression e.g. `3d6! + 5` or `2d6 * d4`
+        @param logRolls Flag to enable automatic logging of each roll result to the expression `logs` property
+    **/
+    @:ignoreCoverage
+    public macro function getComplexExpression(manager: ExprOf<RollManager>, expression:ExprOf<String>, ?logRolls : ExprOf<Bool>) : ExprOf<ComplexExpression> {
+        var expressionLiteral = switch (expression.expr) {
+            case EConst(CString(s)): s;
+            default: null;
+        }
+        try {
+            var parsedExpression = dice.expressions.ComplexExpression.parseExpressionString(expressionLiteral);
+            if (!parsedExpression.trim().endsWith(";")) {
+                parsedExpression = '$parsedExpression;';
+            }
+            var parsedExpression = "{ " + dice.expressions.ComplexExpression.expressionPreamble() + "\n" + parsedExpression + " }";
+            var nativeExpression = Context.parse(parsedExpression, Context.currentPos());
+
+            var nativeExecutor = macro self -> {
+                @:pos(Context.currentPos()) var roll = @:privateAccess self.rollFromParams;
+                @:pos(Context.currentPos()) var log = @:privateAccess self.log;
+                @:pos(Context.currentPos())
+                $e{ nativeExpression };
+            }
+            return macro $manager.getComplexExpressionRuntime($expression, $logRolls, $nativeExecutor);
+        } catch (e) {
+            if (expressionLiteral != null ) {
+                Context.warning('Unable to parse literal "$expressionLiteral" into a native executor', Context.currentPos());
+            }
+            return macro $manager.getComplexExpressionRuntime($expression, $logRolls);
+        }
+    }
+
+    /**
+        Generated a complex expression based on the passed expression string. This is generated at runtime.
 
         @param expression e.g. `3d6! + 5` or `2d6 * d4`
         @param logRolls Flag to enable automatic logging of each roll result to the expression `logs` property
     **/
-    public function getComplexExpression(expression: String, ?logRolls : Bool) : ComplexExpression {
-        return new ComplexExpression(this, expression, logRolls);
+    public function getComplexExpressionRuntime(expression: String, ?logRolls : Bool, ?nativeExecutor: ComplexExpression -> Any) : ComplexExpression {
+        return new ComplexExpression(this, expression, logRolls, nativeExecutor);
     }
 }

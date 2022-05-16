@@ -483,6 +483,9 @@
 		],
 		"CodeSimilarity": [
 			"Test$"
+		],
+		"MethodLength": [
+			"Test$"
 		]
 	},
 	"version": 1

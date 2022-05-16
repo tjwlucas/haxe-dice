@@ -12,6 +12,7 @@ class ComplexExpressionTest extends Test {
         generator = new RandomGeneratorMock();
         manager = new dice.RollManager(generator);
     }
+
     function specParseExpression() {
         var expression = manager.getComplexExpression('(3d6! / 2) + d4');
 
@@ -36,6 +37,34 @@ class ComplexExpressionTest extends Test {
         @:privateAccess expression.parsedExpression == '(roll("3d6!",[6,3,6,false,null,null]) / 2) + roll("d4!",[4,1,4,false,null,null])';
     }
 
+    function specParseExpressionRunTime() {
+        var expressionString = '(3d6! / 2) + d4';
+        var expression = manager.getComplexExpression(expressionString);
+
+        @:privateAccess expression.parsedExpression == '(roll("3d6!",[6,3,6,false,null,null]) / 2) + roll("d4",[4,1,null,false,null,null])';
+        Assert.same(
+            [],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        // Test that expressions in quotations are ignored
+        var expressionString = '"The result of the (3d6! / 2) + d4 roll is: " + (3d6! / 2) + d4';
+        var expression = manager.getComplexExpression(expressionString);
+        @:privateAccess expression.parsedExpression
+        == '"The result of the (3d6! / 2) + d4 roll is: " + (roll("3d6!",[6,3,6,false,null,null]) / 2) + roll("d4",[4,1,null,false,null,null])';
+
+        // Test that expressions in quotations are ignored
+        var expressionString = "'The result of the (3d6! / 2) + d4 roll is: ' + (3d6! / 2) + d4";
+        var expression = manager.getComplexExpression(expressionString);
+        @:privateAccess expression.parsedExpression
+        == "'The result of the (3d6! / 2) + d4 roll is: ' + (roll(\"3d6!\",[6,3,6,false,null,null]) / 2) + roll(\"d4\",[4,1,null,false,null,null])";
+
+        // Allow for multipleinstances of modifiers across *different* subexpressions
+        var expressionString = '(3d6! / 2) + d4!';
+        var expression = manager.getComplexExpression(expressionString);
+        @:privateAccess expression.parsedExpression == '(roll("3d6!",[6,3,6,false,null,null]) / 2) + roll("d4!",[4,1,4,false,null,null])';
+    }
+
     function specParseBadExpression() {
         Assert.raises(() -> manager.getComplexExpression('(3d6! / 2 + d4'), InvalidExpression);
 
@@ -49,6 +78,40 @@ class ComplexExpressionTest extends Test {
     @:depends(specParseExpression)
     function specExecuteExpressionNumericResult() {
         var expression = manager.getComplexExpression('(3d6! / 2) + d4');
+
+        Assert.same(
+            [],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        generator.mockResults = [
+            6 => [
+                3, 6, 2, 5,    // Used for the first 3d6!
+                3, 2, 6, 6, 1   // Second 3d6!
+            ],
+            4 => [1, 2]
+        ];
+        Assert.equals(9, expression.result);
+        Assert.equals(9, expression.result);
+        Assert.same(
+            ['3d6!', 'd4'],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        Assert.equals(11, expression.roll());
+        Assert.equals(11, expression.result);
+        Assert.same(
+            ['3d6!', 'd4'],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        generator.shouldBeDoneAll();
+    }
+
+    @:depends(specParseExpressionRunTime)
+    function specExecuteExpressionNumericResultRunTime() {
+        var expressionString = '(3d6! / 2) + d4';
+        var expression = manager.getComplexExpression(expressionString);
 
         Assert.same(
             [],
@@ -137,13 +200,79 @@ class ComplexExpressionTest extends Test {
         generator.shouldBeDoneAll();
     }
 
+    function specExecuteExpressionNonNumericResultRunTime() {
+        generator.mockResults[4] = [4, 2];
+
+        var expressionString = 'd4 == 4';
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.isTrue(expression.result);
+        var expressionString = 'd4 > 2';
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.isFalse(expression.result);
+
+        generator.mockResults[20] = [15, 9];
+        var expressionString = '
+            var r = d20;
+            if (r >= 12) {
+                return "Above (or equal to) 12";
+            } else {
+                return "Below 12";
+            }
+        ';
+        var expression = manager.getComplexExpression(expressionString);
+        expression.roll();
+        Assert.equals("Above (or equal to) 12", expression.result);
+        Assert.equals("Below 12", expression.roll());
+
+        generator.mockResults[4] = [3];
+        var expressionString = 'var value = d4; (value > 2) && (value < 4)';
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.isTrue(expression.result);
+
+        generator.mockResults[8] = [6, 3, 5];
+        var expressionString = '[d8, d8, d8]';
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.same([6, 3, 5], expression.result);
+        Assert.same(
+            ['d8', 'd8', 'd8'],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        generator.mockResults[8] = [6, 3, 5];
+        var expressionString = '[for (i in 0...3) d8]';
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.same([6, 3, 5], expression.result);
+        Assert.same(
+            ['d8', 'd8', 'd8'],
+            [for (v in expression.rolls) @:privateAccess v.expression]
+        );
+
+        generator.mockResults[3] = [2];
+        var expressionString = "['one', 'two', 'three'][d3 - 1]";
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.same("two", expression.result);
+
+        generator.mockResults[3] = [2, 1, 3, 2, 1, 3, 1, 2, 1, 2];
+        var expressionString = "
+            var stats = [0, 0, 0];
+            for (i in 0...10) {
+                stats[d3 - 1]++;
+            }
+            stats
+        ";
+        var expression = manager.getComplexExpression(expressionString);
+        Assert.same([4, 4, 2], expression.result);
+        generator.shouldBeDoneAll();
+    }
+
     function specUnpackRawResults() {
         generator.mockResults = [
             6 => [3, 6, 2, 5],
             4 => [4, 2]
         ];
 
-        var expression = manager.getComplexExpression('3d6! + 2d4');
+        var expressionString = '3d6! + 2d4';
+        var expression = manager.getComplexExpression(expressionString);
         expression.roll();
 
         Assert.same([
@@ -166,7 +295,8 @@ class ComplexExpressionTest extends Test {
             3 => [3, 2, 1, 2]
         ];
 
-        var expression = manager.getComplexExpression('3d6!k + d4! + 3d3!l2');
+        var expressionString = '3d6!k + d4! + 3d3!l2';
+        var expression = manager.getComplexExpression(expressionString);
         Assert.equals(17, expression.roll());
 
         Assert.same([
@@ -190,9 +320,6 @@ class ComplexExpressionTest extends Test {
     }
 
     function specOperations() {
-        var expression = manager.getComplexExpression('3 ^ 2');
-        Assert.equals(9, expression.roll());
-
         var expression = manager.getComplexExpression('floor(3 / 2)');
         Assert.equals(1, expression.roll());
 
@@ -206,9 +333,6 @@ class ComplexExpressionTest extends Test {
             6 => [3],
             3 => [2]
         ];
-
-        var expression = manager.getComplexExpression('d6 ^ d3');
-        Assert.equals(9, expression.roll());
 
         var expression = manager.getComplexExpression('max(d6, d3!)');
         generator.mockResults = [
