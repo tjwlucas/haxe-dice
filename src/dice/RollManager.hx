@@ -6,6 +6,7 @@ using StringTools;
 
 #if macro
     import haxe.macro.Context;
+    import haxe.macro.Expr.ExprOf;
     using haxe.macro.ExprTools;
 #end
 
@@ -56,10 +57,7 @@ class RollManager {
     **/
     @:ignoreCoverage
     public macro function getSimpleRoll(manager: ExprOf<RollManager>, expression:ExprOf<String>) : ExprOf<SimpleRoll> {
-        var expressionLiteral = switch (expression.expr) {
-            case EConst(CString(s)): s;
-            default: null;
-        }
+        var expressionLiteral : Null<String> = stringLiteralOrNull(expression);
         try {
             var expr = @:privateAccess SimpleRoll.parseExpression(expressionLiteral);
             return macro {
@@ -99,10 +97,7 @@ class RollManager {
     **/
     @:ignoreCoverage
     public macro function getComplexExpression(manager: ExprOf<RollManager>, expression:ExprOf<String>, ?logRolls : ExprOf<Bool>) : ExprOf<ComplexExpression> {
-        var expressionLiteral = switch (expression.expr) {
-            case EConst(CString(s)): s;
-            default: null;
-        }
+        var expressionLiteral : Null<String> = stringLiteralOrNull(expression);
         try {
             var parsedExpression = dice.expressions.ComplexExpression.parseExpressionString(expressionLiteral);
             if (!parsedExpression.trim().endsWith(";")) {
@@ -135,4 +130,13 @@ class RollManager {
     public function getComplexExpressionRuntime(expression: String, ?logRolls : Bool, ?nativeExecutor: ComplexExpression -> Any) : ComplexExpression {
         return new ComplexExpression(this, expression, logRolls, nativeExecutor);
     }
+
+    #if macro
+        static function stringLiteralOrNull(expression:ExprOf<String>) : Null<String> {
+            return switch (expression.expr) {
+                case EConst(CString(s)): s;
+                default: null;
+            }
+        }
+    #end
 }
