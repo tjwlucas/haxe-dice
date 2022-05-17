@@ -2,7 +2,6 @@ package dice;
 
 import dice.expressions.SimpleRoll;
 import dice.expressions.ComplexExpression;
-using StringTools;
 
 #if macro
     import haxe.macro.Context;
@@ -100,9 +99,6 @@ class RollManager {
         var expressionLiteral : Null<String> = stringLiteralOrNull(expression);
         try {
             var parsedExpression = dice.expressions.ComplexExpression.parseExpressionString(expressionLiteral);
-            if (!parsedExpression.trim().endsWith(";")) {
-                parsedExpression = '$parsedExpression;';
-            }
             var parsedExpression = "{ " + dice.expressions.ComplexExpression.expressionPreamble() + "\n" + parsedExpression + " }";
             var nativeExpression = Context.parse(parsedExpression, Context.currentPos());
 

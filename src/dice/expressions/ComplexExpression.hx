@@ -2,6 +2,7 @@ package dice.expressions;
 
 import hscript.Expr;
 import dice.macros.RollParsingMacros;
+using StringTools;
 
 /**
     Represents a complex expression, which may include any number of `SimpleRoll` expressions.
@@ -38,7 +39,7 @@ class ComplexExpression {
     public var logs : Array<String> = [];
     var logRolls : Bool;
 
-    var nativeExecutor : Null<ComplexExpression -> Any>;
+    var executor : Null<ComplexExpression -> Any>;
 
     var resultsSummary : ResultsSummary;
 
@@ -53,10 +54,17 @@ class ComplexExpression {
             parsedExpression = parseExpressionString(expression);
             if (nativeExecutor == null) {
                 var parser = new hscript.Parser();
-                program = parser.parseString('${expressionPreamble()}\n$parsedExpression');
-                this.program = program;
+                program = parser.parseString('function (self) {
+                    ${expressionPreamble()}
+                    $parsedExpression
+                }');
+                var interp = new ExpressionInterpreter([
+                    "log" => log,
+                    "roll" => rollFromParams
+                ]);
+                this.executor = interp.execute(program);
             } else {
-                this.nativeExecutor = nativeExecutor;
+                this.executor = nativeExecutor;
             }
         } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
@@ -78,6 +86,9 @@ class ComplexExpression {
             var expr = buildSimpleRoll(match);
             return expr;
         });
+        if (!parsedExpressionString.trim().endsWith(";")) {
+            parsedExpressionString = '$parsedExpressionString;';
+        }
         return parsedExpressionString;
     }
 
@@ -157,16 +168,7 @@ class ComplexExpression {
 
     function executeExpression() : Any {
         rolls = [];
-        if (nativeExecutor == null) {
-            var interp = new ExpressionInterpreter([
-                "log" => log,
-                "roll" => rollFromParams
-            ]);
-            @:nullSafety(Off) // If we are here, `program` variable cannot be null if `nativeExecutor` is (The constructor would have thrown an error)
-            return interp.execute(program);
-        } else {
-            return nativeExecutor(this);
-        }
+        return executor(this);
     }
 
     /**
