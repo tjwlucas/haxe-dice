@@ -41,7 +41,7 @@ class ComplexExpression {
 
     var executor : ComplexExpression -> Any;
 
-    var resultsSummary : ResultsSummary;
+    public var resultsSummary : ResultsSummary;
 
     @:allow(dice.RollManager)
     function new(manager: RollManager, expression: String, logRolls = false, ?nativeExecutor: ComplexExpression -> Any) {
