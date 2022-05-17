@@ -39,7 +39,7 @@ class ComplexExpression {
     public var logs : Array<String> = [];
     var logRolls : Bool;
 
-    var executor : Null<Void -> Any>;
+    var executor : ComplexExpression -> Any;
 
     var resultsSummary : ResultsSummary;
 
@@ -50,26 +50,27 @@ class ComplexExpression {
         this.logRolls = logRolls;
         var program : Null<Expr>;
         var parsedExpression : String;
+        var executor : ComplexExpression -> Any;
         try {
             parsedExpression = parseExpressionString(expression);
-            if (nativeExecutor == null) {
+            executor = if (nativeExecutor == null) {
                 var parser = new hscript.Parser();
                 program = parser.parseString('function (self) {
                     ${expressionPreamble()}
                     $parsedExpression
                 }');
                 var interp = new ExpressionInterpreter([
-                    "log" => log,
-                    "roll" => rollFromParams
+                    "log" => @:nullSafety(Off) log,
+                    "roll" => @:nullSafety(Off) rollFromParams
                 ]);
-                var builtFunction : ComplexExpression -> Any = interp.execute(program);
-                this.executor = builtFunction.bind(this);
+                interp.execute(program);
             } else {
-                this.executor = nativeExecutor.bind(this);
+                nativeExecutor;
             }
         } catch (e) {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
+        this.executor = executor;
         this.parsedExpression = parsedExpression;
         this.resultsSummary = new ResultsSummary();
     }
@@ -169,7 +170,7 @@ class ComplexExpression {
 
     function executeExpression() : Any {
         rolls = [];
-        return executor();
+        return executor(this);
     }
 
     /**
