@@ -40,6 +40,8 @@ class ComplexExpression {
 
     var nativeExecutor : Null<ComplexExpression -> Any>;
 
+    var resultsSummary : ResultsSummary;
+
     @:allow(dice.RollManager)
     function new(manager: RollManager, expression: String, logRolls = false, ?nativeExecutor: ComplexExpression -> Any) {
         this.manager = manager;
@@ -60,6 +62,7 @@ class ComplexExpression {
             throw new dice.errors.InvalidExpression('Unable to parse $expression');
         }
         this.parsedExpression = parsedExpression;
+        this.resultsSummary = new ResultsSummary();
     }
 
     @:allow(dice.RollManager)
@@ -143,6 +146,7 @@ class ComplexExpression {
     public function roll() : Any {
         logs = [];
         storedResult = executeExpression();
+        resultsSummary.addResult(storedResult);
         return storedResult;
     }
 

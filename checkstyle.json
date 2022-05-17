@@ -232,10 +232,6 @@
 			"props": {
 				"thresholds": [
 					{
-						"severity": "INFO",
-						"complexity": 6
-					},
-					{
 						"severity": "WARNING",
 						"complexity": 11
 					},
