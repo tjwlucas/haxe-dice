@@ -22,6 +22,16 @@ class ResultsSummary {
         return normMap;
     }
 
+    public var uniqueResults(get, never) : Array<Any>;
+    function get_uniqueResults() : Array<Any> {
+        var unique = [for (key in resultsMap.keys()) key];
+        if (isNumeric) {
+            unique = unique.map(value -> Std.parseFloat(value));
+            unique.sort((a:Any, b:Any) -> (a:Int) - (b:Int) );
+        }
+        return unique;
+    }
+
     @:allow(dice.expressions.ComplexExpression)
     function new() {}
 
@@ -33,6 +43,7 @@ class ResultsSummary {
         } else {
             isNumeric = switch [isNumeric, Std.isOfType(result, Float)] {
                 case [false, _]: false;
+                case [null, true]: true;
                 case [true, true]: true;
                 default: false;
             }

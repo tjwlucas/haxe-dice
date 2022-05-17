@@ -28,6 +28,16 @@ class ResultsSummaryTest extends Test {
         );
     }
 
+    function specIsNumeric() {
+        generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
+        var expression = manager.getComplexExpression("2d6 + 3");
+        for (i in 0...6) {
+            expression.roll();
+        }
+        var summary = expression.resultsSummary;
+        Assert.isTrue(summary.isNumeric);
+    }
+
     function specResultsSummaryMap() {
         generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
         var expression = manager.getComplexExpression("2d6 + 3");
@@ -56,6 +66,20 @@ class ResultsSummaryTest extends Test {
         Assert.same(
             expectedMap,
             summary.normalisedResultMap
+        );
+    }
+
+    function specUniqueResultsSummary() {
+        generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
+        var expression = manager.getComplexExpression("2d6 + 3");
+        for (i in 0...6) {
+            expression.roll();
+        }
+        var summary = expression.resultsSummary;
+        
+        Assert.same(
+            [8, 9, 11, 12],
+            summary.uniqueResults
         );
     }
 }
