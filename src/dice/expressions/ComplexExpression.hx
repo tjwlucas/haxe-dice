@@ -66,7 +66,7 @@ class ComplexExpression {
     static function parseExpressionString(expressionString : String) : String {
         final regexFlags = "gi";
         #if macro
-            var matcher = new EReg(@:privateAccess RollParsingMacros.doBuildSimpleRollExpression(false, true), regexFlags);
+            var matcher = new EReg(RollParsingMacros.doBuildSimpleRollExpression(false, true), regexFlags);
         #else
         var matcher = new EReg(RollParsingMacros.buildSimpleRollExpression(false, true), regexFlags);
         #end
@@ -158,7 +158,7 @@ class ComplexExpression {
                 "log" => log,
                 "roll" => rollFromParams
             ]);
-            @:nullSafety(Off) // If we are here, program `variable` cannot be null if `nativeExecutor` is (The constructor would have thrown an error)
+            @:nullSafety(Off) // If we are here, `program` variable cannot be null if `nativeExecutor` is (The constructor would have thrown an error)
             return interp.execute(program);
         } else {
             return nativeExecutor(this);

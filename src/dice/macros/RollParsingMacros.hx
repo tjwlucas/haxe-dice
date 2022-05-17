@@ -18,6 +18,7 @@ class RollParsingMacros {
     }
 
     #if macro
+        @:allow(dice.expressions.ComplexExpression, dice.expressions.SimpleRoll)
         static function doBuildSimpleRollExpression(onlyComplete : Bool = true, excludeInQuotations : Bool = false) : String {
             var baseString = "([0-9]*)d([0-9]+)";
             var modifiers : Map<String, String> = [];

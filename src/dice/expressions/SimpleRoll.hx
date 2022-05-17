@@ -74,7 +74,7 @@ using dice.expressions.SimpleRoll;
     #else
     static var MATCHING_STRING : String;
     static function __init__() {
-        MATCHING_STRING = @:privateAccess RollParsingMacros.doBuildSimpleRollExpression();
+        MATCHING_STRING = RollParsingMacros.doBuildSimpleRollExpression();
     }
     #end
 

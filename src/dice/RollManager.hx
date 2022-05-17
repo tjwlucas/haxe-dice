@@ -59,7 +59,7 @@ class RollManager {
     public macro function getSimpleRoll(manager: ExprOf<RollManager>, expression:ExprOf<String>) : ExprOf<SimpleRoll> {
         var expressionLiteral : Null<String> = stringLiteralOrNull(expression);
         try {
-            var expr = @:privateAccess SimpleRoll.parseExpression(expressionLiteral);
+            var expr = SimpleRoll.parseExpression(expressionLiteral);
             return macro {
                 ({
                     sides: $v{ expr.sides },
@@ -133,8 +133,12 @@ class RollManager {
 
     #if macro
         static function stringLiteralOrNull(expression:ExprOf<String>) : Null<String> {
+            // Drill through metadata looking for a string literal
             return switch (expression.expr) {
                 case EConst(CString(s)): s;
+                case EMeta(meta, expr): {
+                        stringLiteralOrNull(expr);
+                    }
                 default: null;
             }
         }
