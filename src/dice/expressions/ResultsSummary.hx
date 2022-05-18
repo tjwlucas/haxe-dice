@@ -1,7 +1,14 @@
 package dice.expressions;
 
 class ResultsSummary {
+    /**
+        Raw list of all results added to the results summary set (excluding null values)
+    **/
     public var rawResults : Array<Any> = [];
+
+    /**
+        Total count of results that have been added to the summary set. (Including null values)
+    **/
     public var numberOfResults : Int = 0;
 
     /**
@@ -11,10 +18,33 @@ class ResultsSummary {
     **/
     public var isNumeric : Bool = true;
 
+    /**
+        Should be true if *every* result is an integer, otherwise false.
+        
+        (true when there are no results, yet - integer until proven otherwise)
+    **/
     public var isInteger : Bool = true;
 
+    /**
+        Returns true if at least one null result has been added to the result set
+    **/
     public var includesNullValues : Bool = false;
 
+    /**
+        If *all* results in the set are integers, returns a frequency map of each result.
+
+        e.g. A raw set of `[1,3,4,3,5,2,1]` would yield a `resultsMap` of:
+
+        ```
+        [
+            1 => 2,
+            2 => 1,
+            3 => 2,
+            4 => 1,
+            5 => 1
+        ]
+        ```
+    **/
     public var resultsMap(get, default) : Map<Int, Int> = [];
     function get_resultsMap() : Map<Int, Int> {
         return if (isInteger) {
@@ -24,6 +54,9 @@ class ResultsSummary {
         }
     }
 
+    /**
+        Similar to `resultsMap` but returns normalised results (each value is divided by the `numberOfResults`)
+    **/
     public var normalisedResultMap(get, never) : Map<Int, Float>;
     function get_normalisedResultMap() : Map<Int, Float> {
         var normMap : Map<Int, Float> = [];
@@ -33,6 +66,9 @@ class ResultsSummary {
         return normMap;
     }
 
+    /**
+        A deduplicated list of all results
+    **/
     public var uniqueResults(get, never) : Array<Any>;
     function get_uniqueResults() : Array<Any> {
         if (isInteger) {
@@ -49,6 +85,9 @@ class ResultsSummary {
         }
     }
 
+    /**
+        As `uniqueResults`, but (if numeric) sorted in ascending order. If non-numeric, simply returns `uniqueResults` unchanged.
+    **/
     public var sortedUniqueResults(get, never) : Array<Any>;
     function get_sortedUniqueResults() : Array<Any> {
         if (isNumeric) {
