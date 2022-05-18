@@ -86,6 +86,9 @@ steps:
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
       - Generate Code Coverage Badge
+    when:
+      branch:
+      - master
   - name: Build Documentation
     image: haxe:4.2.3
     commands:
@@ -115,6 +118,9 @@ steps:
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
       - Build Documentation
+    when:
+      branch:
+      - master
 ---
 kind: pipeline
 name: Release
