@@ -71,8 +71,8 @@ class ResultsSummary {
             }
             if (isInteger) {
                 var numericResult : Int = result;
-                var oldCount = resultsMap.exists(numericResult) ? resultsMap.get(numericResult) : 0;
-                resultsMap.set(numericResult, oldCount + 1);
+                var oldCount = resultsMap.get(numericResult);
+                resultsMap.set(numericResult, oldCount != null ? oldCount + 1 : 1);
             }
         }
         rawResults.push(result);
