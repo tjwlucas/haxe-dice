@@ -69,6 +69,9 @@ steps:
       - Tests in Neko
       - Tests in Python
       - Check Style
+    when:
+      branch:
+      - master
   - name: Update Online Coverage Badge
     image: plugins/s3
     settings:
@@ -95,6 +98,9 @@ steps:
       - Tests in Neko
       - Tests in Python
       - Check Style
+    when:
+      branch:
+      - master
   - name: Publish Documentation
     image: plugins/s3
     settings:
