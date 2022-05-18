@@ -8,11 +8,6 @@ platform:
   arch: arm
 
 steps:
-  - name: Check Style
-    image: haxe:4.2.3
-    commands:
-      - haxelib install --always --quiet checkstyle
-      - haxelib run checkstyle -s src --exitcode
   - name: NullSafe Build
     image: haxe:4.2.3
     commands:
@@ -24,8 +19,14 @@ steps:
       - haxelib install --always --quiet all.hxml
       - haxe all.hxml
     depends_on:
-      - Check Style
       - NullSafe Build
+  - name: Check Style
+    image: haxe:4.2.3
+    commands:
+      - haxelib install --always --quiet checkstyle
+      - haxelib run checkstyle -s src --exitcode
+    depends_on:
+      - Build
   - name: Tests in NodeJS
     image: node:16.3.0-alpine3.13
     commands:
@@ -67,6 +68,7 @@ steps:
       - Tests in PHP8
       - Tests in Neko
       - Tests in Python
+      - Check Style
   - name: Update Online Coverage Badge
     image: plugins/s3
     settings:
@@ -92,6 +94,7 @@ steps:
       - Tests in PHP8
       - Tests in Neko
       - Tests in Python
+      - Check Style
   - name: Publish Documentation
     image: plugins/s3
     settings:
@@ -137,6 +140,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: d59b99e4b3328848b88c116b67022b2d61f2e799e99f9e091a084d6e589bf936
+hmac: 8e85c39e180160b98a95bb185476dd525a140ce1d8b557daa6876d6c316ef5fc
 
 ...
