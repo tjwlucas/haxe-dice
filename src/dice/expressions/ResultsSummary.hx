@@ -5,9 +5,11 @@ class ResultsSummary {
     public var numberOfResults : Int = 0;
 
     /**
-        Should be true if *every* result is numeric (Float or Int), otherwise false. (Null when there are no results, yet)
+        Should be true if *every* result is numeric (Float or Int), otherwise false.
+        
+        (true when there are no results, yet - numeric until proven otherwise)
     **/
-    public var isNumeric : Null<Bool>;
+    public var isNumeric : Bool = true;
 
     public var includesNullValues : Bool = false;
 
@@ -43,17 +45,15 @@ class ResultsSummary {
         } else {
             isNumeric = switch [isNumeric, Std.isOfType(result, Float)] {
                 case [false, _]: false;
-                case [null, true]: true;
                 case [true, true]: true;
                 default: false;
             }
         }
         rawResults.push(result);
 
-        if (resultsMap.exists(result)) {
-            resultsMap[result]++;
-        } else {
-            resultsMap[result] = 1;
+        resultsMap[result] = switch (resultsMap.get(result)) {
+            case null: 1;
+            case count: count + 1;
         }
     }
 }
