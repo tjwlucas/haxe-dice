@@ -207,11 +207,14 @@ class ComplexExpression {
     **/
     public function rollUntilConvergence(n : Int = 10000, threshold : Float = 0.0005, ?feedback: (Int, Float) -> Void) : ComplexExpression {
         var proximity = Math.POSITIVE_INFINITY;
-        while (proximity > threshold) {
+        var previousProximity = Math.POSITIVE_INFINITY;
+        // Break the loop when the proximity is below the threshold twice in a row AND smaller than the previous time
+        while (proximity > threshold || proximity > previousProximity || previousProximity > threshold) {
             var previous = resultsSummary.normalisedResultMap.copy();
             for (i in 0...n) {
                 roll();
             }
+            previousProximity = proximity;
             proximity = resultsSummary.proximity(previous);
             if (feedback != null) {
                 feedback(resultsSummary.numberOfResults, proximity);
