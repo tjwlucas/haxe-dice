@@ -11,13 +11,22 @@ class ResultsSummary {
     **/
     public var isNumeric : Bool = true;
 
+    public var isInteger : Bool = true;
+
     public var includesNullValues : Bool = false;
 
-    public var resultsMap : Map<Any, Int> = [];
+    public var resultsMap(get, default) : Map<Int, Int> = [];
+    function get_resultsMap() : Map<Int, Int> {
+        return if (isInteger) {
+            resultsMap;
+        } else {
+            [];
+        }
+    }
 
-    public var normalisedResultMap(get, never) : Map<Any, Float>;
-    function get_normalisedResultMap() : Map<Any, Float> {
-        var normMap : Map<Any, Float> = [];
+    public var normalisedResultMap(get, never) : Map<Int, Float>;
+    function get_normalisedResultMap() : Map<Int, Float> {
+        var normMap : Map<Int, Float> = [];
         for (key => value in resultsMap) {
             normMap[key] = value / numberOfResults;
         }
@@ -26,12 +35,19 @@ class ResultsSummary {
 
     public var uniqueResults(get, never) : Array<Any>;
     function get_uniqueResults() : Array<Any> {
-        var unique = [for (key in resultsMap.keys()) key];
-        if (isNumeric) {
-            unique = unique.map(value -> Std.parseFloat(value));
-            unique.sort((a:Any, b:Any) -> (a:Int) - (b:Int) );
+        if (isInteger) {
+            var unique = [for (key in resultsMap.keys()) key];
+            unique.sort((a, b) -> a - b);
+            return unique;
+        } else {
+            var unique : Array<Any> = [];
+            for (r in rawResults) {
+                if (!unique.contains(r)) {
+                    unique.push(r);
+                }
+            }
+            return unique;
         }
-        return unique;
     }
 
     @:allow(dice.expressions.ComplexExpression)
@@ -48,12 +64,18 @@ class ResultsSummary {
                 case [true, true]: true;
                 default: false;
             }
+            isInteger = switch [isInteger, Std.isOfType(result, Int)] {
+                case [false, _]: false;
+                case [true, true]: true;
+                default: false;
+            }
+            if (isInteger) {
+                var numericResult : Int = result;
+                var oldCount = resultsMap.exists(numericResult) ? resultsMap.get(numericResult) : 0;
+                resultsMap.set(numericResult, oldCount + 1);
+            }
         }
         rawResults.push(result);
 
-        resultsMap[result] = switch (resultsMap.get(result)) {
-            case null: 1;
-            case count: count + 1;
-        }
     }
 }

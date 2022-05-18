@@ -46,7 +46,7 @@ class ResultsSummaryTest extends Test {
         }
         var summary = expression.resultsSummary;
 
-        var expectedMap : Map<Any, Float> = [
+        var expectedMap : Map<Int, Int> = [
             8 => 2,
             9 => 2,
             11 => 1,
@@ -57,7 +57,7 @@ class ResultsSummaryTest extends Test {
             summary.resultsMap
         );
 
-        var expectedMap : Map<Any, Float> = [
+        var expectedMap : Map<Int, Float> = [
             8 => 1 / 3,
             9 => 1 / 3,
             11 => 1 / 6,
@@ -76,7 +76,7 @@ class ResultsSummaryTest extends Test {
             expression.roll();
         }
         var summary = expression.resultsSummary;
-        
+
         Assert.same(
             [8, 9, 11, 12],
             summary.uniqueResults
