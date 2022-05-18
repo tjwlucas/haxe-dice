@@ -57,6 +57,15 @@ steps:
       - python ./bin/tests.py
     depends_on:
       - Build
+---
+kind: pipeline
+name: Publish Documentation
+
+platform:
+  os: linux
+  arch: arm
+
+steps:
   - name: Generate Code Coverage Badge
     image: node:16.3.0-alpine3.13
     commands:
@@ -69,9 +78,6 @@ steps:
       - Tests in Neko
       - Tests in Python
       - Check Style
-    when:
-      branch:
-      - master
   - name: Update Online Coverage Badge
     image: plugins/s3
     settings:
@@ -86,8 +92,6 @@ steps:
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
       - Generate Code Coverage Badge
-    when:
-      branch:
       - master
   - name: Build Documentation
     image: haxe:4.2.3
@@ -101,9 +105,6 @@ steps:
       - Tests in Neko
       - Tests in Python
       - Check Style
-    when:
-      branch:
-      - master
   - name: Publish Documentation
     image: plugins/s3
     settings:
@@ -118,9 +119,13 @@ steps:
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
       - Build Documentation
-    when:
-      branch:
-      - master
+
+trigger:
+  branch:
+  - master
+
+depends_on:
+- Run Tests
 ---
 kind: pipeline
 name: Release
@@ -152,6 +157,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 8e93d5a29021ca787e84506f479259c518fdc57793f00df6727aef7595096b45
+hmac: d68087dd1903dc57995f89fd2ff9c3c7b7e0a507873bdae848c991b622a6eeb7
 
 ...
