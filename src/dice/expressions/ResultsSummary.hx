@@ -1,5 +1,8 @@
 package dice.expressions;
 
+/**
+    Results summary of every result this expression has yielded in each invocation of `roll()`
+**/
 class ResultsSummary {
     /**
         Raw list of all results added to the results summary set (excluding null values)

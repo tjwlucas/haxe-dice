@@ -41,6 +41,9 @@ class ComplexExpression {
 
     var executor : ComplexExpression -> Any;
 
+    /**
+        Results summary of every result this expression has yielded in each invocation of `roll()`
+    **/
     public var resultsSummary : ResultsSummary;
 
     @:allow(dice.RollManager)
