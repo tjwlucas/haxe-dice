@@ -195,4 +195,28 @@ class ComplexExpression {
             ]
         ];
     }
+
+    /**
+        Recursively calls `roll()` in batches of n, until the proximity between successive normalised result maps is less than the threshold.
+
+        @see `ResultsSummary.proximity`
+
+        @param n Size of the batches to roll between convergence threshold checks
+        @param threshold Threshold below which the results are considered to have 'converged' and rolling will stop
+        @param feedback (Optional) A callback which is passed the number of results on the summary and the latest proximity value. Called on each iteration. 
+    **/
+    public function rollUntilConvergence(n : Int = 10000, threshold : Float = 0.0005, ?feedback: (Int, Float) -> Void) : ComplexExpression {
+        var proximity = Math.POSITIVE_INFINITY;
+        while (proximity > threshold) {
+            var previous = resultsSummary.normalisedResultMap.copy();
+            for (i in 0...n) {
+                roll();
+            }
+            proximity = resultsSummary.proximity(previous);
+            if (feedback != null) {
+                feedback(resultsSummary.numberOfResults, proximity);
+            }
+        }
+        return this;
+    }
 }

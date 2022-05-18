@@ -1,5 +1,6 @@
 package tests.cases.expressions;
 
+import dice.RollManager;
 import tests.mock.RandomGeneratorMock;
 import utest.Assert;
 import utest.Test;
@@ -205,5 +206,58 @@ class ResultsSummaryTest extends Test {
             expectedMap,
             summary.normalisedResultMap
         );
+    }
+
+    function specConvergenceWithCallback() {
+        var randomManager = new RollManager();
+        var targetProximity = 0.005;
+        var rollCount : Int;
+        var prox : Float;
+        var expression = randomManager.getComplexExpression("2d6").rollUntilConvergence(1000, targetProximity, (n, e) -> {
+            rollCount = n;
+            prox = e;
+        });
+
+        prox < targetProximity;
+
+        var summary = expression.resultsSummary;
+
+        summary.numberOfResults == rollCount;
+
+        var map = summary.normalisedResultMap;
+
+        var keys = [for (k in map.keys()) k];
+        keys.length == 11;
+
+        for (i in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+            Assert.contains(i, keys);
+
+            // Once converged, should follow the general shape of increasing probability up to a max result of 7, then decreasing
+            if (i < 7) {
+                map[i] < map[i + 1];
+            } else if (i < 12) {
+                map[i] > map[i + 1];
+            }
+        }
+    }
+
+    function specConvergenceWithoutCallback() {
+        var randomManager = new RollManager();
+        var expression = randomManager.getComplexExpression("d6").rollUntilConvergence();
+
+        var summary = expression.resultsSummary;
+        var map = summary.normalisedResultMap;
+
+        var keys = [for (k in map.keys()) k];
+        keys.length == 6;
+
+        var expected = 1 / 6;
+
+        for (i in [1, 2, 3, 4, 5, 6]) {
+            Assert.contains(i, keys);
+            // Allow a fairly large deviation from the expected
+            map[i] < expected + 0.01;
+            map[i] > expected - 0.01;
+        }
     }
 }
