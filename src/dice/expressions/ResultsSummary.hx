@@ -37,7 +37,6 @@ class ResultsSummary {
     function get_uniqueResults() : Array<Any> {
         if (isInteger) {
             var unique = [for (key in resultsMap.keys()) key];
-            unique.sort((a, b) -> a - b);
             return unique;
         } else {
             var unique : Array<Any> = [];
@@ -47,6 +46,25 @@ class ResultsSummary {
                 }
             }
             return unique;
+        }
+    }
+
+    public var sortedUniqueResults(get, never) : Array<Any>;
+    function get_sortedUniqueResults() : Array<Any> {
+        if (isNumeric) {
+            return if (isInteger) {
+                var sorted : Array<Int> = cast uniqueResults;
+                sorted.sort((a, b) -> a - b);
+                sorted;
+            } else {
+                var sorted : Array<Float> = cast uniqueResults;
+                sorted.sort((a, b) -> {
+                    return a > b ? 1 : -1; // Don't need to worry about the equal case, since this is already a unique list
+                });
+                sorted;
+            }
+        } else {
+            return uniqueResults;
         }
     }
 
@@ -75,8 +93,8 @@ class ResultsSummary {
                 var oldCount = resultsMap.get(numericResult);
                 resultsMap.set(numericResult, oldCount != null ? oldCount + 1 : 1);
             }
+            rawResults.push(result);
         }
-        rawResults.push(result);
 
     }
 }

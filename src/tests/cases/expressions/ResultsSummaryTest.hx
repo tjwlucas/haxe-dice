@@ -14,7 +14,11 @@ class ResultsSummaryTest extends Test {
         manager = new dice.RollManager(generator);
     }
 
-    function specRawResultsSummary() {
+    function newSummary() {
+        return @:privateAccess new dice.expressions.ResultsSummary();
+    }
+
+    function specRawResultsSummaryFromExpression() {
         generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
         var expression = manager.getComplexExpression("2d6 + 3");
         for (i in 0...6) {
@@ -28,46 +32,50 @@ class ResultsSummaryTest extends Test {
         );
     }
 
-    function specIsNumericAndInteger() {
-        generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
-        var expression = manager.getComplexExpression("2d6 + 3");
-        for (i in 0...6) {
-            expression.roll();
+    function specRawResultsSummary() {
+        var summary = newSummary();
+        for (i in [8, 8, 12, 9, 9, 11]) {
+            @:privateAccess summary.addResult(i);
         }
-        var summary = expression.resultsSummary;
+
+        Assert.same(
+            [8, 8, 12, 9, 9, 11],
+            summary.rawResults
+        );
+    }
+
+    function specIsNumericAndInteger() {
+        var summary = newSummary();
+        for (i in [8, 8, 12, 9, 9, 11]) {
+            @:privateAccess summary.addResult(i);
+        }
         Assert.isTrue(summary.isNumeric);
 
-        var expression = manager.getComplexExpression("'string'");
-        expression.roll();
-        var summary = expression.resultsSummary;
+        var summary = newSummary();
+        @:privateAccess summary.addResult("string");
         Assert.isFalse(summary.isNumeric);
 
-        generator.mockResults[4] = [1, 2, 3, 4];
-        var expression = manager.getComplexExpressionRuntime("[3, 23, 4.5, true][d4 - 1]");
-        for (i in 0...2) {
-            expression.roll();
-        }
-        var summary = expression.resultsSummary;
+        var summary = newSummary();
+        @:privateAccess summary.addResult(3);
+        @:privateAccess summary.addResult(23);
         // [3, 23] - All integers, so far
         Assert.isTrue(summary.isNumeric);
         Assert.isTrue(summary.isInteger);
-        expression.roll();
+        @:privateAccess summary.addResult(4.5);
         // [3, 23, 4.5] - Now, there's a Float, still numeric, but not integer
         Assert.isTrue(summary.isNumeric);
         Assert.isFalse(summary.isInteger);
-        expression.roll();
+        @:privateAccess summary.addResult(true);
         // [3, 23, 4.5, true] - Bool stops it being numeric, at all
         Assert.isFalse(summary.isNumeric);
         Assert.isFalse(summary.isInteger);
     }
 
     function specResultsSummaryMap() {
-        generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
-        var expression = manager.getComplexExpression("2d6 + 3");
-        for (i in 0...6) {
-            expression.roll();
+        var summary = newSummary();
+        for (i in [8, 8, 12, 9, 9, 11]) {
+            @:privateAccess summary.addResult(i);
         }
-        var summary = expression.resultsSummary;
 
         var expectedMap : Map<Int, Int> = [
             8 => 2,
@@ -92,17 +100,110 @@ class ResultsSummaryTest extends Test {
         );
     }
 
-    function specUniqueResultsSummary() {
-        generator.mockResults[6] = [2, 3, 1, 4, 3, 6, 2, 4, 1, 5, 6, 2];
-        var expression = manager.getComplexExpression("2d6 + 3");
-        for (i in 0...6) {
-            expression.roll();
+    function specUniqueResultsSummaryInt() {
+        var testValues : Array<Any> = [8, 8, 12, 9, 9, 11];
+        var summary = newSummary();
+        for (i in testValues) {
+            @:privateAccess summary.addResult(i);
         }
-        var summary = expression.resultsSummary;
+
+        summary.uniqueResults.length == 4;
+        for (i in testValues) {
+            Assert.contains(i, summary.uniqueResults);
+        }
 
         Assert.same(
             [8, 9, 11, 12],
-            summary.uniqueResults
+            summary.sortedUniqueResults
+        );
+    }
+
+    function specUniqueResultsSummaryFloat() {
+        var testValues : Array<Any> = [8.3, 8.3, 12, 9.1, 9, 11];
+        var summary = newSummary();
+        for (i in testValues) {
+            @:privateAccess summary.addResult(i);
+        }
+
+        summary.uniqueResults.length == 5;
+        for (i in testValues) {
+            Assert.contains(i, summary.uniqueResults);
+        }
+
+        Assert.same(
+            [8.3, 9, 9.1, 11, 12],
+            summary.sortedUniqueResults
+        );
+    }
+
+    function specUniqueResultsSummaryMixed() {
+        var testValues : Array<Any> = ['some', 'value', true, false, 15, 15, 'value'];
+        var summary = newSummary();
+        for (i in testValues) {
+            @:privateAccess summary.addResult(i);
+        }
+
+        summary.uniqueResults.length == 5;
+        for (i in testValues) {
+            Assert.contains(i, summary.uniqueResults);
+        }
+
+        // 'Order' is not defined, so return the unique list unaltered
+        Assert.same(summary.sortedUniqueResults, summary.uniqueResults);
+
+        var emptyMap : Map<Int, Int> = [];
+        Assert.same(emptyMap, summary.resultsMap);
+    }
+
+    function specResultsSummaryIntWithNull() {
+        var testValues : Array<Any> = [8, 8, 12, 9, null, 9, 11];
+        var summary = newSummary();
+        for (i in testValues) {
+            @:privateAccess summary.addResult(i);
+        }
+
+        Assert.isTrue(summary.includesNullValues);
+        Assert.notContains(null, summary.rawResults);
+
+        summary.uniqueResults.length == 4;
+        for (i in testValues) {
+            if (i != null) {
+                Assert.contains(i, summary.uniqueResults);
+            }
+        }
+
+        Assert.notContains(null, summary.uniqueResults);
+
+        Assert.same(
+            [8, 9, 11, 12],
+            summary.sortedUniqueResults
+        );
+
+        summary.rawResults.length == 6;
+        summary.numberOfResults == 7;
+        Assert.isTrue(summary.isInteger);
+        Assert.isTrue(summary.isNumeric);
+
+        var expectedMap : Map<Int, Int> = [
+            8 => 2,
+            9 => 2,
+            11 => 1,
+            12 => 1
+        ];
+        Assert.same(
+            expectedMap,
+            summary.resultsMap
+        );
+
+        var expectedMap : Map<Int, Float> = [
+            8 => 2 / 7,
+            9 => 2 / 7,
+            11 => 1 / 7,
+            12 => 1 / 7
+        ];
+        Assert.same(
+            expectedMap,
+            summary.normalisedResultMap
         );
     }
 }
