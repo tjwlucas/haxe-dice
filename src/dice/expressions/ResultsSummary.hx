@@ -59,16 +59,17 @@ class ResultsSummary {
         if (result == null) {
             includesNullValues = true;
         } else {
-            isNumeric = switch [isNumeric, Std.isOfType(result, Float)] {
-                case [false, _]: false;
-                case [true, true]: true;
-                default: false;
+            inline function allMatchType(result : Any, existing : Bool, type : Any) : Bool {
+                return switch [existing, Std.isOfType(result, type)] {
+                    case [false, _]: false;
+                    case [true, true]: true;
+                    default: false;
+                }
             }
-            isInteger = switch [isInteger, Std.isOfType(result, Int)] {
-                case [false, _]: false;
-                case [true, true]: true;
-                default: false;
-            }
+
+            isNumeric = allMatchType(result, isNumeric, Float);
+            isInteger = allMatchType(result, isInteger, Int);
+
             if (isInteger) {
                 var numericResult : Int = result;
                 var oldCount = resultsMap.get(numericResult);
