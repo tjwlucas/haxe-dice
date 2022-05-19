@@ -82,6 +82,7 @@ class RollManager {
 
         @param expression Expression string (e.g. `"5d8!"`)
     **/
+    @:native("getSimpleRoll")
     public function getSimpleRollRuntime(expression:String) : SimpleRoll {
         return SimpleRoll.fromExpression(this, expression);
     }
@@ -123,6 +124,7 @@ class RollManager {
         @param expression e.g. `3d6! + 5` or `2d6 * d4`
         @param logRolls Flag to enable automatic logging of each roll result to the expression `logs` property
     **/
+    @:native("getComplexExpression")
     public function getComplexExpressionRuntime(expression: String, ?logRolls : Bool, ?nativeExecutor: ComplexExpression -> Any) : ComplexExpression {
         return new ComplexExpression(this, expression, logRolls, nativeExecutor);
     }
