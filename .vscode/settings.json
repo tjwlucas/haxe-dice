@@ -1,5 +1,11 @@
 {
     "haxe.configurations": [
-        ["build-nullsafe.hxml"]
+        ["coverage.hxml"]
+    ],
+    "haxeTestExplorer.testCommand": [
+        "${haxe}",
+        "coverage.hxml",
+        "-lib",
+        "test-adapter"
     ]
 }

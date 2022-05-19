@@ -144,9 +144,10 @@ class ResultsSummary {
         Measure the 'proximity' between the current result set and a provided `normalisedResultMap`. 
         The measure is defined as the largest difference between the normalised results for each key
         (if the key is missing from the previous map, this 'differnece' is just the value on the new map)
+
+        @param compared Previous `normalisedResultMap` to which to compare
     **/
-    @:allow(dice.expressions.ComplexExpression.rollUntilConvergence)
-    function proximity(compared:Map<Int, Float>) : Float {
+    public function proximity(compared:Map<Int, Float>) : Float {
         var maxDiff : Float = 0;
         for (key => value in normalisedResultMap) {
             var oldValue : Float = cast compared.exists(key) ? compared.get(key) : 0;
