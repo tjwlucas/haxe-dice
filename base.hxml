@@ -5,3 +5,4 @@
 
 -main tests.Tests
 -lib utest
+-lib seedyrng
