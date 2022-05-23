@@ -205,7 +205,7 @@ class ComplexExpression {
         @param threshold Threshold below which the results are considered to have 'converged' and rolling will stop
         @param feedback (Optional) A callback which is passed the number of results on the summary and the latest proximity value. Called on each iteration. 
     **/
-    public function rollUntilConvergence(n : Int = 10000, threshold : Float = 0.0005, ?feedback: (Int, Float) -> Void) : ComplexExpression {
+    public function rollUntilConvergence(n : Int, threshold : Float, ?feedback: (Int, Float) -> Void) : ComplexExpression {
         var proximity = Math.POSITIVE_INFINITY;
         var previousProximity = Math.POSITIVE_INFINITY;
         // Break the loop when the proximity is below the threshold twice in a row AND smaller than the previous time

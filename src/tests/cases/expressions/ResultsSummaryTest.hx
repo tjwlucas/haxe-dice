@@ -243,7 +243,7 @@ class ResultsSummaryTest extends Test {
 
     function specConvergenceWithoutCallback() {
         var randomManager = new RollManager();
-        var expression = randomManager.getComplexExpression("d6").rollUntilConvergence();
+        var expression = randomManager.getComplexExpression("d6").rollUntilConvergence(10000, 0.0005);
 
         var summary = expression.resultsSummary;
         var map = summary.normalisedResultMap;
