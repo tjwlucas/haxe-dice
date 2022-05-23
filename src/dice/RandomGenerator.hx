@@ -33,7 +33,7 @@ class RandomGenerator {
     function random() : Float {
         return switch (type) {
             #if seedyrng
-                case Seedy(_): this.seedyRng.random();
+                case Seedy(_): @:nullSafety(Off) this.seedyRng.random(); // Cannot get here without initialising the property in the constructor
             #end
             case Default: Math.random();
         }

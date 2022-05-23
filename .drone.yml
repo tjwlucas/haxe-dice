@@ -71,13 +71,6 @@ steps:
     commands:
       - npm i -g lcov-badge2
       - lcov-badge2 ./lcov.info
-    depends_on:
-      - Tests in NodeJS
-      - Tests in PHP7
-      - Tests in PHP8
-      - Tests in Neko
-      - Tests in Python
-      - Check Style
   - name: Update Online Coverage Badge
     image: plugins/s3
     settings:
@@ -92,19 +85,12 @@ steps:
       endpoint: https://minio.thomaslucas.co.uk
     depends_on:
       - Generate Code Coverage Badge
-      - master
   - name: Build Documentation
     image: haxe:4.2.3
     commands:
       - haxelib install --always --quiet documentation.hxml
       - haxe documentation.hxml
     depends_on:
-      - Tests in NodeJS
-      - Tests in PHP7
-      - Tests in PHP8
-      - Tests in Neko
-      - Tests in Python
-      - Check Style
   - name: Publish Documentation
     image: plugins/s3
     settings:
@@ -157,6 +143,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: d68087dd1903dc57995f89fd2ff9c3c7b7e0a507873bdae848c991b622a6eeb7
+hmac: e2907c2a594099be97d0a711cb7e20b66738a4d6f5240d5cc7994b896420d88a
 
 ...
