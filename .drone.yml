@@ -63,7 +63,7 @@ name: Publish Documentation
 
 platform:
   os: linux
-  arch: arm
+  arch: arm64
 
 steps:
   - name: Generate Code Coverage Badge
@@ -118,7 +118,7 @@ name: Release
 
 platform:
   os: linux
-  arch: arm
+  arch: arm64
 
 steps:
   - name: Zip Library
