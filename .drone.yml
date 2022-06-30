@@ -82,7 +82,7 @@ steps:
       source: badge.svg
       target: /coverage
       path_style: true
-      endpoint: https://minio.thomaslucas.co.uk
+      endpoint: https://minio.lucases.co.uk
     depends_on:
       - Generate Code Coverage Badge
   - name: Build Documentation
@@ -102,7 +102,7 @@ steps:
       source: docs/pages/**/*
       target: /
       path_style: true
-      endpoint: https://minio.thomaslucas.co.uk
+      endpoint: https://minio.lucases.co.uk
     depends_on:
       - Build Documentation
 
@@ -143,6 +143,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: e2907c2a594099be97d0a711cb7e20b66738a4d6f5240d5cc7994b896420d88a
+hmac: d5acece26ca976dfa8b82046d6873ba5ddd634b7dbf8438d5c057b8ffea8ff0c
 
 ...
