@@ -57,22 +57,19 @@ steps:
       - python ./bin/tests.py
     depends_on:
       - Build
----
-kind: pipeline
-name: Publish Documentation
-
-platform:
-  os: linux
-  arch: arm64
-
-steps:
   - name: Generate Code Coverage Badge
     image: node:16.3.0-alpine3.13
+    when:
+      branch:
+        - master
     commands:
       - npm i -g lcov-badge2
       - lcov-badge2 ./lcov.info
   - name: Update Online Coverage Badge
     image: plugins/s3
+    when:
+      branch:
+        - master
     settings:
       bucket: haxe-dice
       access_key: 
@@ -82,9 +79,18 @@ steps:
       source: badge.svg
       target: /coverage
       path_style: true
-      endpoint: https://minio.lucases.co.uk
+      endpoint: https://s3.lucases.co.uk
     depends_on:
       - Generate Code Coverage Badge
+---
+kind: pipeline
+name: Publish Documentation
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
   - name: Build Documentation
     image: haxe:4.2.3
     commands:
@@ -102,7 +108,7 @@ steps:
       source: docs/pages/**/*
       target: /
       path_style: true
-      endpoint: https://minio.lucases.co.uk
+      endpoint: https://s3.lucases.co.uk
     depends_on:
       - Build Documentation
 
@@ -143,6 +149,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: d5acece26ca976dfa8b82046d6873ba5ddd634b7dbf8438d5c057b8ffea8ff0c
+hmac: c256a0361c9fe2b2ca5005b2f702c085a4322c19fc21214b7858926ee93a85fe
 
 ...
