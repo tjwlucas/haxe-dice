@@ -209,9 +209,7 @@ class ResultsSummaryTest extends Test {
     }
 
     function specConvergenceWithCallback() {
-        // Using the seedy RNG here to ensure predictability and prevent random pipeline failure, due to unpredictable probabilistic tests
-        var seedyGenerator = new dice.RandomGenerator(Seedy("specConvergenceWithCallback"));
-        var randomManager = new RollManager(seedyGenerator);
+        var randomManager = new RollManager();
         var targetProximity = 0.005;
         var rollCount : Int;
         var prox : Float;
@@ -244,8 +242,7 @@ class ResultsSummaryTest extends Test {
     }
 
     function specConvergenceWithoutCallback() {
-        var seedyGenerator = new dice.RandomGenerator(Seedy("specConvergenceWithoutCallback"));
-        var randomManager = new RollManager(seedyGenerator);
+        var randomManager = new RollManager();
         var expression = randomManager.getComplexExpression("d6").rollUntilConvergence(10000, 0.0005);
 
         var summary = expression.resultsSummary;
